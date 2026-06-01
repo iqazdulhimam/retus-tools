@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retus — Flash Sale & Ticket Bot</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>
+  :root {
+    --bg: #08080e;
+    --surface: #11111d;
+    --card: #1a1a2e;
+    --border: #2a2a44;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --text: #e4e4f0;
+    --text2: #6b6b8d;
+    --success: #00e676;
+    --danger: #ff3355;
+    --radius: 10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
+
+  nav {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,14,0.85);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 1.2rem; font-weight: 800; }
+  .logo span { color: var(--accent); }
+
+  .hero {
+    text-align: center;
+    padding: 40px 0 24px;
+  }
+  .hero h1 { font-size: 1.8rem; font-weight: 800; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--text2); font-size: .9rem; margin-top: 6px; }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text2);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all .2s;
+  }
+  .tab:hover { color: var(--text); background: var(--card); }
+  .tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent2), #1d4ed8);
+    border-color: transparent;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 1rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .card .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-easy { background: rgba(0,230,118,0.12); color: var(--success); }
+  .badge-medium { background: rgba(124,58,237,0.12); color: var(--accent2); }
+  .badge-hard { background: rgba(255,51,85,0.12); color: var(--danger); }
+
+  .code-box {
+    position: relative;
+    margin-top: 10px;
+  }
+  .code-box pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: .78rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    color: var(--text);
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px 14px;
+    background: var(--accent2);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: #6d28d9; }
+  .copy-btn.copied { background: var(--success); }
+
+  .howto {
+    font-size: .85rem;
+    color: var(--text2);
+    margin: 8px 0;
+    padding: 10px;
+    background: var(--surface);
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+  .howto strong { color: var(--text); }
+
+  .step { margin: 4px 0; padding-left: 20px; }
+  .step::before { content: '→ '; color: var(--accent); }
+
+  .disclaimer {
+    margin-top: 20px;
+    padding: 12px;
+    background: rgba(255,51,85,0.08);
+    border: 1px solid rgba(255,51,85,0.2);
+    border-radius: 8px;
+    font-size: .8rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text2);
+    font-size: .8rem;
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 1.3rem; }
+    .tab { padding: 6px 12px; font-size: .78rem; }
+    .code-box pre { font-size: .72rem; max-height: 250px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">⚡ <span>Retus</span> Bot</div>
+    <span style="color:var(--text2);font-size:.8rem;">Copy-Paste Script</span>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <h1>🚀 Flash Sale & <span>Ticket War</span> Bot</h1>
+    <p>Console script — tinggal copy paste ke DevTools (F12). Gak perlu install apa-apa.</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="shopee">🏪 Shopee Rp.1</button>
+    <button class="tab" data-tab="loket">🎫 Loket.com</button>
+    <button class="tab" data-tab="tiket">🎟️ Tiket.com</button>
+    <button class="tab" data-tab="generic">⚡ Quick Click</button>
+  </div>
+
+  <!-- ═══════ SHOPEE ═══════ -->
+  <div class="panel active" id="panel-shopee">
+    <div class="card">
+      <h3>🏪 Shopee Flash Sale Rp.1 <span class="badge badge-medium">AUTO CLICK</span></h3>
+      <p style="color:var(--text2);font-size:.85rem;">Otomatis deteksi harga Rp.1 + klik Beli + checkout. Tinggal bayar.</p>
+
+      <div class="howto">
+        <strong>Cara pake:</strong>
+        <div class="step">Buka halaman <strong>produk flash sale</strong> di Chrome</div>
+        <div class="step"><strong>F12</strong> → tab <strong>Console</strong></div>
+        <div class="step">Copy script, paste, <strong>Enter</strong></div>
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this, 'shopeeCode')">📋 Copy</button>
+        <pre id="shopeeCode">(async function(){
+  let c=0,s=Date.now(),p=-1,r=0;
+  console.log('%c🏪 SHOPEE MONITOR AKTIF','color:#00e5ff;font-weight:bold');
+  function gp(){
+    const e=document.querySelector('[data-testid="product-price"],[class*="price"],span._3eX');
+    if(e){const t=e.textContent.trim(),m=t.replace(/\./g,'').match(/(\d+)/);
+    if(m) return{p:parseInt(m[1]),t}}return null}
+  function nt(){
+    try{new AudioContext().createOscillator().start()}catch(e){}
+    const d=document.createElement('div');
+    d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,0,50,0.9);color:#fff;font-size:48px;font-weight:bold;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999999;cursor:pointer;text-align:center';
+    d.innerHTML='<div style="font-size:80px">💥💥💥</div><div>🔥 RP.1 DETECTED!</div><div style="font-size:24px;margin:20px 0">KLIK CHECKOUT!</div><div style="font-size:16px;opacity:.7">Klik tutup</div>';
+    d.onclick=()=>d.remove();document.body.appendChild(d);
+    setTimeout(()=>{document.querySelectorAll('button').forEach(b=>{if(b.textContent.toLowerCase().includes('beli')) b.click()})},500)}
+  function lp(){
+    c++;const x=gp();
+    if(x&&x.p!==p){console.log(`[${new Date().toLocaleTimeString()}] ${x.t}${x.p<=1000?' 🔥':''}`);p=x.p}
+    if(x&&x.p<=1000&&!r){r=1;nt();return}
+    if(!r) setTimeout(lp,1000)}
+  lp();window.stop=()=>{r=1;console.log('⏹️ Stopped')}})();</pre>
+      </div>
+    </div>
+
+    <div style="font-size:.8rem;color:var(--text2);text-align:center;margin-top:4px;">
+      Ketik <code style="background:var(--surface);padding:2px 6px;border-radius:4px;">stop()</code> di console untuk berhenti
+    </div>
+  </div>
+
+  <!-- ═══════ LOKET.COM ═══════ -->
+  <div class="panel" id="panel-loket">
+    <div class="card">
+      <h3>🎫 Loket.com Auto-Buy <span class="badge badge-easy">MUDAH</span></h3>
+      <p style="color:var(--text2);font-size:.85rem;">Auto klik tombol "Pesan" pas jam buka. Loket pakai form biasa, paling gampang.</p>
+
+      <div class="howto">
+        <strong>Cara pake:</strong>
+        <div class="step">Buka halaman <strong>event</strong> di Loket.com</div>
+        <div class="step">Pilih kategori tiket (tapi JANGAN klik Pesan dulu)</div>
+        <div class="step"><strong>F12</strong> → Console → paste script → Enter</div>
+        <div class="step">Script auto klik tombol "Pesan" pas jam buka</div>
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this, 'loketCode')">📋 Copy</button>
+        <pre id="loketCode">(function(){
+  let r=0;
+  console.log('%c🎫 LOKET MONITOR — Mantau tombol pesan...','color:#00e5ff;font-weight:bold');
+  function ck(){
+    if(r)return;
+    const btns=document.querySelectorAll('button,a,div[role="button"]');
+    for(const b of btns){
+      const t=b.textContent.toLowerCase();
+      if(t.includes('pesan')||t.includes('beli')||t.includes('checkout')||t.includes('order')){
+        if(!b.disabled&&b.offsetParent!==null){
+          console.log(`%c✅ TOMBOL DITEMUKAN: ${b.textContent.trim()}`,'color:#00e676;font-size:14px');
+          b.click();
+          r=1;
+          console.log('%c🎉 CHECKOUT BERHASIL!','color:#00e676;font-weight:bold;font-size:16px');
+          return;
+        }
+      }
+    }
+    setTimeout(ck,100);
+  }
+  ck();
+  console.log('🔄 Nunggu tombol aktif... (100ms interval)');
+})();</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ TIKET.COM ═══════ -->
+  <div class="panel" id="panel-tiket">
+    <div class="card">
+      <h3>🎟️ Tiket.com Queue Skip <span class="badge badge-hard">SULIT</span></h3>
+      <p style="color:var(--text2);font-size:.85rem;">Tiket.com pake Cloudflare queue. Script ini auto detect + klik pas antrian lo tiba.</p>
+
+      <div class="howto">
+        <strong>Cara pake:</strong>
+        <div class="step">Buka halaman event di Tiket.com <strong>30 menit sebelum jam buka</strong></div>
+        <div class="step">Pilih jumlah tiket dulu (jika memungkinkan)</div>
+        <div class="step"><strong>F12</strong> → Console → paste → Enter</div>
+        <div class="step">Script otomatis mantau queue + klik pas giliran lo</div>
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this, 'tiketCode')">📋 Copy</button>
+        <pre id="tiketCode">(function(){
+  let r=0,t=0,s=Date.now();
+  console.log('%c🎟️ TIKET.COM MONITOR — Siap!','color:#00e5ff;font-weight:bold');
+  function ck(){
+    if(r)return;
+    t++;
+    // Cek tombol yang bisa diklik
+    const btns=document.querySelectorAll('button[class*="buy"],button[class*="checkout"],button:not([disabled])');
+    for(const b of btns){
+      const txt=b.textContent.toLowerCase();
+      if((txt.includes('beli')||txt.includes('pesan')||txt.includes('lanjut')||txt.includes('checkout'))&&!b.disabled){
+        if(b.offsetParent!==null){
+          console.log(`%c✅ ${b.textContent.trim()} — DIKLIK!`,'color:#00e676;font-weight:bold;font-size:14px');
+          b.click();
+          r=1;
+          break;
+        }
+      }
+    }
+    // Fallback: klik tombol aktif mana pun
+    if(!r){
+      const all=document.querySelectorAll('button:not([disabled])');
+      for(const b of all){
+        if(b.offsetParent!==null&&b.textContent.trim()&&![' ','login','daftar','cari','filter'].some(x=>b.textContent.toLowerCase().includes(x))){
+          // Cek apakah di area yang terlihat
+          const rect=b.getBoundingClientRect();
+          if(rect.top>100&&rect.bottom<window.innerHeight-100){
+            console.log(`[${Math.floor((Date.now()-s)/1000)}s] 🔍 ${b.textContent.trim()}`);
+            break;
+          }
+        }
+      }
+    }
+    if(!r) setTimeout(ck,200);
+  }
+  ck();
+  window.st=()=>{r=1;console.log(`⏹️ Stopped (${t} checks)`)}; 
+})();</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ GENERIC ═══════ -->
+  <div class="panel" id="panel-generic">
+    <div class="card">
+      <h3>⚡ Quick Click Bot <span class="badge badge-easy">GENERIC</span></h3>
+      <p style="color:var(--text2);font-size:.85rem;">Buatan sendiri — klik tombol secara cepat pas waktunya tiba. Bisa dipake di platform mana aja.</p>
+
+      <div class="howto">
+        <strong>Cara pake:</strong>
+        <div class="step">Buka halaman tujuan</div>
+        <div class="step"><strong>F12</strong> → Console</div>
+        <div class="step">Paste script → Enter</div>
+        <div class="step">Ganti <code>"TOMBOL"</code> dengan teks tombol yg mau diklik (misal "Pesan", "Beli", "Checkout")</div>
+      </div>
+
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this, 'genericCode')">📋 Copy</button>
+        <pre id="genericCode">// ⚡ GENERIC AUTO CLICK
+// Ganti "TOMBOL" dengan teks tombol tujuan
+
+(function(){
+  const TARGET = "TOMBOL"; // << GANTI INI
+  let r=0,t=0,s=Date.now();
+
+  console.log(`%c⚡ AUTO CLICK: "${TARGET}" — Aktif!`,'color:#00e5ff;font-weight:bold');
+
+  function ck(){
+    if(r)return; t++;
+    const btns=document.querySelectorAll('button,a,[role="button"],input[type="submit"]');
+    for(const b of btns){
+      if(b.textContent.toLowerCase().includes(TARGET.toLowerCase())&&!b.disabled){
+        if(b.offsetParent!==null){
+          console.log(`%c✅ "${b.textContent.trim()}" DIKLIK!`,'color:#00e676;font-weight:bold;font-size:14px');
+          b.click();
+          r=1;
+          return;
+        }
+      }
+    }
+    if(!r){
+      if(t%10===0) console.log(`[${((Date.now()-s)/1000).toFixed(1)}s] 🔍 Nunggu "${TARGET}"...`);
+      setTimeout(ck,100);
+    }
+  }
+  ck();
+  window.stop=()=>{r=1;console.log('⏹️ Stopped')};
+})();</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    ⚠️ <strong>Disclaimer:</strong> Script ini untuk mempermudah pembelian, bukan untuk merusak sistem.
+    Gunakan dengan bijak. Resiko akun di-ban atau kena CAPTCHA tetap ada.
+    Gue gak bertanggung jawab atas penyalahgunaan.
+  </div>
+
+</div>
+
+<footer>
+  retus.biz.id — Flash Sale & Ticket Bot Scripts
+</footer>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+  });
+});
+
+// Copy function
+function copyCode(btn, id) {
+  const code = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+</script>
+
+</body>
+</html>
