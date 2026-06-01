@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retus — LinkedIn Scanner</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<style>
+  :root {
+    --bg: #08080e;
+    --surface: #11111d;
+    --card: #1a1a2e;
+    --border: #2a2a44;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --text: #e4e4f0;
+    --text2: #6b6b8d;
+    --success: #00e676;
+    --danger: #ff3355;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+  /* Nav */
+  nav {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,14,0.85);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 1.2rem; font-weight: 800; }
+  .logo span { color: var(--accent); }
+  .nav-status { font-size: 0.8rem; color: var(--text2); }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 50px 0 30px;
+  }
+  .hero h1 { font-size: 2rem; font-weight: 800; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--text2); font-size: 0.9rem; margin-top: 8px; }
+
+  /* Search */
+  .search-box {
+    max-width: 600px;
+    margin: 20px auto;
+    display: flex;
+    gap: 8px;
+  }
+  .search-box input {
+    flex: 1;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 1rem;
+    transition: border-color .2s;
+  }
+  .search-box input:focus { outline: none; border-color: var(--accent2); }
+  .search-box button {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--accent2), #1d4ed8);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .search-box button:hover { box-shadow: 0 0 24px rgba(124,58,237,0.4); transform: translateY(-1px); }
+  .search-box button:disabled { opacity: .5; cursor: not-allowed; }
+  .search-hint { text-align: center; font-size: .8rem; color: var(--text2); margin-top: 8px; }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .controls label { font-size: .85rem; color: var(--text2); }
+  .controls select {
+    padding: 6px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: .85rem;
+  }
+
+  /* Stats */
+  .stats {
+    display: none;
+    justify-content: center;
+    gap: 20px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-radius: 10px;
+    margin: 16px 0;
+    font-size: .85rem;
+    color: var(--text2);
+  }
+  .stats.show { display: flex; }
+  .stats strong { color: var(--text); }
+  .stats .found { color: var(--success); }
+
+  /* Results Grid */
+  .results {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    padding: 10px 0 40px;
+  }
+  .results.show { display: grid; }
+
+  .result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all .2s;
+  }
+  .result-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .result-card .name { font-weight: 700; font-size: .95rem; margin-bottom: 4px; }
+  .result-card .job { font-size: .8rem; color: var(--text2); margin-bottom: 2px; }
+  .result-card .company { font-size: .8rem; color: var(--accent); margin-bottom: 8px; }
+  .result-card .meta { font-size: .8rem; color: var(--text2); display: flex; gap: 12px; margin-bottom: 8px; }
+  .result-card .meta .country { display: flex; align-items: center; gap: 4px; }
+  .result-card .link {
+    display: block;
+    font-size: .78rem;
+    color: var(--accent);
+    text-decoration: none;
+    word-break: break-all;
+    padding: 6px 10px;
+    background: var(--surface);
+    border-radius: 6px;
+    margin-top: 8px;
+    transition: all .2s;
+  }
+  .result-card .link:hover { background: var(--border); }
+
+  /* Loading */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+  }
+  .loading.show { display: block; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent2);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { color: var(--text2); font-size: .9rem; }
+
+  /* Error */
+  .error-box {
+    display: none;
+    text-align: center;
+    padding: 30px;
+    color: var(--danger);
+  }
+  .error-box.show { display: block; }
+
+  /* Empty */
+  .empty-box {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: var(--text2);
+  }
+  .empty-box.show { display: block; }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text2);
+    font-size: .8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .search-box { flex-direction: column; }
+    .search-box button { padding: 12px; }
+    .results { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">🔍 <span>Retus</span> Scanner</div>
+    <div class="nav-status" id="navStatus">ready</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container">
+    <h1>🔎 <span>LinkedIn</span> Profile Scanner</h1>
+    <p>Cari profil LinkedIn berdasarkan keyword — gratis, tanpa login, tanpa database</p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Search -->
+  <form class="search-box" id="searchForm" onsubmit="return doSearch()">
+    <input type="text" id="searchInput" placeholder="Masukkan keyword... misal: Konstruksi, Data Scientist, Marketing" autofocus>
+    <button type="submit" id="searchBtn">🔍 Search</button>
+  </form>
+  <div class="search-hint">Gunakan keyword Bahasa Inggris untuk hasil lebih banyak</div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <label>Limit:</label>
+    <select id="limitSelect">
+      <option value="10">10</option>
+      <option value="20" selected>20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <label style="margin-left:12px;">
+      <input type="checkbox" id="compactToggle" onchange="toggleCompact()"> Compact view
+    </label>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats"></div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Scanning LinkedIn profiles...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Empty -->
+  <div class="empty-box" id="emptyBox">No results found. Coba keyword lain.</div>
+
+  <!-- Results -->
+  <div class="results" id="results"></div>
+</div>
+
+<footer>
+  retus.biz.id — ephemeral, no database, no login
+</footer>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const resultsDiv = document.getElementById('results');
+const statsDiv = document.getElementById('stats');
+const loadingDiv = document.getElementById('loading');
+const errorBox = document.getElementById('errorBox');
+const emptyBox = document.getElementById('emptyBox');
+const limitSelect = document.getElementById('limitSelect');
+const navStatus = document.getElementById('navStatus');
+
+let compactMode = false;
+
+// Enter to search
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+// Auto-search from URL params
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) {
+    searchInput.value = q;
+    doSearch();
+  }
+});
+
+async function doSearch() {
+  const keyword = searchInput.value.trim();
+  if (!keyword) return false;
+
+  const limit = parseInt(limitSelect.value);
+
+  // UI state
+  resultsDiv.classList.remove('show');
+  statsDiv.classList.remove('show');
+  errorBox.classList.remove('show');
+  emptyBox.classList.remove('show');
+  loadingDiv.classList.add('show');
+  searchBtn.disabled = true;
+  navStatus.textContent = 'scanning...';
+
+  try {
+    const resp = await fetch(`/api/search?q=${encodeURIComponent(keyword)}&limit=${limit}`);
+    const data = await resp.json();
+
+    loadingDiv.classList.remove('show');
+    searchBtn.disabled = false;
+
+    if (data.error) {
+      errorBox.textContent = 'Error: ' + data.error;
+      errorBox.classList.add('show');
+      navStatus.textContent = 'error';
+      return false;
+    }
+
+    if (!data.results || data.results.length === 0) {
+      emptyBox.classList.add('show');
+      navStatus.textContent = '0 results';
+      return false;
+    }
+
+    renderResults(data.results, data.stats, keyword);
+    navStatus.textContent = `${data.stats.total} results`;
+
+    // Update URL without reload
+    const url = new URL(window.location);
+    url.searchParams.set('q', keyword);
+    window.history.replaceState({}, '', url);
+
+  } catch (e) {
+    loadingDiv.classList.remove('show');
+    errorBox.textContent = 'Network error: ' + e.message;
+    errorBox.classList.add('show');
+    searchBtn.disabled = false;
+    navStatus.textContent = 'error';
+  }
+
+  return false;
+}
+
+function renderResults(results, stats, keyword) {
+  // Stats
+  statsDiv.innerHTML = `
+    <span>Keyword: <strong>"${keyword}"</strong></span>
+    <span>Total: <strong>${stats.total}</strong></span>
+    <span>With country: <strong>${stats.with_country}/${stats.total}</strong></span>
+  `;
+  statsDiv.classList.add('show');
+
+  // Cards
+  let html = '';
+  results.forEach(r => {
+    const country = r.country ? `🌍 ${r.country}` : '🌍 ?';
+    const job = r.job ? `<div class="job">💼 ${escHtml(r.job)}</div>` : '';
+    const company = r.company ? `<div class="company">🏢 ${escHtml(r.company)}</div>` : '';
+
+    if (compactMode) {
+      html += `<div class="result-card">
+        <div class="name">${escHtml(r.name)}</div>
+        <div class="meta"><span>${country}</span></div>
+        <a class="link" href="${escHtml(r.linkedin)}" target="_blank" rel="noopener">🔗 ${r.linkedin.replace('https://','')}</a>
+      </div>`;
+    } else {
+      html += `<div class="result-card">
+        <div class="name">${escHtml(r.name)}</div>
+        ${job}
+        ${company}
+        <div class="meta"><span class="country">${country}</span></div>
+        <a class="link" href="${escHtml(r.linkedin)}" target="_blank" rel="noopener">🔗 ${r.linkedin.replace('https://','')}</a>
+      </div>`;
+    }
+  });
+
+  resultsDiv.innerHTML = html;
+  resultsDiv.classList.add('show');
+}
+
+function toggleCompact() {
+  compactMode = document.getElementById('compactToggle').checked;
+  // Re-render if results exist
+  const resultsEl = document.getElementById('results');
+  if (resultsEl.classList.contains('show')) {
+    // Trigger re-render by re-fetching (simpler approach)
+    // For instant toggle, we'd need to store data - just refresh search
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) doSearch();
+  }
+}
+
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>
