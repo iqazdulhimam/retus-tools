@@ -29,7 +29,7 @@
     color: var(--text);
     min-height: 100vh;
   }
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
 
   /* ── NAV ── */
   nav {
@@ -160,7 +160,7 @@
     font-family: 'Cascadia Code', 'Fira Code', monospace;
     font-size: 0.82rem;
     min-height: 40px;
-    max-height: 350px;
+    max-height: 520px;
     overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-all;
@@ -171,21 +171,40 @@
   .tool-output .miss { color: var(--text2); opacity: 0.6; }
   .tool-output .loading { color: var(--accent); }
 
-  .result-item {
-    padding: 6px 10px;
-    border-radius: 6px;
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 4px;
-    transition: background 0.2s;
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
   }
-  .result-item:hover { background: var(--card); }
-  .result-item .status { font-size: 1rem; }
-  .result-item .platform { font-weight: 600; min-width: 100px; }
-  .result-item .link { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
-  .result-item .link:hover { text-decoration: underline; }
-  .result-item.pending { opacity: 0.5; }
-  .result-item.found { border-left: 3px solid var(--success); }
-  .result-item.not-found { border-left: 3px solid var(--text2); }
+  .result-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.2s;
+    font-size: 0.82rem;
+    cursor: default;
+    overflow: hidden;
+  }
+  .result-item:hover { border-color: var(--accent2); background: var(--card); }
+  .result-item .status { font-size: 0.9rem; flex-shrink: 0; }
+  .result-item .platform { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .result-item .link { color: var(--accent); text-decoration: none; font-size: 0.75rem; margin-left: auto; flex-shrink: 0; display: none; }
+  .result-item:hover .link { display: inline; }
+  .result-item.found { border-color: rgba(0,255,136,0.3); }
+  .result-item.not-found { border-color: transparent; opacity: 0.6; }
+  .result-cat-title {
+    grid-column: 1 / -1;
+    color: var(--text2);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 2px 2px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2px;
+  }
 
   .badge-status {
     display: inline-block; padding: 1px 8px; border-radius: 4px;
@@ -592,18 +611,16 @@ async function checkUsername() {
   </div>`;
 
   for (const [cat, items] of Object.entries(cats)) {
-    html += `<div style="margin-bottom:10px;"><strong style="color:var(--text2);font-size:0.75rem;text-transform:uppercase;">${cat}</strong>`;
+    html += `<div class="result-grid">`;
+    html += `<div class="result-cat-title">${cat} <span style="font-weight:400;color:var(--text2)">(${items.length})</span></div>`;
     items.forEach(r => {
       const icon = r.exists === true ? '✅' : r.exists === false ? '⬜' : '🔗';
       const cls = r.exists === true ? 'found' : r.exists === false ? 'not-found' : '';
-      const badge = r.exists === true ? '<span class="badge badge-found">FOUND</span>' : '';
       const link = r.url.replace('{u}', u);
-      html += `<div class="result-item ${cls}">
+      html += `<a class="result-item ${cls}" href="${link}" target="_blank" rel="noopener">
         <span class="status">${icon}</span>
         <span class="platform">${r.name}</span>
-        <a class="link" href="${link}" target="_blank" rel="noopener">${link.replace('https://','')}</a>
-        ${badge}
-      </div>`;
+      </a>`;
     });
     html += `</div>`;
   }
@@ -826,14 +843,15 @@ function genProfileLinks() {
         ${links}
       </div>`;
     } else {
-      html += `<div style="margin-bottom:10px;"><strong style="color:var(--text2);font-size:0.75rem;text-transform:uppercase;">${cat}</strong></div>`;
+      html += `<div class="result-grid">`;
+      html += `<div class="result-cat-title">${cat} <span style="font-weight:400;color:var(--text2)">(${items.length})</span></div>`;
       items.forEach(p => {
         const link = p.url.replace('{u}', u);
-        html += `<div class="result-item">
-          <span style="min-width:100px;font-weight:600;">${p.name}</span>
-          <a class="link" href="${link}" target="_blank" rel="noopener">${link.replace('https://','')}</a>
-        </div>`;
+        html += `<a class="result-item" href="${link}" target="_blank" rel="noopener">
+          <span class="platform">${p.name}</span>
+        </a>`;
       });
+      html += `</div>`;
     }
   }
 
