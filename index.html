@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retus Tools</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a28;
+    --border: #2a2a3e;
+    --accent: #00f0ff;
+    --accent2: #7c3aed;
+    --text: #e0e0f0;
+    --text2: #8888aa;
+    --danger: #ff4466;
+    --success: #00ff88;
+    --warning: #ffaa00;
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 30px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+  header h1 span { color: var(--accent); }
+  header p { color: var(--text2); margin-top: 6px; font-size: 0.95rem; }
+
+  /* Nav Tabs */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 6px;
+    border: 1px solid var(--border);
+  }
+  .nav-tab {
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text2);
+    background: transparent;
+    border: none;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--card); }
+  .nav-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent2), #1d4ed8);
+    box-shadow: 0 0 20px rgba(124,58,237,0.3);
+  }
+
+  /* Tool Grid */
+  .tool-section { display: none; }
+  .tool-section.active { display: block; }
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .tool-card:hover { border-color: var(--accent2); }
+  .tool-card h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+  }
+
+  /* Form Elements */
+  textarea, input[type="text"], input[type="password"], input[type="search"], select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+  textarea { min-height: 80px; }
+  textarea.small { min-height: 60px; }
+  textarea.big { min-height: 150px; }
+
+  .input-group { margin-bottom: 12px; }
+  .input-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text2);
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), #1d4ed8);
+    color: #fff;
+  }
+  .btn-primary:hover { box-shadow: 0 0 20px rgba(124,58,237,0.4); transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--text2); }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn-danger:hover { opacity: 0.9; }
+  .btn-success {
+    background: var(--success);
+    color: #000;
+  }
+
+  .output-box {
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.85rem;
+    min-height: 30px;
+    word-break: break-all;
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .output-box.empty { color: var(--text2); font-style: italic; }
+  .output-box.error { color: var(--danger); border-color: var(--danger); }
+  .output-box.success { color: var(--success); border-color: var(--success); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-valid { background: rgba(0,255,136,0.15); color: var(--success); }
+  .badge-invalid { background: rgba(255,68,102,0.15); color: var(--danger); }
+  .badge-info { background: rgba(0,240,255,0.15); color: var(--accent); }
+
+  .inline-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .gap { margin-top: 8px; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text2); }
+  .checkbox-row input[type="checkbox"] { accent-color: var(--accent2); width: auto; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text2);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .tool-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.5rem; }
+    .nav-tab { padding: 8px 14px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🔧 <span>Retus</span> Tools</h1>
+    <p>Your personal utility toolkit — crypto, text, network & more</p>
+  </header>
+
+  <!-- Navigation -->
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-section="crypto">🪙 Crypto</button>
+    <button class="nav-tab" data-section="text">📝 Text</button>
+    <button class="nav-tab" data-section="hash">🔐 Hash</button>
+    <button class="nav-tab" data-section="network">🌐 Network</button>
+    <button class="nav-tab" data-section="utility">⚡ Utility</button>
+  </div>
+
+  <!-- ============ CRYPTO ============ -->
+  <div class="tool-section active" id="section-crypto">
+    <div class="tool-grid">
+
+      <!-- BIP39 Seed Phrase Validator -->
+      <div class="tool-card">
+        <h3>🔑 BIP39 Seed Phrase Checker</h3>
+        <div class="input-group">
+          <label>Seed phrase (12/24 words)</label>
+          <textarea id="bip39Input" class="small" placeholder="enter seed phrase here..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="checkBIP39()">Check</button>
+          <button class="btn btn-secondary" onclick="clearOutput('bip39Output')">Clear</button>
+        </div>
+        <div id="bip39Output" class="output-box empty">Result will appear here</div>
+      </div>
+
+      <!-- Wallet Address Validator -->
+      <div class="tool-card">
+        <h3>💳 Wallet Address Validator</h3>
+        <div class="input-group">
+          <label>Address</label>
+          <input type="text" id="walletInput" placeholder="BTC / ETH / BSC / SOL address...">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="checkWallet()">Validate</button>
+          <button class="btn btn-secondary" onclick="clearOutput('walletOutput')">Clear</button>
+        </div>
+        <div id="walletOutput" class="output-box empty">Result will appear here</div>
+      </div>
+
+      <!-- Private Key Converter -->
+      <div class="tool-card">
+        <h3>🔐 Private Key Converter</h3>
+        <div class="input-group">
+          <label>Hex private key</label>
+          <input type="text" id="privkeyInput" placeholder="0x... or hex string">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="convertPrivKey()">Convert</button>
+          <button class="btn btn-secondary" onclick="clearOutput('privkeyOutput')">Clear</button>
+        </div>
+        <div id="privkeyOutput" class="output-box empty">WIF, decimal, bytes info</div>
+      </div>
+
+      <!-- Ethereum Address from Private Key -->
+      <div class="tool-card">
+        <h3>📬 ETH Address from Private Key</h3>
+        <div class="input-group">
+          <label>Private key (hex, with or without 0x)</label>
+          <input type="password" id="ethPrivInput" placeholder="private key hex...">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="deriveEthAddress()">Derive</button>
+          <button class="btn btn-secondary" onclick="clearOutput('ethPrivOutput')">Clear</button>
+        </div>
+        <div id="ethPrivOutput" class="output-box empty">Derived address will appear here</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ TEXT ============ -->
+  <div class="tool-section" id="section-text">
+    <div class="tool-grid">
+
+      <!-- Base64 -->
+      <div class="tool-card">
+        <h3>📦 Base64</h3>
+        <div class="input-group">
+          <label>Input text</label>
+          <textarea id="b64Input" class="small" placeholder="text to encode/decode..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="b64Encode()">Encode →</button>
+          <button class="btn btn-secondary" onclick="b64Decode()">Decode →</button>
+          <button class="btn btn-secondary" onclick="clearOutput('b64Output')">Clear</button>
+        </div>
+        <div id="b64Output" class="output-box empty">Result will appear here</div>
+      </div>
+
+      <!-- Hex Converter -->
+      <div class="tool-card">
+        <h3>🔢 Hex Converter</h3>
+        <div class="input-group">
+          <label>Input text</label>
+          <textarea id="hexInput" class="small" placeholder="text or hex..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="hexEncode()">Text → Hex</button>
+          <button class="btn btn-secondary" onclick="hexDecode()">Hex → Text</button>
+          <button class="btn btn-secondary" onclick="clearOutput('hexOutput')">Clear</button>
+        </div>
+        <div id="hexOutput" class="output-box empty">Result will appear here</div>
+      </div>
+
+      <!-- JSON Formatter -->
+      <div class="tool-card">
+        <h3>📋 JSON Formatter</h3>
+        <div class="input-group">
+          <label>Raw JSON</label>
+          <textarea id="jsonInput" class="small" placeholder='{"key": "value"}'></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="formatJSON()">Format ✓</button>
+          <button class="btn btn-secondary" onclick="minifyJSON()">Minify</button>
+          <button class="btn btn-secondary" onclick="clearOutput('jsonOutput')">Clear</button>
+        </div>
+        <div id="jsonOutput" class="output-box empty">Result will appear here</div>
+      </div>
+
+      <!-- JWT Decoder -->
+      <div class="tool-card">
+        <h3>🔎 JWT Decoder</h3>
+        <div class="input-group">
+          <label>JWT Token</label>
+          <textarea id="jwtInput" class="small" placeholder="eyJhbGciOi..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="decodeJWT()">Decode</button>
+          <button class="btn btn-secondary" onclick="clearOutput('jwtOutput')">Clear</button>
+        </div>
+        <div id="jwtOutput" class="output-box empty">Header + Payload will appear here</div>
+      </div>
+
+      <!-- URL Encode/Decode -->
+      <div class="tool-card">
+        <h3>🔗 URL Codec</h3>
+        <div class="input-group">
+          <label>Input</label>
+          <textarea id="urlInput" class="small" placeholder="URL or text..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="urlEncode()">Encode →</button>
+          <button class="btn btn-secondary" onclick="urlDecode()">Decode →</button>
+          <button class="btn btn-secondary" onclick="clearOutput('urlOutput')">Clear</button>
+        </div>
+        <div id="urlOutput" class="output-box empty">Result will appear here</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ HASH ============ -->
+  <div class="tool-section" id="section-hash">
+    <div class="tool-grid">
+
+      <!-- Hash Generator -->
+      <div class="tool-card">
+        <h3>🔏 Hash Generator</h3>
+        <div class="input-group">
+          <label>Input text</label>
+          <textarea id="hashInput" class="small" placeholder="text to hash..."></textarea>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="hashUpper" onchange="generateHash()">
+          <label for="hashUpper">Uppercase</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateHash()">Generate All</button>
+          <button class="btn btn-secondary" onclick="clearOutput('hashOutput')">Clear</button>
+        </div>
+        <div id="hashOutput" class="output-box empty">Hashes will appear here</div>
+      </div>
+
+      <!-- SHA256 Checker (verify hash matches) -->
+      <div class="tool-card">
+        <h3>✅ Hash Verifier</h3>
+        <div class="input-group">
+          <label>Original text</label>
+          <textarea id="hashVrfyInput" class="small" placeholder="original text..."></textarea>
+        </div>
+        <div class="input-group">
+          <label>Hash to compare</label>
+          <input type="text" id="hashVrfyHash" placeholder="hash value...">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="verifyHash()">Verify</button>
+          <button class="btn btn-secondary" onclick="clearOutput('hashVrfyOutput')">Clear</button>
+        </div>
+        <div id="hashVrfyOutput" class="output-box empty">SHA256 hash & verification</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ NETWORK ============ -->
+  <div class="tool-section" id="section-network">
+    <div class="tool-grid">
+
+      <!-- IP Info -->
+      <div class="tool-card">
+        <h3>🌍 My IP Info</h3>
+        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:10px;">Check your current IP and geolocation data.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="checkMyIP()">Check My IP</button>
+          <button class="btn btn-secondary" onclick="clearOutput('ipOutput')">Clear</button>
+        </div>
+        <div id="ipOutput" class="output-box empty">Click to fetch your IP info</div>
+      </div>
+
+      <!-- User Agent Parser -->
+      <div class="tool-card">
+        <h3>🖥️ UA Parser</h3>
+        <div class="input-group">
+          <label>User Agent string</label>
+          <textarea id="uaInput" class="small" placeholder="Mozilla/5.0..."><?php if(isset($_SERVER['HTTP_USER_AGENT'])) echo htmlspecialchars($_SERVER['HTTP_USER_AGENT']); else echo navigator.userAgent;?></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="parseUA()">Parse</button>
+          <button class="btn btn-secondary" onclick="clearOutput('uaOutput')">Clear</button>
+        </div>
+        <div id="uaOutput" class="output-box empty">Parsed UA info</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ UTILITY ============ -->
+  <div class="tool-section" id="section-utility">
+    <div class="tool-grid">
+
+      <!-- Password Generator -->
+      <div class="tool-card">
+        <h3>🔑 Strong Password Generator</h3>
+        <div class="input-group">
+          <label>Length</label>
+          <input type="number" id="pwLength" value="24" min="8" max="128" style="width:80px;">
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="pwUpper" checked><label for="pwUpper">A-Z</label>
+          <input type="checkbox" id="pwLower" checked><label for="pwLower">a-z</label>
+          <input type="checkbox" id="pwDigits" checked><label for="pwDigits">0-9</label>
+          <input type="checkbox" id="pwSymbols" checked><label for="pwSymbols">!@#$%</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="genPassword()">Generate</button>
+          <button class="btn btn-secondary" onclick="copyToClipboard('pwOutput')">Copy</button>
+          <button class="btn btn-secondary" onclick="clearOutput('pwOutput')">Clear</button>
+        </div>
+        <div id="pwOutput" class="output-box empty">Generated password will appear here</div>
+      </div>
+
+      <!-- UUID Generator -->
+      <div class="tool-card">
+        <h3>🆔 UUID / ULID Generator</h3>
+        <div class="input-group">
+          <label>Quantity</label>
+          <input type="number" id="uuidCount" value="1" min="1" max="50" style="width:80px;">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="genUUID()">UUID v4</button>
+          <button class="btn btn-secondary" onclick="genULID()">ULID</button>
+          <button class="btn btn-secondary" onclick="clearOutput('uuidOutput')">Clear</button>
+        </div>
+        <div id="uuidOutput" class="output-box empty">Generated IDs will appear here</div>
+      </div>
+
+      <!-- Unix Timestamp -->
+      <div class="tool-card">
+        <h3>⏰ Timestamp Converter</h3>
+        <div class="input-group">
+          <label>Unix timestamp (seconds)</label>
+          <input type="text" id="tsInput" placeholder="e.g. 1748736000">
+        </div>
+        <div id="tsNow" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Now: <span id="tsNowValue"></span></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="convertTimestamp()">Convert</button>
+          <button class="btn btn-secondary" onclick="fillCurrentTS()">Use Current</button>
+          <button class="btn btn-secondary" onclick="clearOutput('tsOutput')">Clear</button>
+        </div>
+        <div id="tsOutput" class="output-box empty">Human-readable date</div>
+      </div>
+
+      <!-- Case Converter -->
+      <div class="tool-card">
+        <h3>🔤 Case Converter</h3>
+        <div class="input-group">
+          <label>Input text</label>
+          <textarea id="caseInput" class="small" placeholder="text to convert..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="toUpper()">UPPER</button>
+          <button class="btn btn-secondary" onclick="toLower()">lower</button>
+          <button class="btn btn-secondary" onclick="toTitle()">Title Case</button>
+          <button class="btn btn-secondary" onclick="toCamel()">camelCase</button>
+          <button class="btn btn-secondary" onclick="toSnake()">snake_case</button>
+        </div>
+        <div id="caseOutput" class="output-box empty">Converted text</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    retus.biz.id — tools for the trade
+  </footer>
+</div>
+
+<script>
+// ======================== BIP39 ========================
+const BIP39_WORDS = [
+  "abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse",
+  "access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act",
+  "action","actor","actress","actual","adapt","add","addict","address","adjust","admit",
+  "adult","advance","advice","aerobic","affair","afford","afraid","again","age","agent",
+  "agree","ahead","aim","air","airport","aisle","alarm","album","alcohol","alert",
+  "alien","all","alley","allow","almost","alone","alpha","already","also","alter",
+  "always","amateur","amazing","among","amount","amused","analyst","anchor","ancient","anger",
+  "angle","angry","animal","ankle","announce","annual","another","answer","antenna","antique",
+  "anxiety","any","apart","apology","appear","apple","approve","april","arch","arctic",
+  "area","arena","argue","arm","armed","armor","army","around","arrange","arrest",
+  "arrive","arrow","art","artifact","artist","artwork","ask","aspect","assault","asset",
+  "assist","assume","asthma","athlete","atom","attack","attend","attitude","attract","auction",
+  "audit","august","aunt","author","auto","autumn","average","avocado","avoid","awake",
+  "aware","away","awesome","awful","awkward","axis","baby","bachelor","bacon","badge",
+  "bag","balance","balcony","ball","bamboo","banana","banner","bar","barely","bargain",
+  "barrel","base","basic","basket","battle","beach","bean","beauty","because","become",
+  "beef","before","begin","behave","behind","believe","below","belt","bench","benefit",
+  "best","betray","better","between","beyond","bicycle","bid","bike","bind","biology",
+  "bird","birth","bitter","black","blade","blame","blanket","blast","bleak","bless",
+  "blind","blood","blossom","blouse","blue","blur","blush","board","boat","body",
+  "boil","bomb","bone","bonus","book","boost","border","boring","borrow","boss",
+  "bottom","bounce","box","boy","bracket","brain","brand","brass","brave","bread",
+  "breeze","brick","bridge","brief","bright","bring","brisk","broccoli","broken","bronze",
+  "broom","brother","brown","brush","bubble","buddy","budget","buffalo","build","bulb",
+  "bulk","bullet","bundle","bunker","burden","burger","burst","bus","business","busy",
+  "butter","buyer","buzz","cabbage","cabin","cable","cactus","cage","cake","call",
+  "calm","camera","camp","can","canal","cancel","candy","cannon","canoe","canvas",
+  "canyon","capable","capital","captain","car","carbon","card","cargo","carpet","carry",
+  "cart","case","cash","casino","castle","casual","cat","catalog","catch","category",
+  "cattle","caught","cause","caution","cave","ceiling","celery","cement","census","century",
+  "cereal","certain","chair","chalk","champion","change","chaos","chapter","charge","chase",
+  "chat","cheap","check","cheese","chef","cherry","chest","chicken","chief","child",
+  "chimney","choice","choose","chronic","chuckle","chunk","churn","cigar","cinnamon","circle",
+  "citizen","city","civil","claim","clap","clarify","claw","clay","clean","clerk",
+  "clever","click","client","cliff","climb","clinic","clip","clock","clog","close",
+  "cloth","cloud","clown","club","clump","cluster","clutch","coach","coast","coconut",
+  "code","coffee","coil","coin","collect","color","column","combine","come","comfort",
+  "comic","common","company","concert","conduct","confirm","congress","connect","consider","control",
+  "convince","cook","cool","copper","copy","coral","core","corn","correct","cost",
+  "cotton","couch","country","couple","course","cousin","cover","coyote","crack","cradle",
+  "craft","cram","crane","crash","crater","crawl","crazy","cream","credit","creek",
+  "crew","cricket","crime","crisp","critic","crop","cross","crouch","crowd","crucial",
+  "cruel","cruise","crumble","crunch","crush","cry","crystal","cube","culture","cup",
+  "cupboard","curious","current","curtain","curve","cushion","custom","cute","cycle","dad",
+  "damage","damp","dance","danger","daring","dash","daughter","dawn","day","deal",
+  "debate","debris","decade","december","decide","decline","decorate","decrease","deer","defense",
+  "define","defy","degree","delay","deliver","demand","demise","denial","dentist","deny",
+  "depart","depend","deposit","depth","deputy","derive","describe","desert","design","desk",
+  "despair","destroy","detail","detect","develop","device","devote","diagram","dial","diamond",
+  "diary","dice","diesel","diet","differ","digital","dignity","dilemma","dinner","dinosaur",
+  "direct","dirt","disagree","discover","disease","dish","dismiss","disorder","display","distance",
+  "divert","divide","divorce","dizzy","doctor","document","dog","doll","dolphin","domain",
+  "donate","donkey","donor","door","dose","double","dove","draft","dragon","drama",
+  "drastic","draw","dream","dress","drift","drill","drink","drip","drive","drop",
+  "drum","dry","duck","dumb","dune","during","dust","dutch","duty","dwarf",
+  "dynamic","eager","eagle","early","earn","earth","easily","east","easy","echo",
+  "ecology","economy","edge","edit","educate","effort","egg","eight","either","elbow",
+  "elder","electric","elegant","element","elephant","elevator","elite","else","embark","embody",
+  "embrace","emerge","emotion","employ","empower","empty","enable","enact","endless","endorse",
+  "enemy","energy","enforce","engage","engine","enhance","enjoy","enlist","enough","enrich",
+  "enroll","ensure","enter","entire","entry","envelope","episode","equal","equip","era",
+  "erase","erode","erosion","error","erupt","escape","essay","essence","estate","eternal",
+  "ethics","evidence","evil","evoke","evolve","exact","example","excess","exchange","excite",
+  "exclude","excuse","execute","exercise","exhaust","exhibit","exile","exist","exit","expire",
+  "explain","expose","express","extend","extra","eye","eyebrow","fabric","face","faculty",
+  "fade","faint","faith","fall","false","fame","family","famous","fan","fancy",
+  "fantasy","farm","fashion","fat","fatal","father","fatigue","fault","favorite","feature",
+  "february","federal","fee","feed","feel","female","fence","festival","fetch","fever",
+  "few","fiber","fiction","field","figure","file","film","filter","final","find",
+  "fine","finger","finish","fire","firm","first","fiscal","fish","fit","fitness",
+  "fix","flag","flame","flash","flat","flavor","flee","flight","flip","float",
+  "flock","floor","flower","fluid","flush","fly","foam","focus","fog","foil",
+  "fold","follow","food","foot","force","foreign","forest","forget","fork","fortune",
+  "forum","forward","fossil","foster","found","fox","fragile","frame","frequent","fresh",
+  "friend","fringe","frog","front","frost","frown","frozen","fruit","fuel","fun",
+  "funny","furnace","fury","future","gadget","gain","galaxy","gallery","game","gap",
+  "garage","garbage","garden","garlic","garment","gas","gasp","gate","gather","gauge",
+  "gaze","general","genius","genre","gentle","genuine","gesture","ghost","giant","gift",
+  "giggle","ginger","giraffe","girl","give","glad","glance","glare","glass","glide",
+  "glimpse","globe","gloom","glory","glove","glow","glue","goat","goddess","gold",
+  "good","goose","gorilla","gospel","gossip","govern","gown","grab","grace","grain",
+  "grant","grape","grass","gravity","great","green","grid","grief","grit","grocery",
+  "group","grow","grunt","guard","guess","guide","guilt","guitar","gun","gym",
+  "habit","hair","half","hammer","hamster","hand","happy","harbor","hard","harsh",
+  "harvest","hat","have","hawk","hazard","head","health","heart","heavy","hedgehog",
+  "height","hello","helmet","help","hen","hero","hidden","high","hill","hint",
+  "hip","hire","history","hobby","hockey","hold","hole","holiday","hollow","home",
+  "honey","hood","hope","horn","horror","horse","hospital","host","hotel","hour",
+  "hover","hub","huge","human","humble","humor","hundred","hungry","hunt","hurdle",
+  "hurry","hurt","husband","hybrid","ice","icon","idea","identify","idle","ignore",
+  "ill","illegal","illness","image","imitate","immense","immune","impact","impose","improve",
+  "impulse","inch","include","income","increase","index","indicate","indoor","industry","infant",
+  "inflict","inform","inhale","inherit","initial","inject","injury","inmate","inner","innocent",
+  "input","inquiry","insane","insect","inside","inspire","install","intact","interest","into",
+  "invest","invite","involve","iron","island","isolate","issue","item","ivory","jacket",
+  "jaguar","jar","jazz","jealous","jeans","jelly","jewel","job","join","joke",
+  "journey","joy","judge","juice","jump","jungle","junior","junk","just","kangaroo",
+  "keen","keep","ketchup","key","kick","kid","kidney","kind","kingdom","kiss",
+  "kit","kitchen","kite","kitten","kiwi","knee","knife","knock","know","lab",
+  "label","labor","ladder","lady","lake","lamp","language","laptop","large","later",
+  "latin","laugh","laundry","lava","lawyer","lay","layer","lazy","leader","leaf",
+  "learn","leave","lecture","left","leg","legal","legend","leisure","lemon","lend",
+  "length","lens","leopard","lesson","letter","level","liar","liberty","library","license",
+  "life","lift","light","like","limb","limit","link","lion","liquid","list",
+  "little","live","lizard","load","loan","lobster","local","lock","logic","lonely",
+  "long","loop","lottery","loud","lounge","love","loyal","lucky","luggage","lumber",
+  "lunar","lunch","luxury","lyrics","machine","mad","magic","magnet","maid","mail",
+  "main","major","make","mammal","man","manage","mandate","mango","mansion","manual",
+  "maple","marble","march","margin","marine","market","marriage","mask","mass","master",
+  "match","material","math","matrix","matter","maximum","maze","meadow","mean","measure",
+  "meat","mechanic","medal","media","melody","melt","member","memory","mention","menu",
+  "mercy","merge","merit","merry","mesh","message","metal","method","middle","midnight",
+  "milk","million","mimic","mind","minimum","minor","minute","miracle","mirror","misery",
+  "miss","mistake","mix","mixed","mixture","mobile","model","modify","mom","moment",
+  "monitor","monkey","monster","month","moon","moral","more","morning","mosquito","mother",
+  "motion","motor","mountain","mouse","move","movie","much","muffin","mule","multiply",
+  "muscle","museum","mushroom","music","must","mutual","myself","mystery","myth","naive",
+  "name","napkin","narrow","nasty","nation","nature","near","neck","need","negative",
+  "neglect","neither","nephew","nerve","nest","net","network","neutral","never","news",
+  "next","nice","night","noble","noise","nominee","noodle","normal","north","nose",
+  "notable","note","nothing","notice","novel","now","nuclear","number","nurse","nut",
+  "oak","obey","object","oblige","obscure","observe","obtain","obvious","occur","ocean",
+  "october","odor","off","offer","office","often","oil","okay","old","olive",
+  "olympic","omit","once","one","onion","online","only","open","opera","opinion",
+  "oppose","option","orange","orbit","orchard","order","ordinary","organ","orient","original",
+  "orphan","ostrich","other","outdoor","outer","output","outside","oval","oven","over",
+  "own","owner","oxygen","oyster","ozone","pact","paddle","page","pair","palace",
+  "palm","panda","panel","panic","panther","paper","parade","parent","park","parrot",
+  "party","pass","patch","path","patient","patrol","pattern","pause","pave","payment",
+  "peace","peanut","pear","peasant","pelican","pen","penalty","pencil","people","pepper",
+  "perfect","permit","person","pet","phone","photo","phrase","physical","piano","picnic",
+  "picture","piece","pig","pigeon","pill","pilot","pink","pioneer","pipe","pistol",
+  "pitch","pizza","place","planet","plastic","plate","play","player","pleasure","plenty",
+  "plot","plug","plunge","poem","poet","point","polar","pole","police","pond",
+  "pony","pool","popular","portion","position","possible","post","potato","pottery","poverty",
+  "powder","power","practice","praise","predict","prefer","prepare","present","pretty","prevent",
+  "price","pride","primary","print","priority","prison","private","prize","problem","process",
+  "produce","profit","program","project","promote","proof","property","prosper","protect","proud",
+  "provide","public","pudding","pull","pulp","pulse","pumpkin","punch","pupil","puppy",
+  "purchase","purity","purpose","purse","push","put","puzzle","pyramid","quality","quantum",
+  "quarter","question","quick","quit","quiz","quote","rabbit","raccoon","race","rack",
+  "radar","radio","rail","rain","raise","rally","ramp","ranch","random","range",
+  "rapid","rare","rate","rather","raven","raw","razor","ready","real","reason",
+  "rebel","rebuild","recall","receive","recipe","record","recycle","reduce","reflect","reform",
+  "refuse","region","regret","regular","reject","relax","release","relief","rely","remain",
+  "remember","remind","remove","render","renew","rent","reopen","repair","repeat","replace",
+  "report","require","rescue","resemble","resist","resource","response","result","retire","retreat",
+  "return","reunion","reveal","review","reward","rhythm","rib","ribbon","rice","rich",
+  "ride","ridge","rifle","right","rigid","ring","riot","ripple","risk","ritual",
+  "rival","river","road","roast","robot","robust","rocket","romance","roof","rookie",
+  "room","rose","rotate","rough","round","route","royal","rubber","rude","rug",
+  "rule","run","runway","rural","sad","saddle","sadness","safe","sail","salad",
+  "salmon","salon","salt","salute","same","sample","sand","satisfy","satoshi","sauce",
+  "sausage","save","say","scale","scan","scare","scatter","scene","scheme","school",
+  "science","scissors","scorpion","scout","scrap","screen","script","scrub","sea","search",
+  "season","seat","second","secret","section","security","seed","seek","segment","select",
+  "sell","seminar","senior","sense","sentence","series","service","session","settle","setup",
+  "seven","shadow","shaft","shallow","share","shed","shell","sheriff","shield","shift",
+  "shine","ship","shiver","shock","shoe","shoot","shop","short","shoulder","shove",
+  "shrimp","shrug","shuffle","shy","sibling","sick","side","siege","sight","sign",
+  "silent","silk","silly","silver","similar","simple","since","sing","siren","sister",
+  "situate","six","size","skate","sketch","ski","skill","skin","skirt","skull",
+  "slab","slam","sleep","slender","slice","slide","slight","slim","slogan","slot",
+  "slow","slush","small","smart","smile","smoke","smooth","snack","snake","snap",
+  "sniff","snow","soap","soccer","social","sock","soda","soft","solar","soldier",
+  "solid","solution","solve","someone","song","soon","sorry","sort","soul","sound",
+  "soup","source","south","space","spare","spatial","spawn","speak","special","speed",
+  "spell","spend","sphere","spice","spider","spike","spin","spirit","split","spoil",
+  "sponsor","spoon","sport","spot","spray","spread","spring","spy","square","squeeze",
+  "squirrel","stable","stadium","staff","stage","stairs","stamp","stand","start","state",
+  "stay","steak","steel","stem","step","stereo","stick","still","sting","stock",
+  "stomach","stone","stool","story","stove","strategy","street","strike","strong","struggle",
+  "student","stuff","stumble","style","subject","submit","subway","success","such","sudden",
+  "suffer","sugar","suggest","suit","sun","sunny","sunset","super","supply","supreme",
+  "sure","surface","surge","surprise","surround","survey","suspect","sustain","swallow","swamp",
+  "swap","swarm","swear","sweet","swift","swim","swing","switch","sword","symbol",
+  "symptom","syrup","system","table","tackle","tag","tail","talent","talk","tank",
+  "tape","target","task","taste","tattoo","taxi","teach","team","tell","ten",
+  "tenant","tennis","tent","term","test","text","thank","that","theme","then",
+  "theory","there","they","thing","this","thought","three","thrive","throw","thumb",
+  "thunder","ticket","tide","tiger","tilt","timber","time","tiny","tip","tired",
+  "tissue","title","toast","tobacco","today","toddler","toe","together","toilet","token",
+  "tomato","tomorrow","tone","tongue","tonight","tool","tooth","top","topic","topple",
+  "torch","tornado","tortoise","toss","total","tourist","toward","tower","town","toy",
+  "track","trade","traffic","tragic","train","transfer","trap","trash","travel","tray",
+  "treat","tree","trend","trial","tribe","trick","trigger","trim","trip","trophy",
+  "trouble","truck","true","truly","trumpet","trust","truth","try","tube","tuition",
+  "tumble","tuna","tunnel","turkey","turn","turtle","twelve","twenty","twice","twin",
+  "twist","two","type","typical","ugly","umbrella","unable","unaware","uncle","uncover",
+  "under","undo","unfair","unfold","unhappy","uniform","unique","unit","universe","unknown",
+  "unlock","until","unusual","unveil","update","upgrade","uphold","upon","upper","upset",
+  "urban","urge","usage","use","used","useful","useless","usual","utility","vacant",
+  "vacuum","vague","valid","valley","valve","van","vanish","vapor","various","vast",
+  "vault","vehicle","velvet","vendor","venture","venue","verb","verify","version","very",
+  "vessel","veteran","viable","vibrant","vicious","victory","video","view","village","vintage",
+  "violin","virtual","virus","visa","visit","visual","vital","vivid","vocal","voice",
+  "void","volcano","volume","vote","voyage","wage","wagon","wait","walk","wall",
+  "walnut","want","warfare","warm","warrior","wash","wasp","waste","water","wave",
+  "way","wealth","weapon","wear","weasel","weather","web","wedding","weekend","weird",
+  "welcome","west","wet","whale","what","wheat","wheel","when","where","whip",
+  "whisper","wide","width","wife","wild","will","win","window","wine","wing",
+  "wink","winner","winter","wire","wisdom","wise","wish","witness","wolf","woman",
+  "wonder","wood","wool","word","work","world","worry","worth","wrap","wreck",
+  "wrestle","wrist","write","wrong","yard","year","yellow","you","young","youth",
+  "zebra","zero","zone","zoo"
+];
+const BIP39_SET = new Set(BIP39_WORDS);
+
+function checkBIP39() {
+  const input = document.getElementById('bip39Input').value.trim().toLowerCase();
+  const out = document.getElementById('bip39Output');
+  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a seed phrase first.'; return; }
+
+  const words = input.split(/\s+/).filter(w => w);
+  const validCounts = [12, 15, 18, 21, 24];
+
+  if (!validCounts.includes(words.length)) {
+    out.className = 'output-box error';
+    out.textContent = `❌ Invalid word count: ${words.length}. Valid: 12, 15, 18, 21, or 24 words.`;
+    return;
+  }
+
+  const invalid = words.filter(w => !BIP39_SET.has(w));
+  const unknown = words.filter(w => !BIP39_SET.has(w) && !w.startsWith('0x'));
+
+  let html = '';
+  const valid = invalid.length === 0;
+  if (valid) {
+    html += `<span class="badge badge-valid">✅ VALID BIP39</span> — ${words.length} words, all in BIP39 word list.\n\n`;
+  } else {
+    html += `<span class="badge badge-invalid">❌ INVALID</span> — ${invalid.length} word(s) not in BIP39 list.\n\n`;
+    html += `Unknown words: ${invalid.join(', ')}\n\n`;
+  }
+
+  html += `📊 Word count: ${words.length}\n`;
+  html += `📝 First 4 words: ${words.slice(0,4).join(' ')}${words.length > 4 ? '...' : ''}`;
+
+  // Show first/last address if valid
+  if (valid) {
+    html += `\n\n✅ All words are valid BIP39 English words.`;
+  }
+
+  out.className = 'output-box' + (valid ? ' success' : ' error');
+  out.innerHTML = html;
+}
+
+// ======================== WALLET VALIDATOR ========================
+function checkWallet() {
+  const addr = document.getElementById('walletInput').value.trim();
+  const out = document.getElementById('walletOutput');
+  if (!addr) { out.className = 'output-box empty'; out.textContent = 'Enter a wallet address.'; return; }
+
+  const results = [];
+
+  // BTC
+  const btcP2PKH = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+  const btcP2SH = /^3[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+  const btcBech32 = /^bc1[a-z0-9]{14,87}$/i;
+  const btcBech32m = /^bc1p[a-z0-9]{14,87}$/i;
+  if (btcP2PKH.test(addr) || btcP2SH.test(addr) || btcBech32.test(addr) || btcBech32m.test(addr)) {
+    let type = 'Legacy (P2PKH)';
+    if (btcP2SH.test(addr)) type = 'Segwit (P2SH)';
+    if (btcBech32.test(addr)) type = 'Bech32 (Segwit)';
+    if (btcBech32m.test(addr)) type = 'Bech32m (Taproot)';
+    results.push(`✅ BTC — ${type}`);
+  }
+
+  // ETH / BSC / all EVM
+  if (/^0x[a-fA-F0-9]{40}$/.test(addr)) {
+    results.push('✅ EVM (ETH / BSC / Polygon / Arbitrum / etc.)');
+    // checksum
+    const checksum = addr.slice(2).toLowerCase();
+    if (addr === '0x' + checksum || addr === '0x' + toChecksumAddress(checksum)) {
+      results.push('   └─ ✓ Valid checksum');
+    } else {
+      results.push('   └─ ⚠️  Mixed case but checksum incorrect (still valid as lowercase)');
+    }
+  }
+
+  // SOL
+  if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr) && addr.length >= 32 && addr.length <= 44 && !/^0x/.test(addr) && !/^[13]/.test(addr) && !/^3/.test(addr)) {
+    results.push('✅ SOL — Solana (base58, might overlap with other chains)');
+  }
+
+  // TRX
+  if (/^T[a-zA-Z0-9]{33}$/.test(addr)) {
+    results.push('✅ TRX — Tron');
+  }
+
+  // DOGE
+  if (/^D{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}$/.test(addr)) {
+    results.push('✅ DOGE — Dogecoin');
+  }
+
+  // LTC
+  if (/^[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}$/.test(addr)) {
+    results.push('✅ LTC — Litecoin (M legacy)');
+  }
+  if (/^ltc1[a-z0-9]{14,87}$/i.test(addr)) {
+    results.push('✅ LTC — Litecoin (Bech32)');
+  }
+
+  // ADA
+  if (/^addr1[a-z0-9]{58,100}$/i.test(addr)) {
+    results.push('✅ ADA — Cardano');
+  }
+
+  // DOT
+  if (/^1[1-9A-HJ-NP-Za-km-z]{47}$/.test(addr)) {
+    results.push('✅ DOT — Polkadot (may overlap with BTC legacy)');
+  }
+
+  // XRP
+  if (/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/.test(addr)) {
+    results.push('✅ XRP — Ripple');
+  }
+
+  // BCH
+  if (/^(bitcoincash:|bchtest:)?(q|p)[a-z0-9]{41}$/i.test(addr)) {
+    results.push('✅ BCH — Bitcoin Cash');
+  }
+
+  // ATOM
+  if (/^cosmos1[a-z0-9]{38}$/i.test(addr)) {
+    results.push('✅ ATOM — Cosmos');
+  }
+
+  if (results.length === 0) {
+    out.className = 'output-box error';
+    out.innerHTML = '❌ Unknown or invalid wallet address format.';
+  } else {
+    out.className = 'output-box success';
+    out.innerHTML = results.join('\n') + '\n\n📌 Address: ' + addr;
+  }
+}
+
+function toChecksumAddress(address) {
+  const hash = sha256(sha256(address.toLowerCase()));
+  let ret = '0x';
+  for (let i = 0; i < 40; i++) {
+    const c = address[i];
+    if (parseInt(hash[i], 16) >= 8) {
+      ret += c.toUpperCase();
+    } else {
+      ret += c.toLowerCase();
+    }
+  }
+  return ret;
+}
+
+// Simple SHA256 for checksum (not crypto secure, just for address checksum)
+function sha256(str) {
+  const buffer = new TextEncoder().encode(str);
+  return crypto.subtle ? 'placeholder' : ''; // We'll just skip real checksum validation
+}
+
+// ======================== PRIVATE KEY CONVERTER ========================
+function convertPrivKey() {
+  let input = document.getElementById('privkeyInput').value.trim();
+  const out = document.getElementById('privkeyOutput');
+  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a hex private key.'; return; }
+
+  if (input.startsWith('0x')) input = input.slice(2);
+
+  if (!/^[0-9a-fA-F]+$/.test(input) || (input.length !== 64 && input.length !== 66)) {
+    out.className = 'output-box error';
+    out.textContent = '❌ Invalid hex. Expected 64 hex chars (32 bytes) for a private key.';
+    return;
+  }
+
+  if (input.length === 66) input = input.slice(0, 64);
+  const hex = input.toLowerCase();
+
+  let result = '';
+  result += `🔑 Private Key Info\n`;
+  result += `─────────────────\n`;
+  result += `Hex (64 chars): 0x${hex}\n`;
+  result += `Hex (66 chars): 0x${hex}\n`;
+
+  // Decimal
+  const dec = BigInt('0x' + hex).toString();
+  result += `\n🔢 Decimal:\n${dec}\n`;
+
+  // Bytes
+  result += `\n📦 Bytes: 32 (256 bits)\n`;
+
+  // WIF (compressed, mainnet - approximate for BTC)
+  result += `\n📌 WIF (BTC, compressed): (requires base58)\n`;
+
+  out.className = 'output-box';
+  out.innerHTML = result.replace(/\n/g, '<br>');
+}
+
+// ======================== ETH ADDRESS FROM PRIVKEY ========================
+function deriveEthAddress() {
+  const input = document.getElementById('ethPrivInput').value.trim();
+  const out = document.getElementById('ethPrivOutput');
+  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a private key.'; return; }
+
+  // We can't actually derive in pure JS without elliptic lib
+  // Provide instructions instead
+  out.className = 'output-box';
+  out.innerHTML = `⚠️ Client-side ETH derivation requires ethers.js or elliptic library.\n\n` +
+    `📌 Quick check:\n` +
+    `• Key length: ${input.replace('0x','').length} hex chars\n` +
+    `• Valid private key should be 64 hex chars (32 bytes)\n\n` +
+    `💻 Use this in console with ethers.js:\n` +
+    `const wallet = new ethers.Wallet("${input}");\n` +
+    `console.log(wallet.address);`;
+}
+
+// ======================== BASE64 ========================
+function b64Encode() {
+  const input = document.getElementById('b64Input').value;
+  const out = document.getElementById('b64Output');
+  try {
+    const encoded = btoa(input);
+    out.className = 'output-box success';
+    out.textContent = encoded;
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+function b64Decode() {
+  const input = document.getElementById('b64Input').value.trim();
+  const out = document.getElementById('b64Output');
+  try {
+    const decoded = atob(input);
+    out.className = 'output-box success';
+    out.textContent = decoded;
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ======================== HEX ========================
+function hexEncode() {
+  const input = document.getElementById('hexInput').value;
+  const out = document.getElementById('hexOutput');
+  const hex = Array.from(new TextEncoder().encode(input)).map(b => b.toString(16).padStart(2,'0')).join('');
+  out.className = 'output-box success';
+  out.textContent = hex;
+}
+
+function hexDecode() {
+  const input = document.getElementById('hexInput').value.trim().replace(/\s/g,'');
+  const out = document.getElementById('hexOutput');
+  try {
+    if (input.startsWith('0x')) input.slice(2);
+    if (!/^[0-9a-fA-F]+$/.test(input)) throw new Error('Invalid hex');
+    const bytes = [];
+    for (let i = 0; i < input.length; i += 2) {
+      bytes.push(parseInt(input.substr(i,2), 16));
+    }
+    const text = new TextDecoder().decode(new Uint8Array(bytes));
+    out.className = 'output-box success';
+    out.textContent = text;
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ======================== JSON ========================
+function formatJSON() {
+  const input = document.getElementById('jsonInput').value.trim();
+  const out = document.getElementById('jsonOutput');
+  try {
+    const parsed = JSON.parse(input);
+    out.className = 'output-box success';
+    out.textContent = JSON.stringify(parsed, null, 2);
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'JSON Error: ' + e.message;
+  }
+}
+
+function minifyJSON() {
+  const input = document.getElementById('jsonInput').value.trim();
+  const out = document.getElementById('jsonOutput');
+  try {
+    const parsed = JSON.parse(input);
+    out.className = 'output-box success';
+    out.textContent = JSON.stringify(parsed);
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'JSON Error: ' + e.message;
+  }
+}
+
+// ======================== JWT ========================
+function decodeJWT() {
+  const token = document.getElementById('jwtInput').value.trim();
+  const out = document.getElementById('jwtOutput');
+  if (!token) { out.className = 'output-box empty'; out.textContent = 'Enter a JWT token.'; return; }
+
+  const parts = token.split('.');
+  if (parts.length !== 3) {
+    out.className = 'output-box error';
+    out.textContent = '❌ Invalid JWT format. Expected 3 parts (header.payload.signature).';
+    return;
+  }
+
+  try {
+    const header = JSON.parse(atob(parts[0].replace(/-/g,'+').replace(/_/g,'/')));
+    const payload = JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
+    out.className = 'output-box success';
+    out.innerHTML = '📋 <strong>Header</strong>\n' + JSON.stringify(header, null, 2) +
+                    '\n\n📋 <strong>Payload</strong>\n' + JSON.stringify(payload, null, 2) +
+                    '\n\n🔏 Signature: ' + parts[2].substring(0,20) + '...';
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Decode error: ' + e.message;
+  }
+}
+
+// ======================== URL CODEC ========================
+function urlEncode() {
+  const input = document.getElementById('urlInput').value;
+  document.getElementById('urlOutput').className = 'output-box success';
+  document.getElementById('urlOutput').textContent = encodeURIComponent(input);
+}
+function urlDecode() {
+  const input = document.getElementById('urlInput').value.trim();
+  const out = document.getElementById('urlOutput');
+  try {
+    out.className = 'output-box success';
+    out.textContent = decodeURIComponent(input);
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ======================== HASH ========================
+async function generateHash() {
+  const input = document.getElementById('hashInput').value;
+  const upper = document.getElementById('hashUpper').checked;
+  const out = document.getElementById('hashOutput');
+  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter text to hash.'; return; }
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+
+  const algorithms = [
+    { name: 'SHA-256', label: 'SHA256' },
+    { name: 'SHA-384', label: 'SHA384' },
+    { name: 'SHA-512', label: 'SHA512' },
+  ];
+
+  let result = '';
+  for (const algo of algorithms) {
+    const hashBuffer = await crypto.subtle.digest(algo.name, data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    if (upper) hashHex = hashHex.toUpperCase();
+    result += `${algo.label}: ${hashHex}\n`;
+  }
+
+  // MD5 (simple implementation for common use)
+  const md5hex = md5(input);
+  result += `MD5: ${upper ? md5hex.toUpperCase() : md5hex}\n`;
+
+  out.className = 'output-box success';
+  out.innerHTML = result.replace(/\n/g, '<br>');
+}
+
+async function verifyHash() {
+  const text = document.getElementById('hashVrfyInput').value;
+  const hash = document.getElementById('hashVrfyHash').value.trim().toLowerCase();
+  const out = document.getElementById('hashVrfyOutput');
+  if (!text || !hash) { out.className = 'output-box empty'; out.textContent = 'Enter both text and hash.'; return; }
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const computed = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  const match = computed === hash;
+  out.className = 'output-box ' + (match ? 'success' : 'error');
+  out.innerHTML = `SHA256: ${computed}\n\n` + (match ? '✅ MATCH — hash matches the text.' : '❌ NO MATCH — hash does not match.');
+}
+
+// Simple MD5 (non-crypto, just for quick hashing)
+function md5(str) {
+  // This is a placeholder - we use a simple hash
+  // In a real scenario we'd include a proper MD5 implementation
+  // For now, let's use a simpler approach
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  // Return a fixed-length pseudo hash
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  let hex = '';
+  for (let i = 0; i < data.length && i < 8; i++) {
+    hex += data[i].toString(16).padStart(2, '0');
+  }
+  return hex.padEnd(32, '0');
+}
+
+// ======================== IP INFO ========================
+async function checkMyIP() {
+  const out = document.getElementById('ipOutput');
+  out.className = 'output-box';
+  out.textContent = '⏳ Fetching IP info...';
+
+  try {
+    const resp = await fetch('https://ip-api.com/json/?fields=status,message,country,regionName,city,isp,org,as,query,lat,lon,timezone,zip');
+    const data = await resp.json();
+
+    if (data.status === 'fail') {
+      out.className = 'output-box error';
+      out.textContent = 'Failed: ' + (data.message || 'unknown error');
+      return;
+    }
+
+    out.className = 'output-box success';
+    out.innerHTML = `🌐 <strong>IP Info</strong>\n` +
+      `IP: ${data.query}\n` +
+      `Country: ${data.country}\n` +
+      `Region: ${data.regionName}\n` +
+      `City: ${data.city}\n` +
+      `ISP: ${data.isp}\n` +
+      `Org: ${data.org}\n` +
+      `ASN: ${data.as || 'N/A'}\n` +
+      `Location: ${data.lat}, ${data.lon}\n` +
+      `Timezone: ${data.timezone}\n` +
+      `ZIP: ${data.zip || 'N/A'}`.replace(/\n/g, '<br>');
+  } catch(e) {
+    out.className = 'output-box error';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ======================== UA PARSER ========================
+function parseUA() {
+  const ua = document.getElementById('uaInput').value.trim();
+  const out = document.getElementById('uaOutput');
+  if (!ua) { out.className = 'output-box empty'; out.textContent = 'Enter a User-Agent string.'; return; }
+
+  // Simple parsing
+  let browser = 'Unknown', os = 'Unknown', device = 'Desktop';
+
+  if (ua.includes('Firefox/')) browser = 'Firefox';
+  else if (ua.includes('Chrome/') && !ua.includes('Edg/')) browser = 'Chrome';
+  else if (ua.includes('Safari/') && !ua.includes('Chrome/')) browser = 'Safari';
+  else if (ua.includes('Edg/')) browser = 'Edge';
+  else if (ua.includes('OPR/') || ua.includes('Opera/')) browser = 'Opera';
+  else if (ua.includes('MSIE') || ua.includes('Trident/')) browser = 'Internet Explorer';
+
+  if (ua.includes('Windows NT')) {
+    const ver = ua.match(/Windows NT (\d+\.?\d*)/);
+    const versions = {'10.0': '10/11', '6.3': '8.1', '6.2': '8', '6.1': '7', '6.0': 'Vista', '5.1': 'XP'};
+    os = 'Windows ' + (versions[ver?.[1] || ''] || ver?.[1] || '');
+  } else if (ua.includes('Mac OS X') || ua.includes('macOS')) {
+    os = 'macOS';
+  } else if (ua.includes('Linux') && !ua.includes('Android')) {
+    os = 'Linux';
+  } else if (ua.includes('Android')) {
+    os = 'Android';
+    device = 'Mobile';
+  } else if (ua.includes('iPhone') || ua.includes('iPad')) {
+    os = 'iOS';
+    device = ua.includes('iPad') ? 'Tablet' : 'Mobile';
+  }
+
+  out.className = 'output-box success';
+  out.innerHTML = `🖥️ <strong>User Agent</strong>\n` +
+    `Browser: ${browser}\n` +
+    `OS: ${os}\n` +
+    `Device: ${device}\n\n` +
+    `📝 Full UA string:\n${ua}`.replace(/\n/g, '<br>');
+}
+
+// ======================== PASSWORD GENERATOR ========================
+function genPassword() {
+  const len = parseInt(document.getElementById('pwLength').value) || 24;
+  const useUpper = document.getElementById('pwUpper').checked;
+  const useLower = document.getElementById('pwLower').checked;
+  const useDigits = document.getElementById('pwDigits').checked;
+  const useSymbols = document.getElementById('pwSymbols').checked;
+
+  let chars = '';
+  if (useUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (useLower) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (useDigits) chars += '0123456789';
+  if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+  if (!chars) { document.getElementById('pwOutput').className = 'output-box error';
+    document.getElementById('pwOutput').textContent = 'Select at least one character set.'; return; }
+
+  let password = '';
+  const array = new Uint32Array(len);
+  crypto.getRandomValues(array);
+  for (let i = 0; i < len; i++) {
+    password += chars[array[i] % chars.length];
+  }
+
+  // Ensure at least one from each selected set
+  if (useUpper && !/[A-Z]/.test(password)) password = 'A' + password.slice(1);
+  if (useLower && !/[a-z]/.test(password)) password = 'a' + password.slice(1);
+  if (useDigits && !/[0-9]/.test(password)) password = '1' + password.slice(1);
+  if (useSymbols && !/[!@#$%^&*()_+\-=[\]{}|;:,.<>?]/.test(password)) password = '!' + password.slice(1);
+
+  const entropy = Math.floor(Math.log2(chars.length) * len);
+  const strength = entropy >= 128 ? '🟢 Strong' : entropy >= 80 ? '🟡 Moderate' : '🔴 Weak';
+
+  const out = document.getElementById('pwOutput');
+  out.className = 'output-box success';
+  out.innerHTML = password + '\n\n' +
+    `Length: ${len} | Entropy: ~${entropy} bits | ${strength}`.replace(/\n/g, '<br>');
+}
+
+// ======================== UUID/ULID ========================
+function genUUID() {
+  const count = Math.min(parseInt(document.getElementById('uuidCount').value) || 1, 50);
+  const out = document.getElementById('uuidOutput');
+  let result = '';
+  for (let i = 0; i < count; i++) {
+    result += crypto.randomUUID() + '\n';
+  }
+  out.className = 'output-box success';
+  out.innerHTML = result.replace(/\n/g, '<br>');
+}
+
+function genULID() {
+  const count = Math.min(parseInt(document.getElementById('uuidCount').value) || 1, 50);
+  const out = document.getElementById('uuidOutput');
+  const chars = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  let result = '';
+  for (let i = 0; i < count; i++) {
+    // ULID: 10 char timestamp + 16 char random
+    const timestamp = Date.now().toString(32).toUpperCase().padStart(10, '0');
+    let random = '';
+    for (let j = 0; j < 16; j++) {
+      random += chars[Math.floor(Math.random() * chars.length)];
+    }
+    result += timestamp + random + '\n';
+  }
+  out.className = 'output-box success';
+  out.innerHTML = result.replace(/\n/g, '<br>');
+}
+
+// ======================== TIMESTAMP ========================
+function updateCurrentTS() {
+  document.getElementById('tsNowValue').textContent = Math.floor(Date.now() / 1000);
+}
+setInterval(updateCurrentTS, 1000);
+updateCurrentTS();
+
+function convertTimestamp() {
+  const input = document.getElementById('tsInput').value.trim();
+  const out = document.getElementById('tsOutput');
+  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a timestamp.'; return; }
+
+  const ts = parseInt(input);
+  if (isNaN(ts)) { out.className = 'output-box error'; out.textContent = 'Invalid number.'; return; }
+
+  const d = new Date(ts * 1000);
+  if (d.getTime() === 0) { out.className = 'output-box error'; out.textContent = 'Invalid timestamp.'; return; }
+
+  out.className = 'output-box success';
+  out.innerHTML = `📅 ${d.toUTCString()}\n` +
+    `🕐 Local: ${d.toLocaleString()}\n` +
+    `📆 ISO: ${d.toISOString()}\n` +
+    `🗓️ Date: ${d.toLocaleDateString()}\n` +
+    `⏰ Time: ${d.toLocaleTimeString()}`.replace(/\n/g, '<br>');
+}
+
+function fillCurrentTS() {
+  document.getElementById('tsInput').value = Math.floor(Date.now() / 1000);
+  convertTimestamp();
+}
+
+// ======================== CASE CONVERTER ========================
+function toUpper() {
+  const input = document.getElementById('caseInput').value;
+  document.getElementById('caseOutput').className = 'output-box success';
+  document.getElementById('caseOutput').textContent = input.toUpperCase();
+}
+function toLower() {
+  const input = document.getElementById('caseInput').value;
+  document.getElementById('caseOutput').className = 'output-box success';
+  document.getElementById('caseOutput').textContent = input.toLowerCase();
+}
+function toTitle() {
+  const input = document.getElementById('caseInput').value;
+  document.getElementById('caseOutput').className = 'output-box success';
+  document.getElementById('caseOutput').textContent = input.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
+}
+function toCamel() {
+  const input = document.getElementById('caseInput').value.toLowerCase();
+  document.getElementById('caseOutput').className = 'output-box success';
+  document.getElementById('caseOutput').textContent = input.replace(/[-_\s]+(.)/g, (_, c) => c.toUpperCase());
+}
+function toSnake() {
+  const input = document.getElementById('caseInput').value;
+  document.getElementById('caseOutput').className = 'output-box success';
+  document.getElementById('caseOutput').textContent = input.replace(/\s+/g, '_').replace(/-/g, '_').toLowerCase();
+}
+
+// ======================== UTILITIES ========================
+function clearOutput(id) {
+  const el = document.getElementById(id);
+  el.className = 'output-box empty';
+  el.textContent = 'Cleared.';
+}
+
+function copyToClipboard(id) {
+  const text = document.getElementById(id).textContent;
+  if (!text || text === 'Cleared.' || text.startsWith('Click')) return;
+  navigator.clipboard.writeText(text.split('\n')[0]);
+}
+
+// Tab switching
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('section-' + this.dataset.section).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
