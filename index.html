@@ -597,19 +597,22 @@ async function checkUsername() {
     return 0;
   });
 
+  // Filter: hanya tampilkan yang found
+  const filtered = results.filter(r => r.exists === true || r.exists === null);
+
   // Group by category
   const cats = {};
-  results.forEach(r => {
+  filtered.forEach(r => {
     if (!cats[r.cat]) cats[r.cat] = [];
     cats[r.cat].push(r);
   });
 
   let html = '';
-  const totalChecked = found + notFound;
   const totalPlatforms = PLATFORMS.length;
 
-  html += `<div style="margin-bottom:12px;padding:10px;background:var(--surface);border-radius:8px;">
-    <strong>${u}</strong> — ${found} found · ${notFound} not found · ${errors} errors · ${linkOnly.length} links generated
+  html += `<div style="margin-bottom:12px;padding:10px;background:var(--surface);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+    <strong>${u}</strong> — <span style="color:var(--success)">${found} found</span> · ${notFound} not found
+    <span style="color:var(--text2);font-size:0.8rem;">${filtered.length} ditampilkan</span>
   </div>`;
 
   for (const [cat, items] of Object.entries(cats)) {
@@ -629,12 +632,10 @@ async function checkUsername() {
 
   out.innerHTML = html;
 
-  stats.style.display = 'flex';
+  stats.style.display = found > 0 ? 'flex' : 'none';
   stats.innerHTML = `
-    <div class="stat-item">Total: <strong>${totalPlatforms}</strong></div>
     <div class="stat-item">Found: <strong style="color:var(--success)">${found}</strong></div>
-    <div class="stat-item">Not Found: <strong style="color:var(--text2)">${notFound}</strong></div>
-    <div class="stat-item">Links: <strong>${linkOnly.length}</strong></div>
+    <div class="stat-item">Not Found: <strong style="color:var(--text2)">${notFound}</strong>
   `;
 }
 
