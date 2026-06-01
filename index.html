@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retus Tools</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<title>Retus — OSINT Suite</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕵️</text></svg>">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --card: #1a1a28;
-    --border: #2a2a3e;
+    --bg: #07070d;
+    --surface: #0f0f1a;
+    --card: #16162a;
+    --card-hover: #1c1c35;
+    --border: #252542;
     --accent: #00f0ff;
     --accent2: #7c3aed;
-    --text: #e0e0f0;
-    --text2: #8888aa;
+    --accent3: #f59e0b;
+    --text: #e8e8f0;
+    --text2: #7878a0;
     --danger: #ff4466;
     --success: #00ff88;
-    --warning: #ffaa00;
-    --radius: 10px;
+    --radius: 12px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -26,114 +28,111 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 20px;
   }
-  .container { max-width: 1200px; margin: 0 auto; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-  /* Header */
-  header {
-    text-align: center;
-    padding: 30px 0 20px;
+  /* ── NAV ── */
+  nav {
+    padding: 16px 0;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 30px;
+    background: rgba(7,7,13,0.8);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
   }
-  header h1 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -1px;
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
   }
-  header h1 span { color: var(--accent); }
-  header p { color: var(--text2); margin-top: 6px; font-size: 0.95rem; }
+  .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-links a {
+    color: var(--text2); text-decoration: none; font-size: 0.85rem; font-weight: 600;
+    padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--card); }
 
-  /* Nav Tabs */
-  .nav-tabs {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 30px;
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 6px;
-    border: 1px solid var(--border);
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 60px 0 50px;
+    position: relative;
   }
-  .nav-tab {
-    padding: 10px 22px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: var(--text2);
-    background: transparent;
-    border: none;
-    transition: all 0.2s;
+    background: rgba(124,58,237,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(124,58,237,0.25);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
-  .nav-tab:hover { color: var(--text); background: var(--card); }
-  .nav-tab.active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent2), #1d4ed8);
-    box-shadow: 0 0 20px rgba(124,58,237,0.3);
+  .hero h1 {
+    font-size: 2.8rem; font-weight: 800; line-height: 1.2;
+    background: linear-gradient(135deg, #fff, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--text2); font-size: 1.1rem; margin-top: 16px; max-width: 600px; margin-inline: auto;
   }
 
-  /* Tool Grid */
-  .tool-section { display: none; }
-  .tool-section.active { display: block; }
-  .tool-grid {
+  /* ── TOOLS SECTION ── */
+  .tools-section { padding: 20px 0 60px; }
+  .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
   }
   .tool-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 20px;
-    transition: border-color 0.2s;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
   }
-  .tool-card:hover { border-color: var(--accent2); }
-  .tool-card h3 {
-    font-size: 1rem;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--accent);
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    opacity: 0; transition: opacity 0.3s;
   }
+  .tool-card:hover::before { opacity: 1; }
+  .tool-card:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .tool-card .icon { font-size: 2rem; margin-bottom: 12px; }
+  .tool-card h3 { font-size: 1.15rem; margin-bottom: 4px; }
+  .tool-card .desc { color: var(--text2); font-size: 0.85rem; margin-bottom: 16px; }
 
-  /* Form Elements */
-  textarea, input[type="text"], input[type="password"], input[type="search"], select {
+  .tool-input {
     width: 100%;
-    padding: 10px 12px;
-    background: var(--surface);
+    padding: 12px 14px;
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text);
-    font-size: 0.9rem;
-    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
-    resize: vertical;
+    font-size: 0.95rem;
     transition: border-color 0.2s;
+    margin-bottom: 10px;
   }
-  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
-  textarea { min-height: 80px; }
-  textarea.small { min-height: 60px; }
-  textarea.big { min-height: 150px; }
+  .tool-input:focus { outline: none; border-color: var(--accent); }
+  .tool-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
 
-  .input-group { margin-bottom: 12px; }
-  .input-group label {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text2);
-    margin-bottom: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
   .btn {
-    padding: 8px 18px;
+    padding: 10px 22px;
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
@@ -143,1231 +142,746 @@
     background: linear-gradient(135deg, var(--accent2), #1d4ed8);
     color: #fff;
   }
-  .btn-primary:hover { box-shadow: 0 0 20px rgba(124,58,237,0.4); transform: translateY(-1px); }
+  .btn-primary:hover { box-shadow: 0 0 24px rgba(124,58,237,0.4); transform: translateY(-1px); }
   .btn-secondary {
     background: var(--surface);
     color: var(--text);
     border: 1px solid var(--border);
   }
   .btn-secondary:hover { border-color: var(--text2); }
-  .btn-danger {
-    background: var(--danger);
-    color: #fff;
-  }
-  .btn-danger:hover { opacity: 0.9; }
-  .btn-success {
-    background: var(--success);
-    color: #000;
-  }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
 
-  .output-box {
-    margin-top: 10px;
-    padding: 12px;
+  .tool-output {
+    margin-top: 12px;
+    padding: 14px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     font-family: 'Cascadia Code', 'Fira Code', monospace;
-    font-size: 0.85rem;
-    min-height: 30px;
-    word-break: break-all;
-    white-space: pre-wrap;
-    max-height: 300px;
+    font-size: 0.82rem;
+    min-height: 40px;
+    max-height: 350px;
     overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 1.6;
   }
-  .output-box.empty { color: var(--text2); font-style: italic; }
-  .output-box.error { color: var(--danger); border-color: var(--danger); }
-  .output-box.success { color: var(--success); border-color: var(--success); }
+  .tool-output:empty::before { content: 'Results appear here'; color: var(--text2); font-style: italic; }
+  .tool-output .hit { color: var(--success); }
+  .tool-output .miss { color: var(--text2); opacity: 0.6; }
+  .tool-output .loading { color: var(--accent); }
 
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
+  .result-item {
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+    transition: background 0.2s;
   }
-  .badge-valid { background: rgba(0,255,136,0.15); color: var(--success); }
-  .badge-invalid { background: rgba(255,68,102,0.15); color: var(--danger); }
-  .badge-info { background: rgba(0,240,255,0.15); color: var(--accent); }
+  .result-item:hover { background: var(--card); }
+  .result-item .status { font-size: 1rem; }
+  .result-item .platform { font-weight: 600; min-width: 100px; }
+  .result-item .link { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+  .result-item .link:hover { text-decoration: underline; }
+  .result-item.pending { opacity: 0.5; }
+  .result-item.found { border-left: 3px solid var(--success); }
+  .result-item.not-found { border-left: 3px solid var(--text2); }
 
-  .inline-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .gap { margin-top: 8px; }
-  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text2); }
-  .checkbox-row input[type="checkbox"] { accent-color: var(--accent2); width: auto; }
+  .badge-status {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  }
+  .badge-found { background: rgba(0,255,136,0.12); color: var(--success); }
+  .badge-miss { background: rgba(120,120,160,0.12); color: var(--text2); }
 
-  /* Footer */
+  .stats-bar {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px;
+    padding: 10px 14px; background: var(--surface); border-radius: 8px;
+  }
+  .stat-item { font-size: 0.8rem; color: var(--text2); }
+  .stat-item strong { color: var(--text); }
+
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text2); margin: 6px 0; }
+  .checkbox-row input[type=checkbox] { accent-color: var(--accent2); }
+
+  /* ── FEATURES ── */
+  .features {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    text-align: center;
+  }
+  .feature-item { padding: 20px; }
+  .feature-item .fi-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .feature-item h4 { font-size: 0.95rem; margin-bottom: 4px; }
+  .feature-item p { color: var(--text2); font-size: 0.8rem; }
+
+  /* ── PRICING ── */
+  .pricing {
+    padding: 50px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .pricing h2 { font-size: 1.6rem; margin-bottom: 30px; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 700px; margin: 0 auto;
+  }
+  .pricing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: all 0.3s;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent2);
+    box-shadow: 0 0 30px rgba(124,58,237,0.15);
+    position: relative;
+  }
+  .pricing-card.featured::after {
+    content: 'POPULAR'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--accent2); color: #fff; font-size: 0.7rem; font-weight: 700;
+    padding: 3px 14px; border-radius: 10px; letter-spacing: 1px;
+  }
+  .pricing-card .price { font-size: 2.2rem; font-weight: 800; margin: 12px 0; }
+  .pricing-card .price span { font-size: 0.9rem; color: var(--text2); font-weight: 400; }
+  .pricing-card ul { list-style: none; text-align: left; margin: 16px 0; }
+  .pricing-card ul li { padding: 6px 0; font-size: 0.85rem; color: var(--text2); }
+  .pricing-card ul li::before { content: '✓ '; color: var(--success); }
+
+  /* ── FOOTER ── */
   footer {
     text-align: center;
     padding: 30px 0;
     color: var(--text2);
     font-size: 0.8rem;
     border-top: 1px solid var(--border);
-    margin-top: 40px;
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
   @media (max-width: 600px) {
-    .tool-grid { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.5rem; }
-    .nav-tab { padding: 8px 14px; font-size: 0.8rem; }
+    .hero h1 { font-size: 1.8rem; }
+    .container { padding: 0 16px; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .nav-links a { padding: 6px 10px; font-size: 0.8rem; }
   }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>🔧 <span>Retus</span> Tools</h1>
-    <p>Your personal utility toolkit — crypto, text, network & more</p>
-  </header>
-
-  <!-- Navigation -->
-  <div class="nav-tabs" id="navTabs">
-    <button class="nav-tab active" data-section="crypto">🪙 Crypto</button>
-    <button class="nav-tab" data-section="text">📝 Text</button>
-    <button class="nav-tab" data-section="hash">🔐 Hash</button>
-    <button class="nav-tab" data-section="network">🌐 Network</button>
-    <button class="nav-tab" data-section="utility">⚡ Utility</button>
-  </div>
-
-  <!-- ============ CRYPTO ============ -->
-  <div class="tool-section active" id="section-crypto">
-    <div class="tool-grid">
-
-      <!-- BIP39 Seed Phrase Validator -->
-      <div class="tool-card">
-        <h3>🔑 BIP39 Seed Phrase Checker</h3>
-        <div class="input-group">
-          <label>Seed phrase (12/24 words)</label>
-          <textarea id="bip39Input" class="small" placeholder="enter seed phrase here..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="checkBIP39()">Check</button>
-          <button class="btn btn-secondary" onclick="clearOutput('bip39Output')">Clear</button>
-        </div>
-        <div id="bip39Output" class="output-box empty">Result will appear here</div>
-      </div>
-
-      <!-- Wallet Address Validator -->
-      <div class="tool-card">
-        <h3>💳 Wallet Address Validator</h3>
-        <div class="input-group">
-          <label>Address</label>
-          <input type="text" id="walletInput" placeholder="BTC / ETH / BSC / SOL address...">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="checkWallet()">Validate</button>
-          <button class="btn btn-secondary" onclick="clearOutput('walletOutput')">Clear</button>
-        </div>
-        <div id="walletOutput" class="output-box empty">Result will appear here</div>
-      </div>
-
-      <!-- Private Key Converter -->
-      <div class="tool-card">
-        <h3>🔐 Private Key Converter</h3>
-        <div class="input-group">
-          <label>Hex private key</label>
-          <input type="text" id="privkeyInput" placeholder="0x... or hex string">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="convertPrivKey()">Convert</button>
-          <button class="btn btn-secondary" onclick="clearOutput('privkeyOutput')">Clear</button>
-        </div>
-        <div id="privkeyOutput" class="output-box empty">WIF, decimal, bytes info</div>
-      </div>
-
-      <!-- Ethereum Address from Private Key -->
-      <div class="tool-card">
-        <h3>📬 ETH Address from Private Key</h3>
-        <div class="input-group">
-          <label>Private key (hex, with or without 0x)</label>
-          <input type="password" id="ethPrivInput" placeholder="private key hex...">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="deriveEthAddress()">Derive</button>
-          <button class="btn btn-secondary" onclick="clearOutput('ethPrivOutput')">Clear</button>
-        </div>
-        <div id="ethPrivOutput" class="output-box empty">Derived address will appear here</div>
-      </div>
-
+<nav>
+  <div class="container">
+    <div class="logo">🕵️ <span>Retus</span> Suite</div>
+    <div class="nav-links">
+      <a href="#tools">Tools</a>
+      <a href="#pricing">Pricing</a>
     </div>
   </div>
+</nav>
 
-  <!-- ============ TEXT ============ -->
-  <div class="tool-section" id="section-text">
-    <div class="tool-grid">
-
-      <!-- Base64 -->
-      <div class="tool-card">
-        <h3>📦 Base64</h3>
-        <div class="input-group">
-          <label>Input text</label>
-          <textarea id="b64Input" class="small" placeholder="text to encode/decode..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="b64Encode()">Encode →</button>
-          <button class="btn btn-secondary" onclick="b64Decode()">Decode →</button>
-          <button class="btn btn-secondary" onclick="clearOutput('b64Output')">Clear</button>
-        </div>
-        <div id="b64Output" class="output-box empty">Result will appear here</div>
-      </div>
-
-      <!-- Hex Converter -->
-      <div class="tool-card">
-        <h3>🔢 Hex Converter</h3>
-        <div class="input-group">
-          <label>Input text</label>
-          <textarea id="hexInput" class="small" placeholder="text or hex..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="hexEncode()">Text → Hex</button>
-          <button class="btn btn-secondary" onclick="hexDecode()">Hex → Text</button>
-          <button class="btn btn-secondary" onclick="clearOutput('hexOutput')">Clear</button>
-        </div>
-        <div id="hexOutput" class="output-box empty">Result will appear here</div>
-      </div>
-
-      <!-- JSON Formatter -->
-      <div class="tool-card">
-        <h3>📋 JSON Formatter</h3>
-        <div class="input-group">
-          <label>Raw JSON</label>
-          <textarea id="jsonInput" class="small" placeholder='{"key": "value"}'></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="formatJSON()">Format ✓</button>
-          <button class="btn btn-secondary" onclick="minifyJSON()">Minify</button>
-          <button class="btn btn-secondary" onclick="clearOutput('jsonOutput')">Clear</button>
-        </div>
-        <div id="jsonOutput" class="output-box empty">Result will appear here</div>
-      </div>
-
-      <!-- JWT Decoder -->
-      <div class="tool-card">
-        <h3>🔎 JWT Decoder</h3>
-        <div class="input-group">
-          <label>JWT Token</label>
-          <textarea id="jwtInput" class="small" placeholder="eyJhbGciOi..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="decodeJWT()">Decode</button>
-          <button class="btn btn-secondary" onclick="clearOutput('jwtOutput')">Clear</button>
-        </div>
-        <div id="jwtOutput" class="output-box empty">Header + Payload will appear here</div>
-      </div>
-
-      <!-- URL Encode/Decode -->
-      <div class="tool-card">
-        <h3>🔗 URL Codec</h3>
-        <div class="input-group">
-          <label>Input</label>
-          <textarea id="urlInput" class="small" placeholder="URL or text..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="urlEncode()">Encode →</button>
-          <button class="btn btn-secondary" onclick="urlDecode()">Decode →</button>
-          <button class="btn btn-secondary" onclick="clearOutput('urlOutput')">Clear</button>
-        </div>
-        <div id="urlOutput" class="output-box empty">Result will appear here</div>
-      </div>
-
-    </div>
+<div class="hero">
+  <div class="container">
+    <div class="hero-badge">⚡ Open Source Intelligence</div>
+    <h1>Investigate. Identify.<br>Connect the dots.</h1>
+    <p>OSINT toolkit untuk tracking username, cek email breach, dan generate profile links — langsung dari browser, tanpa backend.</p>
   </div>
-
-  <!-- ============ HASH ============ -->
-  <div class="tool-section" id="section-hash">
-    <div class="tool-grid">
-
-      <!-- Hash Generator -->
-      <div class="tool-card">
-        <h3>🔏 Hash Generator</h3>
-        <div class="input-group">
-          <label>Input text</label>
-          <textarea id="hashInput" class="small" placeholder="text to hash..."></textarea>
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="hashUpper" onchange="generateHash()">
-          <label for="hashUpper">Uppercase</label>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="generateHash()">Generate All</button>
-          <button class="btn btn-secondary" onclick="clearOutput('hashOutput')">Clear</button>
-        </div>
-        <div id="hashOutput" class="output-box empty">Hashes will appear here</div>
-      </div>
-
-      <!-- SHA256 Checker (verify hash matches) -->
-      <div class="tool-card">
-        <h3>✅ Hash Verifier</h3>
-        <div class="input-group">
-          <label>Original text</label>
-          <textarea id="hashVrfyInput" class="small" placeholder="original text..."></textarea>
-        </div>
-        <div class="input-group">
-          <label>Hash to compare</label>
-          <input type="text" id="hashVrfyHash" placeholder="hash value...">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="verifyHash()">Verify</button>
-          <button class="btn btn-secondary" onclick="clearOutput('hashVrfyOutput')">Clear</button>
-        </div>
-        <div id="hashVrfyOutput" class="output-box empty">SHA256 hash & verification</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ============ NETWORK ============ -->
-  <div class="tool-section" id="section-network">
-    <div class="tool-grid">
-
-      <!-- IP Info -->
-      <div class="tool-card">
-        <h3>🌍 My IP Info</h3>
-        <p style="font-size:0.85rem;color:var(--text2);margin-bottom:10px;">Check your current IP and geolocation data.</p>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="checkMyIP()">Check My IP</button>
-          <button class="btn btn-secondary" onclick="clearOutput('ipOutput')">Clear</button>
-        </div>
-        <div id="ipOutput" class="output-box empty">Click to fetch your IP info</div>
-      </div>
-
-      <!-- User Agent Parser -->
-      <div class="tool-card">
-        <h3>🖥️ UA Parser</h3>
-        <div class="input-group">
-          <label>User Agent string</label>
-          <textarea id="uaInput" class="small" placeholder="Mozilla/5.0..."><?php if(isset($_SERVER['HTTP_USER_AGENT'])) echo htmlspecialchars($_SERVER['HTTP_USER_AGENT']); else echo navigator.userAgent;?></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="parseUA()">Parse</button>
-          <button class="btn btn-secondary" onclick="clearOutput('uaOutput')">Clear</button>
-        </div>
-        <div id="uaOutput" class="output-box empty">Parsed UA info</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ============ UTILITY ============ -->
-  <div class="tool-section" id="section-utility">
-    <div class="tool-grid">
-
-      <!-- Password Generator -->
-      <div class="tool-card">
-        <h3>🔑 Strong Password Generator</h3>
-        <div class="input-group">
-          <label>Length</label>
-          <input type="number" id="pwLength" value="24" min="8" max="128" style="width:80px;">
-        </div>
-        <div class="checkbox-row">
-          <input type="checkbox" id="pwUpper" checked><label for="pwUpper">A-Z</label>
-          <input type="checkbox" id="pwLower" checked><label for="pwLower">a-z</label>
-          <input type="checkbox" id="pwDigits" checked><label for="pwDigits">0-9</label>
-          <input type="checkbox" id="pwSymbols" checked><label for="pwSymbols">!@#$%</label>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="genPassword()">Generate</button>
-          <button class="btn btn-secondary" onclick="copyToClipboard('pwOutput')">Copy</button>
-          <button class="btn btn-secondary" onclick="clearOutput('pwOutput')">Clear</button>
-        </div>
-        <div id="pwOutput" class="output-box empty">Generated password will appear here</div>
-      </div>
-
-      <!-- UUID Generator -->
-      <div class="tool-card">
-        <h3>🆔 UUID / ULID Generator</h3>
-        <div class="input-group">
-          <label>Quantity</label>
-          <input type="number" id="uuidCount" value="1" min="1" max="50" style="width:80px;">
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="genUUID()">UUID v4</button>
-          <button class="btn btn-secondary" onclick="genULID()">ULID</button>
-          <button class="btn btn-secondary" onclick="clearOutput('uuidOutput')">Clear</button>
-        </div>
-        <div id="uuidOutput" class="output-box empty">Generated IDs will appear here</div>
-      </div>
-
-      <!-- Unix Timestamp -->
-      <div class="tool-card">
-        <h3>⏰ Timestamp Converter</h3>
-        <div class="input-group">
-          <label>Unix timestamp (seconds)</label>
-          <input type="text" id="tsInput" placeholder="e.g. 1748736000">
-        </div>
-        <div id="tsNow" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;">Now: <span id="tsNowValue"></span></div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="convertTimestamp()">Convert</button>
-          <button class="btn btn-secondary" onclick="fillCurrentTS()">Use Current</button>
-          <button class="btn btn-secondary" onclick="clearOutput('tsOutput')">Clear</button>
-        </div>
-        <div id="tsOutput" class="output-box empty">Human-readable date</div>
-      </div>
-
-      <!-- Case Converter -->
-      <div class="tool-card">
-        <h3>🔤 Case Converter</h3>
-        <div class="input-group">
-          <label>Input text</label>
-          <textarea id="caseInput" class="small" placeholder="text to convert..."></textarea>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="toUpper()">UPPER</button>
-          <button class="btn btn-secondary" onclick="toLower()">lower</button>
-          <button class="btn btn-secondary" onclick="toTitle()">Title Case</button>
-          <button class="btn btn-secondary" onclick="toCamel()">camelCase</button>
-          <button class="btn btn-secondary" onclick="toSnake()">snake_case</button>
-        </div>
-        <div id="caseOutput" class="output-box empty">Converted text</div>
-      </div>
-
-    </div>
-  </div>
-
-  <footer>
-    retus.biz.id — tools for the trade
-  </footer>
 </div>
 
+<div class="tools-section" id="tools">
+  <div class="container">
+    <div class="tools-grid">
+
+      <!-- ═══ TOOL 1: Username Checker ═══ -->
+      <div class="tool-card">
+        <div class="icon">🔍</div>
+        <h3>Username Checker</h3>
+        <div class="desc">Cek username di 50+ platform sosial media & service</div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="ucRealtime" checked>
+          <label for="ucRealtime">Real-time check (CORS-enabled platforms)</label>
+        </div>
+        <input type="text" class="tool-input" id="ucInput" placeholder="Enter username..." onkeydown="if(event.key==='Enter') checkUsername()">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="checkUsername()">🔍 Check</button>
+          <button class="btn btn-secondary" onclick="clearUC()">Clear</button>
+        </div>
+        <div id="ucStats" class="stats-bar" style="display:none;"></div>
+        <div id="ucOutput" class="tool-output"></div>
+      </div>
+
+      <!-- ═══ TOOL 2: Email Breach Checker ═══ -->
+      <div class="tool-card">
+        <div class="icon">📧</div>
+        <h3>Email Breach Checker</h3>
+        <div class="desc">Cek apakah email pernah bocor di data breach publik</div>
+        <input type="email" class="tool-input" id="ebInput" placeholder="Enter email..." onkeydown="if(event.key==='Enter') checkEmailBreach()">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="checkEmailBreach()">🔎 Check</button>
+          <button class="btn btn-secondary" onclick="clearEB()">Clear</button>
+        </div>
+        <div id="ebOutput" class="tool-output"></div>
+      </div>
+
+      <!-- ═══ TOOL 3: Profile Link Generator ═══ -->
+      <div class="tool-card">
+        <div class="icon">🔗</div>
+        <h3>Profile Link Generator</h3>
+        <div class="desc">Generate direct profile links dari username untuk 80+ platform</div>
+        <input type="text" class="tool-input" id="plInput" placeholder="Enter username..." onkeydown="if(event.key==='Enter') genProfileLinks()">
+        <div class="checkbox-row">
+          <input type="checkbox" id="plCompact">
+          <label for="plCompact">Compact mode</label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="genProfileLinks()">🔗 Generate</button>
+          <button class="btn btn-secondary" onclick="clearPL()">Clear</button>
+        </div>
+        <div id="plOutput" class="tool-output"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="container">
+  <div class="features">
+    <div class="feature-item">
+      <div class="fi-icon">🔒</div>
+      <h4>Client-Side Only</h4>
+      <p>Semua proses di browser. Data lo gak dikirim ke server mana pun.</p>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon">⚡</div>
+      <h4>Real-Time</h4>
+      <p>Cek langsung ketersediaan username di platform publik.</p>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon">🌐</div>
+      <h4>80+ Platforms</h4>
+      <p>Generate link profil dari sosial media, forum, dan service.</p>
+    </div>
+    <div class="feature-item">
+      <div class="fi-icon">🆓</div>
+      <h4>Free Forever</h4>
+      <p>Gak ada bayar. Gak ada register. Langsung pake.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="pricing" id="pricing">
+  <div class="container">
+    <h2>Choose Your Plan</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>Starter</h4>
+        <div class="price">$0<span>/mo</span></div>
+        <ul>
+          <li>Username Checker</li>
+          <li>Email Breach Checker</li>
+          <li>Profile Link Generator</li>
+          <li>10 queries/min</li>
+        </ul>
+        <button class="btn btn-secondary" style="width:100%;" onclick="goToTools()">Get Started</button>
+      </div>
+      <div class="pricing-card featured">
+        <h4>Pro</h4>
+        <div class="price">$19<span>/mo</span></div>
+        <ul>
+          <li>All Starter features</li>
+          <li>Unlimited queries</li>
+          <li>Priority platform updates</li>
+          <li>API access (coming soon)</li>
+          <li>Bulk username check</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;" onclick="goToTools()">Coming Soon →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    🕵️ Retus Suite — retus.biz.id &middot; OSINT for everyone
+  </div>
+</footer>
+
 <script>
-// ======================== BIP39 ========================
-const BIP39_WORDS = [
-  "abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse",
-  "access","accident","account","accuse","achieve","acid","acoustic","acquire","across","act",
-  "action","actor","actress","actual","adapt","add","addict","address","adjust","admit",
-  "adult","advance","advice","aerobic","affair","afford","afraid","again","age","agent",
-  "agree","ahead","aim","air","airport","aisle","alarm","album","alcohol","alert",
-  "alien","all","alley","allow","almost","alone","alpha","already","also","alter",
-  "always","amateur","amazing","among","amount","amused","analyst","anchor","ancient","anger",
-  "angle","angry","animal","ankle","announce","annual","another","answer","antenna","antique",
-  "anxiety","any","apart","apology","appear","apple","approve","april","arch","arctic",
-  "area","arena","argue","arm","armed","armor","army","around","arrange","arrest",
-  "arrive","arrow","art","artifact","artist","artwork","ask","aspect","assault","asset",
-  "assist","assume","asthma","athlete","atom","attack","attend","attitude","attract","auction",
-  "audit","august","aunt","author","auto","autumn","average","avocado","avoid","awake",
-  "aware","away","awesome","awful","awkward","axis","baby","bachelor","bacon","badge",
-  "bag","balance","balcony","ball","bamboo","banana","banner","bar","barely","bargain",
-  "barrel","base","basic","basket","battle","beach","bean","beauty","because","become",
-  "beef","before","begin","behave","behind","believe","below","belt","bench","benefit",
-  "best","betray","better","between","beyond","bicycle","bid","bike","bind","biology",
-  "bird","birth","bitter","black","blade","blame","blanket","blast","bleak","bless",
-  "blind","blood","blossom","blouse","blue","blur","blush","board","boat","body",
-  "boil","bomb","bone","bonus","book","boost","border","boring","borrow","boss",
-  "bottom","bounce","box","boy","bracket","brain","brand","brass","brave","bread",
-  "breeze","brick","bridge","brief","bright","bring","brisk","broccoli","broken","bronze",
-  "broom","brother","brown","brush","bubble","buddy","budget","buffalo","build","bulb",
-  "bulk","bullet","bundle","bunker","burden","burger","burst","bus","business","busy",
-  "butter","buyer","buzz","cabbage","cabin","cable","cactus","cage","cake","call",
-  "calm","camera","camp","can","canal","cancel","candy","cannon","canoe","canvas",
-  "canyon","capable","capital","captain","car","carbon","card","cargo","carpet","carry",
-  "cart","case","cash","casino","castle","casual","cat","catalog","catch","category",
-  "cattle","caught","cause","caution","cave","ceiling","celery","cement","census","century",
-  "cereal","certain","chair","chalk","champion","change","chaos","chapter","charge","chase",
-  "chat","cheap","check","cheese","chef","cherry","chest","chicken","chief","child",
-  "chimney","choice","choose","chronic","chuckle","chunk","churn","cigar","cinnamon","circle",
-  "citizen","city","civil","claim","clap","clarify","claw","clay","clean","clerk",
-  "clever","click","client","cliff","climb","clinic","clip","clock","clog","close",
-  "cloth","cloud","clown","club","clump","cluster","clutch","coach","coast","coconut",
-  "code","coffee","coil","coin","collect","color","column","combine","come","comfort",
-  "comic","common","company","concert","conduct","confirm","congress","connect","consider","control",
-  "convince","cook","cool","copper","copy","coral","core","corn","correct","cost",
-  "cotton","couch","country","couple","course","cousin","cover","coyote","crack","cradle",
-  "craft","cram","crane","crash","crater","crawl","crazy","cream","credit","creek",
-  "crew","cricket","crime","crisp","critic","crop","cross","crouch","crowd","crucial",
-  "cruel","cruise","crumble","crunch","crush","cry","crystal","cube","culture","cup",
-  "cupboard","curious","current","curtain","curve","cushion","custom","cute","cycle","dad",
-  "damage","damp","dance","danger","daring","dash","daughter","dawn","day","deal",
-  "debate","debris","decade","december","decide","decline","decorate","decrease","deer","defense",
-  "define","defy","degree","delay","deliver","demand","demise","denial","dentist","deny",
-  "depart","depend","deposit","depth","deputy","derive","describe","desert","design","desk",
-  "despair","destroy","detail","detect","develop","device","devote","diagram","dial","diamond",
-  "diary","dice","diesel","diet","differ","digital","dignity","dilemma","dinner","dinosaur",
-  "direct","dirt","disagree","discover","disease","dish","dismiss","disorder","display","distance",
-  "divert","divide","divorce","dizzy","doctor","document","dog","doll","dolphin","domain",
-  "donate","donkey","donor","door","dose","double","dove","draft","dragon","drama",
-  "drastic","draw","dream","dress","drift","drill","drink","drip","drive","drop",
-  "drum","dry","duck","dumb","dune","during","dust","dutch","duty","dwarf",
-  "dynamic","eager","eagle","early","earn","earth","easily","east","easy","echo",
-  "ecology","economy","edge","edit","educate","effort","egg","eight","either","elbow",
-  "elder","electric","elegant","element","elephant","elevator","elite","else","embark","embody",
-  "embrace","emerge","emotion","employ","empower","empty","enable","enact","endless","endorse",
-  "enemy","energy","enforce","engage","engine","enhance","enjoy","enlist","enough","enrich",
-  "enroll","ensure","enter","entire","entry","envelope","episode","equal","equip","era",
-  "erase","erode","erosion","error","erupt","escape","essay","essence","estate","eternal",
-  "ethics","evidence","evil","evoke","evolve","exact","example","excess","exchange","excite",
-  "exclude","excuse","execute","exercise","exhaust","exhibit","exile","exist","exit","expire",
-  "explain","expose","express","extend","extra","eye","eyebrow","fabric","face","faculty",
-  "fade","faint","faith","fall","false","fame","family","famous","fan","fancy",
-  "fantasy","farm","fashion","fat","fatal","father","fatigue","fault","favorite","feature",
-  "february","federal","fee","feed","feel","female","fence","festival","fetch","fever",
-  "few","fiber","fiction","field","figure","file","film","filter","final","find",
-  "fine","finger","finish","fire","firm","first","fiscal","fish","fit","fitness",
-  "fix","flag","flame","flash","flat","flavor","flee","flight","flip","float",
-  "flock","floor","flower","fluid","flush","fly","foam","focus","fog","foil",
-  "fold","follow","food","foot","force","foreign","forest","forget","fork","fortune",
-  "forum","forward","fossil","foster","found","fox","fragile","frame","frequent","fresh",
-  "friend","fringe","frog","front","frost","frown","frozen","fruit","fuel","fun",
-  "funny","furnace","fury","future","gadget","gain","galaxy","gallery","game","gap",
-  "garage","garbage","garden","garlic","garment","gas","gasp","gate","gather","gauge",
-  "gaze","general","genius","genre","gentle","genuine","gesture","ghost","giant","gift",
-  "giggle","ginger","giraffe","girl","give","glad","glance","glare","glass","glide",
-  "glimpse","globe","gloom","glory","glove","glow","glue","goat","goddess","gold",
-  "good","goose","gorilla","gospel","gossip","govern","gown","grab","grace","grain",
-  "grant","grape","grass","gravity","great","green","grid","grief","grit","grocery",
-  "group","grow","grunt","guard","guess","guide","guilt","guitar","gun","gym",
-  "habit","hair","half","hammer","hamster","hand","happy","harbor","hard","harsh",
-  "harvest","hat","have","hawk","hazard","head","health","heart","heavy","hedgehog",
-  "height","hello","helmet","help","hen","hero","hidden","high","hill","hint",
-  "hip","hire","history","hobby","hockey","hold","hole","holiday","hollow","home",
-  "honey","hood","hope","horn","horror","horse","hospital","host","hotel","hour",
-  "hover","hub","huge","human","humble","humor","hundred","hungry","hunt","hurdle",
-  "hurry","hurt","husband","hybrid","ice","icon","idea","identify","idle","ignore",
-  "ill","illegal","illness","image","imitate","immense","immune","impact","impose","improve",
-  "impulse","inch","include","income","increase","index","indicate","indoor","industry","infant",
-  "inflict","inform","inhale","inherit","initial","inject","injury","inmate","inner","innocent",
-  "input","inquiry","insane","insect","inside","inspire","install","intact","interest","into",
-  "invest","invite","involve","iron","island","isolate","issue","item","ivory","jacket",
-  "jaguar","jar","jazz","jealous","jeans","jelly","jewel","job","join","joke",
-  "journey","joy","judge","juice","jump","jungle","junior","junk","just","kangaroo",
-  "keen","keep","ketchup","key","kick","kid","kidney","kind","kingdom","kiss",
-  "kit","kitchen","kite","kitten","kiwi","knee","knife","knock","know","lab",
-  "label","labor","ladder","lady","lake","lamp","language","laptop","large","later",
-  "latin","laugh","laundry","lava","lawyer","lay","layer","lazy","leader","leaf",
-  "learn","leave","lecture","left","leg","legal","legend","leisure","lemon","lend",
-  "length","lens","leopard","lesson","letter","level","liar","liberty","library","license",
-  "life","lift","light","like","limb","limit","link","lion","liquid","list",
-  "little","live","lizard","load","loan","lobster","local","lock","logic","lonely",
-  "long","loop","lottery","loud","lounge","love","loyal","lucky","luggage","lumber",
-  "lunar","lunch","luxury","lyrics","machine","mad","magic","magnet","maid","mail",
-  "main","major","make","mammal","man","manage","mandate","mango","mansion","manual",
-  "maple","marble","march","margin","marine","market","marriage","mask","mass","master",
-  "match","material","math","matrix","matter","maximum","maze","meadow","mean","measure",
-  "meat","mechanic","medal","media","melody","melt","member","memory","mention","menu",
-  "mercy","merge","merit","merry","mesh","message","metal","method","middle","midnight",
-  "milk","million","mimic","mind","minimum","minor","minute","miracle","mirror","misery",
-  "miss","mistake","mix","mixed","mixture","mobile","model","modify","mom","moment",
-  "monitor","monkey","monster","month","moon","moral","more","morning","mosquito","mother",
-  "motion","motor","mountain","mouse","move","movie","much","muffin","mule","multiply",
-  "muscle","museum","mushroom","music","must","mutual","myself","mystery","myth","naive",
-  "name","napkin","narrow","nasty","nation","nature","near","neck","need","negative",
-  "neglect","neither","nephew","nerve","nest","net","network","neutral","never","news",
-  "next","nice","night","noble","noise","nominee","noodle","normal","north","nose",
-  "notable","note","nothing","notice","novel","now","nuclear","number","nurse","nut",
-  "oak","obey","object","oblige","obscure","observe","obtain","obvious","occur","ocean",
-  "october","odor","off","offer","office","often","oil","okay","old","olive",
-  "olympic","omit","once","one","onion","online","only","open","opera","opinion",
-  "oppose","option","orange","orbit","orchard","order","ordinary","organ","orient","original",
-  "orphan","ostrich","other","outdoor","outer","output","outside","oval","oven","over",
-  "own","owner","oxygen","oyster","ozone","pact","paddle","page","pair","palace",
-  "palm","panda","panel","panic","panther","paper","parade","parent","park","parrot",
-  "party","pass","patch","path","patient","patrol","pattern","pause","pave","payment",
-  "peace","peanut","pear","peasant","pelican","pen","penalty","pencil","people","pepper",
-  "perfect","permit","person","pet","phone","photo","phrase","physical","piano","picnic",
-  "picture","piece","pig","pigeon","pill","pilot","pink","pioneer","pipe","pistol",
-  "pitch","pizza","place","planet","plastic","plate","play","player","pleasure","plenty",
-  "plot","plug","plunge","poem","poet","point","polar","pole","police","pond",
-  "pony","pool","popular","portion","position","possible","post","potato","pottery","poverty",
-  "powder","power","practice","praise","predict","prefer","prepare","present","pretty","prevent",
-  "price","pride","primary","print","priority","prison","private","prize","problem","process",
-  "produce","profit","program","project","promote","proof","property","prosper","protect","proud",
-  "provide","public","pudding","pull","pulp","pulse","pumpkin","punch","pupil","puppy",
-  "purchase","purity","purpose","purse","push","put","puzzle","pyramid","quality","quantum",
-  "quarter","question","quick","quit","quiz","quote","rabbit","raccoon","race","rack",
-  "radar","radio","rail","rain","raise","rally","ramp","ranch","random","range",
-  "rapid","rare","rate","rather","raven","raw","razor","ready","real","reason",
-  "rebel","rebuild","recall","receive","recipe","record","recycle","reduce","reflect","reform",
-  "refuse","region","regret","regular","reject","relax","release","relief","rely","remain",
-  "remember","remind","remove","render","renew","rent","reopen","repair","repeat","replace",
-  "report","require","rescue","resemble","resist","resource","response","result","retire","retreat",
-  "return","reunion","reveal","review","reward","rhythm","rib","ribbon","rice","rich",
-  "ride","ridge","rifle","right","rigid","ring","riot","ripple","risk","ritual",
-  "rival","river","road","roast","robot","robust","rocket","romance","roof","rookie",
-  "room","rose","rotate","rough","round","route","royal","rubber","rude","rug",
-  "rule","run","runway","rural","sad","saddle","sadness","safe","sail","salad",
-  "salmon","salon","salt","salute","same","sample","sand","satisfy","satoshi","sauce",
-  "sausage","save","say","scale","scan","scare","scatter","scene","scheme","school",
-  "science","scissors","scorpion","scout","scrap","screen","script","scrub","sea","search",
-  "season","seat","second","secret","section","security","seed","seek","segment","select",
-  "sell","seminar","senior","sense","sentence","series","service","session","settle","setup",
-  "seven","shadow","shaft","shallow","share","shed","shell","sheriff","shield","shift",
-  "shine","ship","shiver","shock","shoe","shoot","shop","short","shoulder","shove",
-  "shrimp","shrug","shuffle","shy","sibling","sick","side","siege","sight","sign",
-  "silent","silk","silly","silver","similar","simple","since","sing","siren","sister",
-  "situate","six","size","skate","sketch","ski","skill","skin","skirt","skull",
-  "slab","slam","sleep","slender","slice","slide","slight","slim","slogan","slot",
-  "slow","slush","small","smart","smile","smoke","smooth","snack","snake","snap",
-  "sniff","snow","soap","soccer","social","sock","soda","soft","solar","soldier",
-  "solid","solution","solve","someone","song","soon","sorry","sort","soul","sound",
-  "soup","source","south","space","spare","spatial","spawn","speak","special","speed",
-  "spell","spend","sphere","spice","spider","spike","spin","spirit","split","spoil",
-  "sponsor","spoon","sport","spot","spray","spread","spring","spy","square","squeeze",
-  "squirrel","stable","stadium","staff","stage","stairs","stamp","stand","start","state",
-  "stay","steak","steel","stem","step","stereo","stick","still","sting","stock",
-  "stomach","stone","stool","story","stove","strategy","street","strike","strong","struggle",
-  "student","stuff","stumble","style","subject","submit","subway","success","such","sudden",
-  "suffer","sugar","suggest","suit","sun","sunny","sunset","super","supply","supreme",
-  "sure","surface","surge","surprise","surround","survey","suspect","sustain","swallow","swamp",
-  "swap","swarm","swear","sweet","swift","swim","swing","switch","sword","symbol",
-  "symptom","syrup","system","table","tackle","tag","tail","talent","talk","tank",
-  "tape","target","task","taste","tattoo","taxi","teach","team","tell","ten",
-  "tenant","tennis","tent","term","test","text","thank","that","theme","then",
-  "theory","there","they","thing","this","thought","three","thrive","throw","thumb",
-  "thunder","ticket","tide","tiger","tilt","timber","time","tiny","tip","tired",
-  "tissue","title","toast","tobacco","today","toddler","toe","together","toilet","token",
-  "tomato","tomorrow","tone","tongue","tonight","tool","tooth","top","topic","topple",
-  "torch","tornado","tortoise","toss","total","tourist","toward","tower","town","toy",
-  "track","trade","traffic","tragic","train","transfer","trap","trash","travel","tray",
-  "treat","tree","trend","trial","tribe","trick","trigger","trim","trip","trophy",
-  "trouble","truck","true","truly","trumpet","trust","truth","try","tube","tuition",
-  "tumble","tuna","tunnel","turkey","turn","turtle","twelve","twenty","twice","twin",
-  "twist","two","type","typical","ugly","umbrella","unable","unaware","uncle","uncover",
-  "under","undo","unfair","unfold","unhappy","uniform","unique","unit","universe","unknown",
-  "unlock","until","unusual","unveil","update","upgrade","uphold","upon","upper","upset",
-  "urban","urge","usage","use","used","useful","useless","usual","utility","vacant",
-  "vacuum","vague","valid","valley","valve","van","vanish","vapor","various","vast",
-  "vault","vehicle","velvet","vendor","venture","venue","verb","verify","version","very",
-  "vessel","veteran","viable","vibrant","vicious","victory","video","view","village","vintage",
-  "violin","virtual","virus","visa","visit","visual","vital","vivid","vocal","voice",
-  "void","volcano","volume","vote","voyage","wage","wagon","wait","walk","wall",
-  "walnut","want","warfare","warm","warrior","wash","wasp","waste","water","wave",
-  "way","wealth","weapon","wear","weasel","weather","web","wedding","weekend","weird",
-  "welcome","west","wet","whale","what","wheat","wheel","when","where","whip",
-  "whisper","wide","width","wife","wild","will","win","window","wine","wing",
-  "wink","winner","winter","wire","wisdom","wise","wish","witness","wolf","woman",
-  "wonder","wood","wool","word","work","world","worry","worth","wrap","wreck",
-  "wrestle","wrist","write","wrong","yard","year","yellow","you","young","youth",
-  "zebra","zero","zone","zoo"
+// ═══════════════════════════════════════════════
+// PLATFORM LIST — 50+ platforms for username checking
+// ═══════════════════════════════════════════════
+
+const PLATFORMS = [
+  // Major Social
+  { name: 'Instagram', url: 'https://instagram.com/{u}', cat: 'Social', checkUrl: 'https://www.instagram.com/{u}/', checkType: 'image' },
+  { name: 'X / Twitter', url: 'https://x.com/{u}', cat: 'Social', checkUrl: 'https://x.com/{u}', checkType: 'fetch' },
+  { name: 'Facebook', url: 'https://facebook.com/{u}', cat: 'Social', checkUrl: 'https://www.facebook.com/{u}', checkType: 'fetch' },
+  { name: 'TikTok', url: 'https://tiktok.com/@{u}', cat: 'Social', checkUrl: 'https://www.tiktok.com/@{u}', checkType: 'fetch' },
+  { name: 'LinkedIn', url: 'https://linkedin.com/in/{u}', cat: 'Social', checkUrl: 'https://www.linkedin.com/in/{u}', checkType: 'fetch' },
+  { name: 'Snapchat', url: 'https://snapchat.com/add/{u}', cat: 'Social', checkUrl: 'https://www.snapchat.com/add/{u}', checkType: 'fetch' },
+  { name: 'Pinterest', url: 'https://pinterest.com/{u}', cat: 'Social' },
+  { name: 'Reddit', url: 'https://reddit.com/u/{u}', cat: 'Social', checkUrl: 'https://www.reddit.com/user/{u}/about.json', checkType: 'json' },
+  { name: 'Tumblr', url: 'https://{u}.tumblr.com', cat: 'Social' },
+  { name: 'OnlyFans', url: 'https://onlyfans.com/{u}', cat: 'Social' },
+  { name: 'Telegram', url: 'https://t.me/{u}', cat: 'Social', checkUrl: 'https://t.me/{u}', checkType: 'fetch' },
+  { name: 'WhatsApp', url: 'https://wa.me/{u}', cat: 'Social' },
+  { name: 'Discord', url: 'https://discord.com/users/{u}', cat: 'Social' },
+  { name: 'Threads', url: 'https://threads.net/@{u}', cat: 'Social' },
+
+  // Coding & Dev
+  { name: 'GitHub', url: 'https://github.com/{u}', cat: 'Dev', checkUrl: 'https://api.github.com/users/{u}', checkType: 'json' },
+  { name: 'GitLab', url: 'https://gitlab.com/{u}', cat: 'Dev' },
+  { name: 'Bitbucket', url: 'https://bitbucket.org/{u}', cat: 'Dev' },
+  { name: 'Stack Overflow', url: 'https://stackoverflow.com/users/{u}', cat: 'Dev' },
+  { name: 'Medium', url: 'https://medium.com/@{u}', cat: 'Dev' },
+  { name: 'Dev.to', url: 'https://dev.to/{u}', cat: 'Dev' },
+  { name: 'HackerRank', url: 'https://hackerrank.com/{u}', cat: 'Dev' },
+  { name: 'CodePen', url: 'https://codepen.io/{u}', cat: 'Dev' },
+  { name: 'Replit', url: 'https://replit.com/@{u}', cat: 'Dev' },
+  { name: 'SourceForge', url: 'https://sourceforge.net/u/{u}', cat: 'Dev' },
+  { name: 'NPM', url: 'https://npmjs.com/~{u}', cat: 'Dev' },
+  { name: 'PyPI', url: 'https://pypi.org/user/{u}', cat: 'Dev' },
+  { name: 'Docker Hub', url: 'https://hub.docker.com/u/{u}', cat: 'Dev' },
+  { name: 'HackerNews', url: 'https://news.ycombinator.com/user?id={u}', cat: 'Dev', checkUrl: 'https://hacker-news.firebaseio.com/v0/user/{u}.json', checkType: 'json' },
+
+  // Media
+  { name: 'YouTube', url: 'https://youtube.com/@{u}', cat: 'Media', checkUrl: 'https://www.youtube.com/@{u}', checkType: 'fetch' },
+  { name: 'Twitch', url: 'https://twitch.tv/{u}', cat: 'Media' },
+  { name: 'Spotify', url: 'https://open.spotify.com/user/{u}', cat: 'Media' },
+  { name: 'SoundCloud', url: 'https://soundcloud.com/{u}', cat: 'Media' },
+  { name: 'Vimeo', url: 'https://vimeo.com/{u}', cat: 'Media' },
+  { name: 'Dailymotion', url: 'https://dailymotion.com/{u}', cat: 'Media' },
+  { name: 'Bandcamp', url: 'https://bandcamp.com/{u}', cat: 'Media' },
+  { name: 'Mixcloud', url: 'https://mixcloud.com/{u}', cat: 'Media' },
+  { name: 'Flickr', url: 'https://flickr.com/people/{u}', cat: 'Media' },
+  { name: 'Behance', url: 'https://behance.net/{u}', cat: 'Media' },
+  { name: 'Dribbble', url: 'https://dribbble.com/{u}', cat: 'Media' },
+
+  // Gaming
+  { name: 'Steam', url: 'https://steamcommunity.com/id/{u}', cat: 'Gaming' },
+  { name: 'Xbox Gamertag', url: 'https://xboxgamertag.com/search/{u}', cat: 'Gaming' },
+  { name: 'PlayStation', url: 'https://psnprofiles.com/{u}', cat: 'Gaming' },
+  { name: 'Chess.com', url: 'https://chess.com/member/{u}', cat: 'Gaming' },
+  { name: 'Roblox', url: 'https://roblox.com/user.aspx?username={u}', cat: 'Gaming' },
+  { name: 'Minecraft', url: 'https://namemc.com/profile/{u}', cat: 'Gaming' },
+  { name: 'Epic Games', url: 'https://epicgames.com/id/{u}', cat: 'Gaming' },
+  { name: 'Battle.net', url: 'https://battle.net/{u}', cat: 'Gaming' },
+
+  // Crypto & Finance
+  { name: 'Etherscan', url: 'https://etherscan.io/address/{u}', cat: 'Crypto' },
+  { name: 'Blockchain', url: 'https://blockchain.info/address/{u}', cat: 'Crypto' },
+  { name: 'CoinGecko', url: 'https://coingecko.com/en/user/{u}', cat: 'Crypto' },
+
+  // Forums & Communities
+  { name: 'Quora', url: 'https://quora.com/profile/{u}', cat: 'Community' },
+  { name: 'Product Hunt', url: 'https://producthunt.com/@{u}', cat: 'Community' },
+  { name: 'Figma', url: 'https://figma.com/@{u}', cat: 'Community' },
+  { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/User:{u}', cat: 'Community' },
+  { name: 'Keybase', url: 'https://keybase.io/{u}', cat: 'Community' },
+  { name: 'Archive.org', url: 'https://archive.org/details/@{u}', cat: 'Community' },
+  { name: 'Imgur', url: 'https://imgur.com/user/{u}', cat: 'Community' },
+  { name: 'Patreon', url: 'https://patreon.com/{u}', cat: 'Community' },
+  { name: 'Buy Me a Coffee', url: 'https://buymeacoffee.com/{u}', cat: 'Community' },
+  { name: 'Gravatar', url: 'https://gravatar.com/{u}', cat: 'Community' },
+
+  // Professional
+  { name: 'Upwork', url: 'https://upwork.com/freelancers/~{u}', cat: 'Professional' },
+  { name: 'Fiverr', url: 'https://fiverr.com/{u}', cat: 'Professional' },
+  { name: 'Freelancer', url: 'https://freelancer.com/u/{u}', cat: 'Professional' },
+
+  // Messaging
+  { name: 'Signal', url: 'https://signal.me/#p/{u}', cat: 'Messaging' },
+  { name: 'WeChat', url: 'https://weixin.qq.com/{u}', cat: 'Messaging' },
+  { name: 'Line', url: 'https://line.me/{u}', cat: 'Messaging' },
+  { name: 'Viber', url: 'https://viber.com/{u}', cat: 'Messaging' },
+  { name: 'Telegram Group', url: 'https://t.me/{u}', cat: 'Messaging' },
+
+  // Others
+  { name: 'Linktree', url: 'https://linktr.ee/{u}', cat: 'Other' },
+  { name: 'About.me', url: 'https://about.me/{u}', cat: 'Other' },
+  { name: 'BitcoinTalk', url: 'https://bitcointalk.org/index.php?action=profile;u={u}', cat: 'Other' },
+  { name: 'Scribd', url: 'https://scribd.com/{u}', cat: 'Other' },
+  { name: 'SlideShare', url: 'https://slideshare.net/{u}', cat: 'Other' },
+  { name: 'Issuu', url: 'https://issuu.com/{u}', cat: 'Other' },
+  { name: 'Wakelet', url: 'https://wakelet.com/@{u}', cat: 'Other' },
+  { name: 'Carrd', url: 'https://{u}.carrd.co', cat: 'Other' },
+  { name: 'Mastodon.social', url: 'https://mastodon.social/@{u}', cat: 'Social' },
+  { name: 'Bluesky', url: 'https://bsky.app/profile/{u}', cat: 'Social' },
 ];
-const BIP39_SET = new Set(BIP39_WORDS);
 
-function checkBIP39() {
-  const input = document.getElementById('bip39Input').value.trim().toLowerCase();
-  const out = document.getElementById('bip39Output');
-  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a seed phrase first.'; return; }
+// ═══════════════════════════════════════════════
+// TOOL 1: USERNAME CHECKER
+// ═══════════════════════════════════════════════
 
-  const words = input.split(/\s+/).filter(w => w);
-  const validCounts = [12, 15, 18, 21, 24];
+const cachedResults = {};
 
-  if (!validCounts.includes(words.length)) {
-    out.className = 'output-box error';
-    out.textContent = `❌ Invalid word count: ${words.length}. Valid: 12, 15, 18, 21, or 24 words.`;
-    return;
+async function checkUsername() {
+  const username = document.getElementById('ucInput').value.trim();
+  const realtime = document.getElementById('ucRealtime').checked;
+  const out = document.getElementById('ucOutput');
+  const stats = document.getElementById('ucStats');
+
+  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username first.</span>'; return; }
+
+  const u = username.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username format.</span>'; return; }
+
+  out.innerHTML = '<span class="loading">⏳ Checking ' + PLATFORMS.length + ' platforms...</span>';
+  stats.style.display = 'none';
+
+  // Filter platforms that support real-time check
+  const checkable = PLATFORMS.filter(p => p.checkType && realtime);
+  const linkOnly = realtime ? PLATFORMS.filter(p => !p.checkType) : PLATFORMS;
+
+  let results = [];
+  let found = 0, notFound = 0, errors = 0;
+
+  // Check in batches
+  const batchSize = 8;
+  for (let i = 0; i < checkable.length; i += batchSize) {
+    const batch = checkable.slice(i, i + batchSize);
+    const batchResults = await Promise.allSettled(
+      batch.map(p => checkSinglePlatform(p, u))
+    );
+    batchResults.forEach((r, idx) => {
+      const p = batch[idx];
+      if (r.status === 'fulfilled') {
+        results.push({ ...p, exists: r.value.exists, error: null });
+        if (r.value.exists) found++; else notFound++;
+      } else {
+        results.push({ ...p, exists: false, error: true });
+        errors++;
+      }
+    });
+    // Update progress
+    const done = results.length;
+    const total = checkable.length + linkOnly.length;
+    out.innerHTML = `<span class="loading">⏳ ${done}/${total} platforms checked...</span>`;
   }
 
-  const invalid = words.filter(w => !BIP39_SET.has(w));
-  const unknown = words.filter(w => !BIP39_SET.has(w) && !w.startsWith('0x'));
+  // Add link-only results
+  linkOnly.forEach(p => {
+    results.push({ ...p, exists: null, error: false });
+  });
+
+  // Sort: found first, then pending, then not found
+  results.sort((a, b) => {
+    if (a.exists === true && b.exists !== true) return -1;
+    if (a.exists !== true && b.exists === true) return 1;
+    return 0;
+  });
+
+  // Group by category
+  const cats = {};
+  results.forEach(r => {
+    if (!cats[r.cat]) cats[r.cat] = [];
+    cats[r.cat].push(r);
+  });
 
   let html = '';
-  const valid = invalid.length === 0;
-  if (valid) {
-    html += `<span class="badge badge-valid">✅ VALID BIP39</span> — ${words.length} words, all in BIP39 word list.\n\n`;
-  } else {
-    html += `<span class="badge badge-invalid">❌ INVALID</span> — ${invalid.length} word(s) not in BIP39 list.\n\n`;
-    html += `Unknown words: ${invalid.join(', ')}\n\n`;
+  const totalChecked = found + notFound;
+  const totalPlatforms = PLATFORMS.length;
+
+  html += `<div style="margin-bottom:12px;padding:10px;background:var(--surface);border-radius:8px;">
+    <strong>${u}</strong> — ${found} found · ${notFound} not found · ${errors} errors · ${linkOnly.length} links generated
+  </div>`;
+
+  for (const [cat, items] of Object.entries(cats)) {
+    html += `<div style="margin-bottom:10px;"><strong style="color:var(--text2);font-size:0.75rem;text-transform:uppercase;">${cat}</strong>`;
+    items.forEach(r => {
+      const icon = r.exists === true ? '✅' : r.exists === false ? '⬜' : '🔗';
+      const cls = r.exists === true ? 'found' : r.exists === false ? 'not-found' : '';
+      const badge = r.exists === true ? '<span class="badge badge-found">FOUND</span>' : '';
+      const link = r.url.replace('{u}', u);
+      html += `<div class="result-item ${cls}">
+        <span class="status">${icon}</span>
+        <span class="platform">${r.name}</span>
+        <a class="link" href="${link}" target="_blank" rel="noopener">${link.replace('https://','')}</a>
+        ${badge}
+      </div>`;
+    });
+    html += `</div>`;
   }
 
-  html += `📊 Word count: ${words.length}\n`;
-  html += `📝 First 4 words: ${words.slice(0,4).join(' ')}${words.length > 4 ? '...' : ''}`;
-
-  // Show first/last address if valid
-  if (valid) {
-    html += `\n\n✅ All words are valid BIP39 English words.`;
-  }
-
-  out.className = 'output-box' + (valid ? ' success' : ' error');
   out.innerHTML = html;
+
+  stats.style.display = 'flex';
+  stats.innerHTML = `
+    <div class="stat-item">Total: <strong>${totalPlatforms}</strong></div>
+    <div class="stat-item">Found: <strong style="color:var(--success)">${found}</strong></div>
+    <div class="stat-item">Not Found: <strong style="color:var(--text2)">${notFound}</strong></div>
+    <div class="stat-item">Links: <strong>${linkOnly.length}</strong></div>
+  `;
 }
 
-// ======================== WALLET VALIDATOR ========================
-function checkWallet() {
-  const addr = document.getElementById('walletInput').value.trim();
-  const out = document.getElementById('walletOutput');
-  if (!addr) { out.className = 'output-box empty'; out.textContent = 'Enter a wallet address.'; return; }
+async function checkSinglePlatform(platform, username) {
+  const url = platform.checkUrl.replace('{u}', username);
 
-  const results = [];
-
-  // BTC
-  const btcP2PKH = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
-  const btcP2SH = /^3[a-km-zA-HJ-NP-Z1-9]{25,34}$/;
-  const btcBech32 = /^bc1[a-z0-9]{14,87}$/i;
-  const btcBech32m = /^bc1p[a-z0-9]{14,87}$/i;
-  if (btcP2PKH.test(addr) || btcP2SH.test(addr) || btcBech32.test(addr) || btcBech32m.test(addr)) {
-    let type = 'Legacy (P2PKH)';
-    if (btcP2SH.test(addr)) type = 'Segwit (P2SH)';
-    if (btcBech32.test(addr)) type = 'Bech32 (Segwit)';
-    if (btcBech32m.test(addr)) type = 'Bech32m (Taproot)';
-    results.push(`✅ BTC — ${type}`);
-  }
-
-  // ETH / BSC / all EVM
-  if (/^0x[a-fA-F0-9]{40}$/.test(addr)) {
-    results.push('✅ EVM (ETH / BSC / Polygon / Arbitrum / etc.)');
-    // checksum
-    const checksum = addr.slice(2).toLowerCase();
-    if (addr === '0x' + checksum || addr === '0x' + toChecksumAddress(checksum)) {
-      results.push('   └─ ✓ Valid checksum');
+  try {
+    if (platform.checkType === 'image') {
+      // Image load check
+      const exists = await checkImageExists(url);
+      return { exists };
+    } else if (platform.checkType === 'json') {
+      const resp = await fetch(url, { mode: 'cors' });
+      return { exists: resp.ok };
     } else {
-      results.push('   └─ ⚠️  Mixed case but checksum incorrect (still valid as lowercase)');
+      // Simple fetch check
+      const resp = await fetch(url, {
+        mode: 'no-cors',
+        signal: AbortSignal.timeout(5000)
+      });
+      // no-cors always returns opaque (status 0) — treat as unknown
+      return { exists: null };
     }
-  }
-
-  // SOL
-  if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr) && addr.length >= 32 && addr.length <= 44 && !/^0x/.test(addr) && !/^[13]/.test(addr) && !/^3/.test(addr)) {
-    results.push('✅ SOL — Solana (base58, might overlap with other chains)');
-  }
-
-  // TRX
-  if (/^T[a-zA-Z0-9]{33}$/.test(addr)) {
-    results.push('✅ TRX — Tron');
-  }
-
-  // DOGE
-  if (/^D{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}$/.test(addr)) {
-    results.push('✅ DOGE — Dogecoin');
-  }
-
-  // LTC
-  if (/^[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}$/.test(addr)) {
-    results.push('✅ LTC — Litecoin (M legacy)');
-  }
-  if (/^ltc1[a-z0-9]{14,87}$/i.test(addr)) {
-    results.push('✅ LTC — Litecoin (Bech32)');
-  }
-
-  // ADA
-  if (/^addr1[a-z0-9]{58,100}$/i.test(addr)) {
-    results.push('✅ ADA — Cardano');
-  }
-
-  // DOT
-  if (/^1[1-9A-HJ-NP-Za-km-z]{47}$/.test(addr)) {
-    results.push('✅ DOT — Polkadot (may overlap with BTC legacy)');
-  }
-
-  // XRP
-  if (/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/.test(addr)) {
-    results.push('✅ XRP — Ripple');
-  }
-
-  // BCH
-  if (/^(bitcoincash:|bchtest:)?(q|p)[a-z0-9]{41}$/i.test(addr)) {
-    results.push('✅ BCH — Bitcoin Cash');
-  }
-
-  // ATOM
-  if (/^cosmos1[a-z0-9]{38}$/i.test(addr)) {
-    results.push('✅ ATOM — Cosmos');
-  }
-
-  if (results.length === 0) {
-    out.className = 'output-box error';
-    out.innerHTML = '❌ Unknown or invalid wallet address format.';
-  } else {
-    out.className = 'output-box success';
-    out.innerHTML = results.join('\n') + '\n\n📌 Address: ' + addr;
+  } catch {
+    return { exists: null };
   }
 }
 
-function toChecksumAddress(address) {
-  const hash = sha256(sha256(address.toLowerCase()));
-  let ret = '0x';
-  for (let i = 0; i < 40; i++) {
-    const c = address[i];
-    if (parseInt(hash[i], 16) >= 8) {
-      ret += c.toUpperCase();
-    } else {
-      ret += c.toLowerCase();
-    }
-  }
-  return ret;
+function checkImageExists(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url;
+    setTimeout(() => { if (!img.complete) { img.src = ''; resolve(null); } }, 5000);
+  });
 }
 
-// Simple SHA256 for checksum (not crypto secure, just for address checksum)
-function sha256(str) {
-  const buffer = new TextEncoder().encode(str);
-  return crypto.subtle ? 'placeholder' : ''; // We'll just skip real checksum validation
+function clearUC() {
+  document.getElementById('ucInput').value = '';
+  document.getElementById('ucOutput').innerHTML = '';
+  document.getElementById('ucStats').style.display = 'none';
 }
 
-// ======================== PRIVATE KEY CONVERTER ========================
-function convertPrivKey() {
-  let input = document.getElementById('privkeyInput').value.trim();
-  const out = document.getElementById('privkeyOutput');
-  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a hex private key.'; return; }
+// ═══════════════════════════════════════════════
+// TOOL 2: EMAIL BREACH CHECKER
+// ═══════════════════════════════════════════════
 
-  if (input.startsWith('0x')) input = input.slice(2);
+const HIBP_API = 'https://haveibeenpwned.com/api/v3';
+const BREACHES = null; // Will be fetched
 
-  if (!/^[0-9a-fA-F]+$/.test(input) || (input.length !== 64 && input.length !== 66)) {
-    out.className = 'output-box error';
-    out.textContent = '❌ Invalid hex. Expected 64 hex chars (32 bytes) for a private key.';
+// Known breaches for offline reference
+const KNOWN_BREACHES = {
+  'adobe': { date: '2013-10', count: '153M', category: 'Entertainment' },
+  'collection1': { date: '2019-01', count: '773M', category: 'Aggregator' },
+  'collection2-5': { date: '2019-01', count: '845M', category: 'Aggregator' },
+  'linkedin': { date: '2012-05', count: '164M', category: 'Social' },
+  'facebook': { date: '2021-04', count: '533M', category: 'Social' },
+  'tokopedia': { date: '2020-03', count: '91M', category: 'E-commerce' },
+  'bhinneka': { date: '2019-08', count: '1.2M', category: 'E-commerce' },
+  'femaledaily': { date: '2021-08', count: '1.1M', category: 'Community' },
+  'line': { date: '2021-11', count: '48M', category: 'Messaging' },
+  'indihome': { date: '2022-06', count: '20M', category: 'ISP' },
+  'bpjs': { date: '2021-04', count: '279M', category: 'Government' },
+  'dukcapil': { date: '2023-07', count: '337M', category: 'Government' },
+  'mypertamina': { date: '2022-03', count: '27M', category: 'Energy' },
+  'pln': { date: '2022-08', count: '17M', category: 'Energy' },
+};
+
+async function checkEmailBreach() {
+  const email = document.getElementById('ebInput').value.trim();
+  const out = document.getElementById('ebOutput');
+
+  if (!email || !email.includes('@')) {
+    out.innerHTML = '<span style="color:var(--danger)">Enter a valid email address.</span>';
     return;
   }
 
-  if (input.length === 66) input = input.slice(0, 64);
-  const hex = input.toLowerCase();
-
-  let result = '';
-  result += `🔑 Private Key Info\n`;
-  result += `─────────────────\n`;
-  result += `Hex (64 chars): 0x${hex}\n`;
-  result += `Hex (66 chars): 0x${hex}\n`;
-
-  // Decimal
-  const dec = BigInt('0x' + hex).toString();
-  result += `\n🔢 Decimal:\n${dec}\n`;
-
-  // Bytes
-  result += `\n📦 Bytes: 32 (256 bits)\n`;
-
-  // WIF (compressed, mainnet - approximate for BTC)
-  result += `\n📌 WIF (BTC, compressed): (requires base58)\n`;
-
-  out.className = 'output-box';
-  out.innerHTML = result.replace(/\n/g, '<br>');
-}
-
-// ======================== ETH ADDRESS FROM PRIVKEY ========================
-function deriveEthAddress() {
-  const input = document.getElementById('ethPrivInput').value.trim();
-  const out = document.getElementById('ethPrivOutput');
-  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a private key.'; return; }
-
-  // We can't actually derive in pure JS without elliptic lib
-  // Provide instructions instead
-  out.className = 'output-box';
-  out.innerHTML = `⚠️ Client-side ETH derivation requires ethers.js or elliptic library.\n\n` +
-    `📌 Quick check:\n` +
-    `• Key length: ${input.replace('0x','').length} hex chars\n` +
-    `• Valid private key should be 64 hex chars (32 bytes)\n\n` +
-    `💻 Use this in console with ethers.js:\n` +
-    `const wallet = new ethers.Wallet("${input}");\n` +
-    `console.log(wallet.address);`;
-}
-
-// ======================== BASE64 ========================
-function b64Encode() {
-  const input = document.getElementById('b64Input').value;
-  const out = document.getElementById('b64Output');
-  try {
-    const encoded = btoa(input);
-    out.className = 'output-box success';
-    out.textContent = encoded;
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-function b64Decode() {
-  const input = document.getElementById('b64Input').value.trim();
-  const out = document.getElementById('b64Output');
-  try {
-    const decoded = atob(input);
-    out.className = 'output-box success';
-    out.textContent = decoded;
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-// ======================== HEX ========================
-function hexEncode() {
-  const input = document.getElementById('hexInput').value;
-  const out = document.getElementById('hexOutput');
-  const hex = Array.from(new TextEncoder().encode(input)).map(b => b.toString(16).padStart(2,'0')).join('');
-  out.className = 'output-box success';
-  out.textContent = hex;
-}
-
-function hexDecode() {
-  const input = document.getElementById('hexInput').value.trim().replace(/\s/g,'');
-  const out = document.getElementById('hexOutput');
-  try {
-    if (input.startsWith('0x')) input.slice(2);
-    if (!/^[0-9a-fA-F]+$/.test(input)) throw new Error('Invalid hex');
-    const bytes = [];
-    for (let i = 0; i < input.length; i += 2) {
-      bytes.push(parseInt(input.substr(i,2), 16));
-    }
-    const text = new TextDecoder().decode(new Uint8Array(bytes));
-    out.className = 'output-box success';
-    out.textContent = text;
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-// ======================== JSON ========================
-function formatJSON() {
-  const input = document.getElementById('jsonInput').value.trim();
-  const out = document.getElementById('jsonOutput');
-  try {
-    const parsed = JSON.parse(input);
-    out.className = 'output-box success';
-    out.textContent = JSON.stringify(parsed, null, 2);
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'JSON Error: ' + e.message;
-  }
-}
-
-function minifyJSON() {
-  const input = document.getElementById('jsonInput').value.trim();
-  const out = document.getElementById('jsonOutput');
-  try {
-    const parsed = JSON.parse(input);
-    out.className = 'output-box success';
-    out.textContent = JSON.stringify(parsed);
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'JSON Error: ' + e.message;
-  }
-}
-
-// ======================== JWT ========================
-function decodeJWT() {
-  const token = document.getElementById('jwtInput').value.trim();
-  const out = document.getElementById('jwtOutput');
-  if (!token) { out.className = 'output-box empty'; out.textContent = 'Enter a JWT token.'; return; }
-
-  const parts = token.split('.');
-  if (parts.length !== 3) {
-    out.className = 'output-box error';
-    out.textContent = '❌ Invalid JWT format. Expected 3 parts (header.payload.signature).';
-    return;
-  }
+  out.innerHTML = '<span class="loading">⏳ Checking Have I Been Pwned...</span>';
 
   try {
-    const header = JSON.parse(atob(parts[0].replace(/-/g,'+').replace(/_/g,'/')));
-    const payload = JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
-    out.className = 'output-box success';
-    out.innerHTML = '📋 <strong>Header</strong>\n' + JSON.stringify(header, null, 2) +
-                    '\n\n📋 <strong>Payload</strong>\n' + JSON.stringify(payload, null, 2) +
-                    '\n\n🔏 Signature: ' + parts[2].substring(0,20) + '...';
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Decode error: ' + e.message;
-  }
-}
+    const resp = await fetch(`${HIBP_API}/breachedaccount/${encodeURIComponent(email)}?truncateResponse=false`, {
+      headers: {
+        'hibp-api-key': '', // Free tier sometimes works without key for limited queries
+        'user-agent': 'Retus-Suite/1.0'
+      },
+      signal: AbortSignal.timeout(8000)
+    });
 
-// ======================== URL CODEC ========================
-function urlEncode() {
-  const input = document.getElementById('urlInput').value;
-  document.getElementById('urlOutput').className = 'output-box success';
-  document.getElementById('urlOutput').textContent = encodeURIComponent(input);
-}
-function urlDecode() {
-  const input = document.getElementById('urlInput').value.trim();
-  const out = document.getElementById('urlOutput');
-  try {
-    out.className = 'output-box success';
-    out.textContent = decodeURIComponent(input);
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-// ======================== HASH ========================
-async function generateHash() {
-  const input = document.getElementById('hashInput').value;
-  const upper = document.getElementById('hashUpper').checked;
-  const out = document.getElementById('hashOutput');
-  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter text to hash.'; return; }
-
-  const encoder = new TextEncoder();
-  const data = encoder.encode(input);
-
-  const algorithms = [
-    { name: 'SHA-256', label: 'SHA256' },
-    { name: 'SHA-384', label: 'SHA384' },
-    { name: 'SHA-512', label: 'SHA512' },
-  ];
-
-  let result = '';
-  for (const algo of algorithms) {
-    const hashBuffer = await crypto.subtle.digest(algo.name, data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    if (upper) hashHex = hashHex.toUpperCase();
-    result += `${algo.label}: ${hashHex}\n`;
-  }
-
-  // MD5 (simple implementation for common use)
-  const md5hex = md5(input);
-  result += `MD5: ${upper ? md5hex.toUpperCase() : md5hex}\n`;
-
-  out.className = 'output-box success';
-  out.innerHTML = result.replace(/\n/g, '<br>');
-}
-
-async function verifyHash() {
-  const text = document.getElementById('hashVrfyInput').value;
-  const hash = document.getElementById('hashVrfyHash').value.trim().toLowerCase();
-  const out = document.getElementById('hashVrfyOutput');
-  if (!text || !hash) { out.className = 'output-box empty'; out.textContent = 'Enter both text and hash.'; return; }
-
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const computed = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  const match = computed === hash;
-  out.className = 'output-box ' + (match ? 'success' : 'error');
-  out.innerHTML = `SHA256: ${computed}\n\n` + (match ? '✅ MATCH — hash matches the text.' : '❌ NO MATCH — hash does not match.');
-}
-
-// Simple MD5 (non-crypto, just for quick hashing)
-function md5(str) {
-  // This is a placeholder - we use a simple hash
-  // In a real scenario we'd include a proper MD5 implementation
-  // For now, let's use a simpler approach
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const chr = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-  // Return a fixed-length pseudo hash
-  const encoder = new TextEncoder();
-  const data = encoder.encode(str);
-  let hex = '';
-  for (let i = 0; i < data.length && i < 8; i++) {
-    hex += data[i].toString(16).padStart(2, '0');
-  }
-  return hex.padEnd(32, '0');
-}
-
-// ======================== IP INFO ========================
-async function checkMyIP() {
-  const out = document.getElementById('ipOutput');
-  out.className = 'output-box';
-  out.textContent = '⏳ Fetching IP info...';
-
-  try {
-    const resp = await fetch('https://ip-api.com/json/?fields=status,message,country,regionName,city,isp,org,as,query,lat,lon,timezone,zip');
-    const data = await resp.json();
-
-    if (data.status === 'fail') {
-      out.className = 'output-box error';
-      out.textContent = 'Failed: ' + (data.message || 'unknown error');
+    if (resp.status === 401) {
+      // API key required — fallback to informative mode
+      showBreachFallback(email, out);
       return;
     }
 
-    out.className = 'output-box success';
-    out.innerHTML = `🌐 <strong>IP Info</strong>\n` +
-      `IP: ${data.query}\n` +
-      `Country: ${data.country}\n` +
-      `Region: ${data.regionName}\n` +
-      `City: ${data.city}\n` +
-      `ISP: ${data.isp}\n` +
-      `Org: ${data.org}\n` +
-      `ASN: ${data.as || 'N/A'}\n` +
-      `Location: ${data.lat}, ${data.lon}\n` +
-      `Timezone: ${data.timezone}\n` +
-      `ZIP: ${data.zip || 'N/A'}`.replace(/\n/g, '<br>');
-  } catch(e) {
-    out.className = 'output-box error';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-// ======================== UA PARSER ========================
-function parseUA() {
-  const ua = document.getElementById('uaInput').value.trim();
-  const out = document.getElementById('uaOutput');
-  if (!ua) { out.className = 'output-box empty'; out.textContent = 'Enter a User-Agent string.'; return; }
-
-  // Simple parsing
-  let browser = 'Unknown', os = 'Unknown', device = 'Desktop';
-
-  if (ua.includes('Firefox/')) browser = 'Firefox';
-  else if (ua.includes('Chrome/') && !ua.includes('Edg/')) browser = 'Chrome';
-  else if (ua.includes('Safari/') && !ua.includes('Chrome/')) browser = 'Safari';
-  else if (ua.includes('Edg/')) browser = 'Edge';
-  else if (ua.includes('OPR/') || ua.includes('Opera/')) browser = 'Opera';
-  else if (ua.includes('MSIE') || ua.includes('Trident/')) browser = 'Internet Explorer';
-
-  if (ua.includes('Windows NT')) {
-    const ver = ua.match(/Windows NT (\d+\.?\d*)/);
-    const versions = {'10.0': '10/11', '6.3': '8.1', '6.2': '8', '6.1': '7', '6.0': 'Vista', '5.1': 'XP'};
-    os = 'Windows ' + (versions[ver?.[1] || ''] || ver?.[1] || '');
-  } else if (ua.includes('Mac OS X') || ua.includes('macOS')) {
-    os = 'macOS';
-  } else if (ua.includes('Linux') && !ua.includes('Android')) {
-    os = 'Linux';
-  } else if (ua.includes('Android')) {
-    os = 'Android';
-    device = 'Mobile';
-  } else if (ua.includes('iPhone') || ua.includes('iPad')) {
-    os = 'iOS';
-    device = ua.includes('iPad') ? 'Tablet' : 'Mobile';
-  }
-
-  out.className = 'output-box success';
-  out.innerHTML = `🖥️ <strong>User Agent</strong>\n` +
-    `Browser: ${browser}\n` +
-    `OS: ${os}\n` +
-    `Device: ${device}\n\n` +
-    `📝 Full UA string:\n${ua}`.replace(/\n/g, '<br>');
-}
-
-// ======================== PASSWORD GENERATOR ========================
-function genPassword() {
-  const len = parseInt(document.getElementById('pwLength').value) || 24;
-  const useUpper = document.getElementById('pwUpper').checked;
-  const useLower = document.getElementById('pwLower').checked;
-  const useDigits = document.getElementById('pwDigits').checked;
-  const useSymbols = document.getElementById('pwSymbols').checked;
-
-  let chars = '';
-  if (useUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  if (useLower) chars += 'abcdefghijklmnopqrstuvwxyz';
-  if (useDigits) chars += '0123456789';
-  if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-
-  if (!chars) { document.getElementById('pwOutput').className = 'output-box error';
-    document.getElementById('pwOutput').textContent = 'Select at least one character set.'; return; }
-
-  let password = '';
-  const array = new Uint32Array(len);
-  crypto.getRandomValues(array);
-  for (let i = 0; i < len; i++) {
-    password += chars[array[i] % chars.length];
-  }
-
-  // Ensure at least one from each selected set
-  if (useUpper && !/[A-Z]/.test(password)) password = 'A' + password.slice(1);
-  if (useLower && !/[a-z]/.test(password)) password = 'a' + password.slice(1);
-  if (useDigits && !/[0-9]/.test(password)) password = '1' + password.slice(1);
-  if (useSymbols && !/[!@#$%^&*()_+\-=[\]{}|;:,.<>?]/.test(password)) password = '!' + password.slice(1);
-
-  const entropy = Math.floor(Math.log2(chars.length) * len);
-  const strength = entropy >= 128 ? '🟢 Strong' : entropy >= 80 ? '🟡 Moderate' : '🔴 Weak';
-
-  const out = document.getElementById('pwOutput');
-  out.className = 'output-box success';
-  out.innerHTML = password + '\n\n' +
-    `Length: ${len} | Entropy: ~${entropy} bits | ${strength}`.replace(/\n/g, '<br>');
-}
-
-// ======================== UUID/ULID ========================
-function genUUID() {
-  const count = Math.min(parseInt(document.getElementById('uuidCount').value) || 1, 50);
-  const out = document.getElementById('uuidOutput');
-  let result = '';
-  for (let i = 0; i < count; i++) {
-    result += crypto.randomUUID() + '\n';
-  }
-  out.className = 'output-box success';
-  out.innerHTML = result.replace(/\n/g, '<br>');
-}
-
-function genULID() {
-  const count = Math.min(parseInt(document.getElementById('uuidCount').value) || 1, 50);
-  const out = document.getElementById('uuidOutput');
-  const chars = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
-  let result = '';
-  for (let i = 0; i < count; i++) {
-    // ULID: 10 char timestamp + 16 char random
-    const timestamp = Date.now().toString(32).toUpperCase().padStart(10, '0');
-    let random = '';
-    for (let j = 0; j < 16; j++) {
-      random += chars[Math.floor(Math.random() * chars.length)];
+    if (resp.status === 404) {
+      out.innerHTML = `<div style="padding:12px;border:1px solid var(--success);border-radius:8px;">
+        <span style="font-size:1.3rem;">✅</span>
+        <strong style="color:var(--success);margin-left:8px;">Good news!</strong>
+        <p style="color:var(--text2);margin-top:8px;">${email} — tidak ditemukan di data breach manapun.</p>
+      </div>`;
+      return;
     }
-    result += timestamp + random + '\n';
+
+    if (!resp.ok) {
+      showBreachFallback(email, out);
+      return;
+    }
+
+    const breaches = await resp.json();
+    let html = `<div style="padding:12px;border:1px solid var(--danger);border-radius:8px;margin-bottom:12px;">
+      <span style="font-size:1.3rem;">⚠️</span>
+      <strong style="color:var(--danger);margin-left:8px;">Found in ${breaches.length} breach(es)!</strong>
+    </div>`;
+
+    breaches.forEach((b, i) => {
+      html += `<div style="padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;">
+        <strong>${b.Name}</strong>
+        <div style="font-size:0.8rem;color:var(--text2);margin-top:4px;">
+          ${b.BreachDate || 'N/A'} · ${b.PwnCount ? formatNum(b.PwnCount) : 'N/A'} accounts · ${b.DataClasses?.join(', ') || 'N/A'}
+        </div>
+      </div>`;
+    });
+    out.innerHTML = html;
+
+  } catch {
+    showBreachFallback(email, out);
   }
-  out.className = 'output-box success';
-  out.innerHTML = result.replace(/\n/g, '<br>');
 }
 
-// ======================== TIMESTAMP ========================
-function updateCurrentTS() {
-  document.getElementById('tsNowValue').textContent = Math.floor(Date.now() / 1000);
-}
-setInterval(updateCurrentTS, 1000);
-updateCurrentTS();
+function showBreachFallback(email, out) {
+  const domain = email.split('@')[1];
+  let html = `<div style="padding:12px;border:1px solid var(--accent);border-radius:8px;margin-bottom:12px;">
+    <span style="color:var(--accent);">ℹ️</span>
+    <strong> HIBP API terbatas — cek manual:</strong>
+    <p style="color:var(--text2);margin-top:6px;">
+      <a href="https://haveibeenpwned.com/account/${encodeURIComponent(email)}" target="_blank" style="color:var(--accent);" rel="noopener">
+        🔍 Cek ${email} langsung di Have I Been Pwned →
+      </a>
+    </p>
+  </div>`;
 
-function convertTimestamp() {
-  const input = document.getElementById('tsInput').value.trim();
-  const out = document.getElementById('tsOutput');
-  if (!input) { out.className = 'output-box empty'; out.textContent = 'Enter a timestamp.'; return; }
+  // Show known breaches for reference
+  html += `<details style="margin-top:8px;">
+    <summary style="cursor:pointer;color:var(--accent);font-weight:600;">📋 Referensi breach besar yang diketahui</summary>
+    <div style="margin-top:8px;">`;
 
-  const ts = parseInt(input);
-  if (isNaN(ts)) { out.className = 'output-box error'; out.textContent = 'Invalid number.'; return; }
+  for (const [name, info] of Object.entries(KNOWN_BREACHES)) {
+    html += `<div style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem;">
+      <strong>${name}</strong>
+      <span style="color:var(--text2);float:right;">${info.date} · ${info.count}</span>
+    </div>`;
+  }
 
-  const d = new Date(ts * 1000);
-  if (d.getTime() === 0) { out.className = 'output-box error'; out.textContent = 'Invalid timestamp.'; return; }
+  html += `</div></details>`;
 
-  out.className = 'output-box success';
-  out.innerHTML = `📅 ${d.toUTCString()}\n` +
-    `🕐 Local: ${d.toLocaleString()}\n` +
-    `📆 ISO: ${d.toISOString()}\n` +
-    `🗓️ Date: ${d.toLocaleDateString()}\n` +
-    `⏰ Time: ${d.toLocaleTimeString()}`.replace(/\n/g, '<br>');
-}
+  // Domain search suggestion
+  if (domain) {
+    html += `<div style="margin-top:12px;padding:10px;background:var(--card);border-radius:6px;font-size:0.85rem;">
+      <span style="color:var(--accent);">💡</span> Coba juga:
+      <a href="https://haveibeenpwned.com/domain/${domain}" target="_blank" style="color:var(--accent);display:block;margin-top:4px;" rel="noopener">
+        Cek semua akun @${domain} yang bocor →
+      </a>
+    </div>`;
+  }
 
-function fillCurrentTS() {
-  document.getElementById('tsInput').value = Math.floor(Date.now() / 1000);
-  convertTimestamp();
-}
-
-// ======================== CASE CONVERTER ========================
-function toUpper() {
-  const input = document.getElementById('caseInput').value;
-  document.getElementById('caseOutput').className = 'output-box success';
-  document.getElementById('caseOutput').textContent = input.toUpperCase();
-}
-function toLower() {
-  const input = document.getElementById('caseInput').value;
-  document.getElementById('caseOutput').className = 'output-box success';
-  document.getElementById('caseOutput').textContent = input.toLowerCase();
-}
-function toTitle() {
-  const input = document.getElementById('caseInput').value;
-  document.getElementById('caseOutput').className = 'output-box success';
-  document.getElementById('caseOutput').textContent = input.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase());
-}
-function toCamel() {
-  const input = document.getElementById('caseInput').value.toLowerCase();
-  document.getElementById('caseOutput').className = 'output-box success';
-  document.getElementById('caseOutput').textContent = input.replace(/[-_\s]+(.)/g, (_, c) => c.toUpperCase());
-}
-function toSnake() {
-  const input = document.getElementById('caseInput').value;
-  document.getElementById('caseOutput').className = 'output-box success';
-  document.getElementById('caseOutput').textContent = input.replace(/\s+/g, '_').replace(/-/g, '_').toLowerCase();
+  out.innerHTML = html;
 }
 
-// ======================== UTILITIES ========================
-function clearOutput(id) {
-  const el = document.getElementById(id);
-  el.className = 'output-box empty';
-  el.textContent = 'Cleared.';
+function clearEB() {
+  document.getElementById('ebInput').value = '';
+  document.getElementById('ebOutput').innerHTML = '';
 }
 
-function copyToClipboard(id) {
-  const text = document.getElementById(id).textContent;
-  if (!text || text === 'Cleared.' || text.startsWith('Click')) return;
-  navigator.clipboard.writeText(text.split('\n')[0]);
-}
+// ═══════════════════════════════════════════════
+// TOOL 3: PROFILE LINK GENERATOR
+// ═══════════════════════════════════════════════
 
-// Tab switching
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById('section-' + this.dataset.section).classList.add('active');
+function genProfileLinks() {
+  const username = document.getElementById('plInput').value.trim();
+  const compact = document.getElementById('plCompact').checked;
+  const out = document.getElementById('plOutput');
+
+  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username.</span>'; return; }
+
+  const u = username.replace(/[^a-z0-9._-]/gi, '');
+  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username.</span>'; return; }
+
+  let html = `<div style="margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:8px;font-size:0.85rem;">
+    <strong>${u}</strong> — ${PLATFORMS.length} profile links generated
+    <button class="btn btn-secondary" style="float:right;padding:4px 12px;font-size:0.75rem;" onclick="copyAllLinks('${u}')">📋 Copy All</button>
+  </div>`;
+
+  const cats = {};
+  PLATFORMS.forEach(p => {
+    if (!cats[p.cat]) cats[p.cat] = [];
+    cats[p.cat].push(p);
   });
-});
+
+  for (const [cat, items] of Object.entries(cats)) {
+    if (compact) {
+      const links = items.map(p => {
+        const link = p.url.replace('{u}', u);
+        return `<a href="${link}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;margin-right:6px;font-size:0.8rem;">${p.name}</a>`;
+      }).join('· ');
+      html += `<div style="margin-bottom:6px;padding:4px 8px;">
+        <span style="font-size:0.75rem;color:var(--text2);text-transform:uppercase;margin-right:8px;">${cat}:</span>
+        ${links}
+      </div>`;
+    } else {
+      html += `<div style="margin-bottom:10px;"><strong style="color:var(--text2);font-size:0.75rem;text-transform:uppercase;">${cat}</strong></div>`;
+      items.forEach(p => {
+        const link = p.url.replace('{u}', u);
+        html += `<div class="result-item">
+          <span style="min-width:100px;font-weight:600;">${p.name}</span>
+          <a class="link" href="${link}" target="_blank" rel="noopener">${link.replace('https://','')}</a>
+        </div>`;
+      });
+    }
+  }
+
+  out.innerHTML = html;
+}
+
+function copyAllLinks(username) {
+  const u = username;
+  let text = `🔗 Profile links for ${u}\n` + '═'.repeat(30) + '\n';
+  const cats = {};
+  PLATFORMS.forEach(p => {
+    if (!cats[p.cat]) cats[p.cat] = [];
+    cats[p.cat].push(p);
+  });
+  for (const [cat, items] of Object.entries(cats)) {
+    text += `\n${cat}:\n`;
+    items.forEach(p => text += `  ${p.name}: ${p.url.replace('{u}', u)}\n`);
+  }
+  copyText(text);
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    // Flash feedback
+  }).catch(() => {});
+}
+
+function clearPL() {
+  document.getElementById('plInput').value = '';
+  document.getElementById('plOutput').innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════
+
+function formatNum(n) {
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + 'B';
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function goToTools() {
+  document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Init — load current timestamp in background
 </script>
 </body>
 </html>
