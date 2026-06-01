@@ -166,10 +166,11 @@
     word-break: break-all;
     line-height: 1.6;
   }
-  .tool-output:empty::before { content: 'Results appear here'; color: var(--text2); font-style: italic; }
+
   .tool-output .hit { color: var(--success); }
   .tool-output .miss { color: var(--text2); opacity: 0.6; }
   .tool-output .loading { color: var(--accent); }
+  .tool-output.hidden { display: none; }
 
   .result-grid {
     display: grid;
@@ -329,7 +330,7 @@
           <button class="btn btn-secondary" onclick="clearUC()">Clear</button>
         </div>
         <div id="ucStats" class="stats-bar" style="display:none;"></div>
-        <div id="ucOutput" class="tool-output"></div>
+        <div id="ucOutput" class="tool-output hidden"></div>
       </div>
 
       <!-- ═══ TOOL 2: Email Breach Checker ═══ -->
@@ -342,7 +343,7 @@
           <button class="btn btn-primary" onclick="checkEmailBreach()">🔎 Check</button>
           <button class="btn btn-secondary" onclick="clearEB()">Clear</button>
         </div>
-        <div id="ebOutput" class="tool-output"></div>
+        <div id="ebOutput" class="tool-output hidden"></div>
       </div>
 
       <!-- ═══ TOOL 3: Profile Link Generator ═══ -->
@@ -359,7 +360,7 @@
           <button class="btn btn-primary" onclick="genProfileLinks()">🔗 Generate</button>
           <button class="btn btn-secondary" onclick="clearPL()">Clear</button>
         </div>
-        <div id="plOutput" class="tool-output"></div>
+        <div id="plOutput" class="tool-output hidden"></div>
       </div>
 
     </div>
@@ -545,11 +546,12 @@ async function checkUsername() {
   const out = document.getElementById('ucOutput');
   const stats = document.getElementById('ucStats');
 
-  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username first.</span>'; return; }
+  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username first.</span>'; out.classList.remove('hidden'); return; }
 
   const u = username.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username format.</span>'; return; }
+  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username format.</span>'; out.classList.remove('hidden'); return; }
 
+  out.classList.remove('hidden');
   out.innerHTML = '<span class="loading">⏳ Checking ' + PLATFORMS.length + ' platforms...</span>';
   stats.style.display = 'none';
 
@@ -673,6 +675,7 @@ function checkImageExists(url) {
 
 function clearUC() {
   document.getElementById('ucInput').value = '';
+  document.getElementById('ucOutput').classList.add('hidden');
   document.getElementById('ucOutput').innerHTML = '';
   document.getElementById('ucStats').style.display = 'none';
 }
@@ -708,9 +711,11 @@ async function checkEmailBreach() {
 
   if (!email || !email.includes('@')) {
     out.innerHTML = '<span style="color:var(--danger)">Enter a valid email address.</span>';
+    out.classList.remove('hidden');
     return;
   }
 
+  out.classList.remove('hidden');
   out.innerHTML = '<span class="loading">⏳ Checking Have I Been Pwned...</span>';
 
   try {
@@ -804,6 +809,7 @@ function showBreachFallback(email, out) {
 
 function clearEB() {
   document.getElementById('ebInput').value = '';
+  document.getElementById('ebOutput').classList.add('hidden');
   document.getElementById('ebOutput').innerHTML = '';
 }
 
@@ -816,10 +822,12 @@ function genProfileLinks() {
   const compact = document.getElementById('plCompact').checked;
   const out = document.getElementById('plOutput');
 
-  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username.</span>'; return; }
+  if (!username) { out.innerHTML = '<span style="color:var(--text2)">Enter a username.</span>'; out.classList.remove('hidden'); return; }
 
   const u = username.replace(/[^a-z0-9._-]/gi, '');
-  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username.</span>'; return; }
+  if (!u) { out.innerHTML = '<span style="color:var(--danger)">Invalid username.</span>'; out.classList.remove('hidden'); return; }
+
+  out.classList.remove('hidden');
 
   let html = `<div style="margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:8px;font-size:0.85rem;">
     <strong>${u}</strong> — ${PLATFORMS.length} profile links generated
@@ -881,6 +889,7 @@ function copyText(text) {
 
 function clearPL() {
   document.getElementById('plInput').value = '';
+  document.getElementById('plOutput').classList.add('hidden');
   document.getElementById('plOutput').innerHTML = '';
 }
 
