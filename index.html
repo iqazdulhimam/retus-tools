@@ -57,7 +57,7 @@ a{color:var(--accent);text-decoration:none}
 .xp-ok{background:rgba(40,167,69,0.08);color:var(--success)}
 .xp-wa{background:rgba(219,171,9,0.1);color:#735c0f}
 .xp-cr{background:rgba(215,58,73,0.08);color:var(--danger)}
-.cd-b{font-size:.78rem;color:var(--text2);line-height:1.6;margin:2px 0 6px;text-align:left}
+.cd-b{font-size:.78rem;color:var(--text2);line-height:1.6;margin:2px 0 6px;text-align:left!important;display:block;width:100%}
 .cd-ft{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text3);padding-top:4px;border-top:1px solid var(--bg);flex-wrap:wrap;gap:4px}
 .cd-ft .ct{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .cd-ft a{font-size:12px;font-weight:600}
@@ -91,7 +91,42 @@ a{color:var(--accent);text-decoration:none}
 .code-box .warn{font-size:.74rem;color:var(--danger);font-weight:600}
 .ft{text-align:center;padding:20px 16px 36px;color:var(--text3);font-size:.7rem;border-top:1px solid var(--bg)}
 .ft strong{color:var(--text2)}
-@media(max-width:600px){.hero{padding:20px 0 10px}.hero h2{font-size:1.05rem}.fr{flex-direction:column;gap:0}.mn{padding:18px 16px}.cd-t{flex-direction:column}.cd-r{width:100%;justify-content:flex-end}.btn-d{opacity:1}}
+@media(max-width:640px){
+.hero{padding:18px 0 8px}.hero h2{font-size:1rem}
+.fr{flex-direction:column;gap:0}.mn{padding:16px 14px}
+.cd-t{flex-direction:column}.cd-r{width:100%;justify-content:flex-end;margin-top:4px}
+.btn-d{opacity:1}
+.wrap{padding:0 12px}
+.hd .wrap{height:42px}
+.hd h1{font-size:.82rem}
+.hd-r{gap:4px;font-size:.65rem}
+.hd-r .lmt{display:none}
+.act{gap:4px}.btn{padding:5px 10px;font-size:.74rem}
+.fb{padding:6px 10px;gap:3px}
+.fb button{padding:3px 8px;font-size:.68rem}
+.ar-h{padding:4px 8px;font-size:.76rem}
+.cd{padding:8px 10px}
+.cd-ti{font-size:.82rem}
+.cd-b{font-size:.76rem}
+.code-box .big{font-size:1.6rem;padding:10px}
+.ar{margin-bottom:10px}.ar-l{gap:4px}
+.hero p{font-size:.78rem}
+.st{flex-wrap:wrap;gap:6px}
+}
+@media(max-width:420px){
+.wrap{padding:0 8px}
+.hero h2{font-size:.88rem}.hero p{font-size:.72rem}
+.btn{padding:4px 8px;font-size:.68rem}
+.fb button{padding:2px 6px;font-size:.62rem}
+.cd{padding:6px 8px}
+.cd-ti{font-size:.78rem}.cd-b{font-size:.72rem}
+.cd-ft{font-size:10px;flex-direction:column;align-items:flex-start;gap:2px}
+.cd-ft .ct{width:100%}
+.mn{padding:12px}
+.mn-h h3{font-size:.82rem}
+.fi,.fs,.ft{font-size:.76rem;padding:5px 7px}
+.fl{font-size:.62rem}
+}
 </style>
 </head>
 <body>
