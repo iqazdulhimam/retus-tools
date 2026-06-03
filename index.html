@@ -360,18 +360,25 @@ function isAdmin(){var s=gs();return s&&s.code===ADMIN_CODE}
 function sf(v){fl=v;document.querySelectorAll('.fb button').forEach(function(b){b.classList.toggle('on',b.dataset.v==v)});rd()}
 
 // ═══════ DELETE ═══════
-function showDel(id){delId=id;document.getElementById('delEmail').value='';document.getElementById('delCode').value='';document.getElementById('eDel').textContent='';mo('mDel')}
+function showDel(id){
+  delId=id;
+  // Admin langsung hapus tanpa modal
+  if(isAdmin()){
+    if(confirm('Hapus iklan ini?')){
+      _sb.from('listings').delete().eq('id',id).then(function(){
+        tt('Terhapus','s');rd();
+      }).catch(function(){tt('Gagal','e')});
+    }
+    return;
+  }
+  document.getElementById('delEmail').value='';document.getElementById('delCode').value='';document.getElementById('eDel').textContent='';mo('mDel')
+}
 async function confirmDel(){
   var email=document.getElementById('delEmail').value.trim();
   var code=document.getElementById('delCode').value.trim();
   if(!email||!code||code.length<4){document.getElementById('eDel').textContent='Isi email & kode';return}
   document.getElementById('eDel').textContent='';
   try{
-    // Admin bypass
-    if(code===ADMIN_CODE){
-      await _sb.from('listings').delete().eq('id',delId);
-      mc('mDel');tt('Dihapus oleh admin','s');rd();return;
-    }
     // Verify login code
     var {data:valid}=await _sb.rpc('verify_auth_code',{p_email:email,p_code:code});
     if(!valid){document.getElementById('eDel').textContent='Email atau kode salah!';return}
