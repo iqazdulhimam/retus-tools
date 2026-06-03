@@ -6,18 +6,16 @@
 <title>JakHire — Pasar Kerja Jakarta</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>JK</text></svg>">
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<style>
-:root{--bg:#f4f5f8;--surface:#fff;--border:#e1e4e8;--accent:#0366d6;--accent-hover:#0256b9;--text:#1b1f23;--text2:#586069;--text3:#959da5;--success:#28a745;--danger:#d73a49;--radius:8px;--radius-sm:6px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+<style>:root{--bg:#f4f5f8;--surface:#fff;--border:#e1e4e8;--accent:#0366d6;--accent-hover:#0256b9;--text:#1b1f23;--text2:#586069;--text3:#959da5;--success:#28a745;--danger:#d73a49;--radius:8px;--radius-sm:6px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
 *,*::after,*::before{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
 a{color:var(--accent);text-decoration:none}
 .wrap{max-width:800px;margin:0 auto;padding:0 16px}
 .hd{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
 .hd .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
 .hd h1{font-size:.95rem;font-weight:800}
 .hd h1 span{color:var(--accent)}
-.hd-r{display:flex;align-items:center;gap:8px}
-.hd-r .info{font-size:.72rem;color:var(--text2)}
+.hd-r{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--text2)}
 .hd-r .lmt{font-size:.68rem;color:var(--text3);background:var(--bg);padding:1px 7px;border-radius:8px}
 .btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;font-family:inherit;border:1px solid transparent;cursor:pointer;transition:all .12s}
 .btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent-hover)}
@@ -26,7 +24,7 @@ a{color:var(--accent);text-decoration:none}
 .cd:hover .btn-d{opacity:1}.btn-d:hover{color:var(--danger);background:rgba(215,58,73,0.08)}
 .hero{text-align:center;padding:28px 0 14px}
 .hero h2{font-size:1.25rem;font-weight:800}
-.hero p{color:var(--text2);font-size:.82rem;margin-top:2px}
+.hero p{color:var(--text2);font-size:.82rem;margin-top:2px;max-width:480px;margin-left:auto;margin-right:auto}
 .st{display:flex;gap:10px;justify-content:center;margin-top:6px;font-size:.74rem;color:var(--text3)}
 .st b{color:var(--text);font-weight:700}
 .act{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap}
@@ -60,11 +58,11 @@ a{color:var(--accent);text-decoration:none}
 .xp-wa{background:rgba(219,171,9,0.1);color:#735c0f}
 .xp-cr{background:rgba(215,58,73,0.08);color:var(--danger)}
 .cd-b{font-size:.78rem;color:var(--text2);line-height:1.5;margin:2px 0 6px}
-.cd-ft{display:flex;align-items:center;justify-content:space-between;font-size:.66rem;color:var(--text3);padding-top:4px;border-top:1px solid var(--bg)}
-.cd-ft a{color:var(--accent);font-weight:600;font-size:.68rem}
+.cd-ft{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text3);padding-top:4px;border-top:1px solid var(--bg);flex-wrap:wrap;gap:4px}
+.cd-ft .ct{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cd-ft a{font-size:12px;font-weight:600}
 .emp{text-align:center;padding:40px 20px}
 .emp p{font-size:.84rem;color:var(--text3)}
-.emp .s{font-size:.76rem;margin-top:2px;color:var(--text3)}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:999;align-items:center;justify-content:center;padding:20px}
 .mo.on{display:flex}
 .mn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,0.12)}
@@ -89,16 +87,11 @@ a{color:var(--accent);text-decoration:none}
 .t-s{background:var(--success)}.t-e{background:var(--danger)}.t-i{background:var(--accent)}
 @keyframes ti{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
 .code-box{text-align:center;padding:16px}
-.code-box .big{font-size:2.2rem;font-weight:900;letter-spacing:6px;font-family:monospace;background:var(--bg);padding:14px;border-radius:8px;display:inline-block;margin:8px 0}
-.code-box .warn{font-size:.75rem;color:var(--danger);font-weight:600}
-.ft{text-align:center;padding:20px 16px 36px;color:var(--text3);font-size:.7rem;border-top:1px solid var(--bg);margin-top:6px}
+.code-box .big{font-size:2rem;font-weight:900;letter-spacing:6px;font-family:monospace;background:var(--bg);padding:12px;border-radius:8px;display:inline-block;margin:8px 0}
+.code-box .warn{font-size:.74rem;color:var(--danger);font-weight:600}
+.ft{text-align:center;padding:20px 16px 36px;color:var(--text3);font-size:.7rem;border-top:1px solid var(--bg)}
 .ft strong{color:var(--text2)}
-@media(max-width:600px){
-  .hero{padding:20px 0 10px}.hero h2{font-size:1.05rem}
-  .fr{flex-direction:column;gap:0}.mn{padding:18px 16px}
-  .cd-t{flex-direction:column}.cd-r{width:100%;justify-content:flex-end}
-  .btn-d{opacity:1}.hd .wrap{height:44px}
-}
+@media(max-width:600px){.hero{padding:20px 0 10px}.hero h2{font-size:1.05rem}.fr{flex-direction:column;gap:0}.mn{padding:18px 16px}.cd-t{flex-direction:column}.cd-r{width:100%;justify-content:flex-end}.btn-d{opacity:1}}
 </style>
 </head>
 <body>
@@ -107,7 +100,7 @@ a{color:var(--accent);text-decoration:none}
   <h1><span>Jak</span>Hire</h1>
   <div class="hd-r" id="hdRight">
     <span class="lmt" id="lmtD"></span>
-    <span class="info" id="emailD"></span>
+    <span id="emailD"></span>
     <button class="btn btn-sm btn-s" id="btnAuth" onclick="showLogin()">Masuk</button>
   </div>
 </div></div>
@@ -122,7 +115,6 @@ a{color:var(--accent);text-decoration:none}
   <button class="btn btn-p" onclick="onPost()">+ Pasang Iklan</button>
   <button class="btn btn-s" onclick="document.getElementById('fb').scrollIntoView({behavior:'smooth'})">Filter</button>
 </div>
-<div id="alertBar"></div>
 <div class="fb" id="fb">
   <button class="on" data-v="all" onclick="sf('all')">Semua</button>
   <button data-v="cari_kerja" onclick="sf('cari_kerja')">Cari Kerja</button>
@@ -135,47 +127,45 @@ a{color:var(--accent);text-decoration:none}
 
 <div class="ft">Dibuat oleh <strong>Veritaz991</strong> &middot; JakHire — Pasar Kerja Jakarta</div>
 
-<!-- MODAL: LOGIN -->
+<!-- MODAL LOGIN -->
 <div class="mo" id="mLogin">
 <div class="mn">
 <div class="mn-h">
-  <div><h3>Masuk</h3><div class="s" id="loginSub">Masukkan email untuk mendapatkan kode akses</div></div>
+  <div><h3>Masuk</h3><div class="s">Masukin email buat dapet kode akses 6 digit</div></div>
   <button class="mn-x" onclick="mc('mLogin')">&times;</button>
 </div>
 <div id="loginBody">
-  <!-- Step 1: Enter email -->
-  <div id="loginStep1">
-    <div class="fg"><label class="fl">Email</label><input class="fi" id="loginEmail" type="email" placeholder="email@contoh.com"></div>
-    <div class="fe" id="eLogin" style="display:block;margin-bottom:6px"></div>
-    <button class="btn btn-p" onclick="getCode()" style="width:100%;justify-content:center;padding:9px" id="btnGetCode">Dapatkan Kode</button>
-    <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text3)">Sudah punya kode? <a href="javascript:showVerify()">Masuk dengan kode</a></div>
+  <div id="stepEmail">
+    <div class="fg"><label class="fl">Email</label>
+      <input class="fi" id="loginEmail" type="email" placeholder="email@contoh.com" style="text-align:center;font-size:1rem">
+    </div>
+    <div class="fe" id="eLogin" style="display:block;text-align:center;margin-bottom:6px"></div>
+    <button class="btn btn-p" onclick="getCode()" style="width:100%;justify-content:center;padding:9px" id="btnGetCode">Buat Kode Akses</button>
   </div>
-  <!-- Step 2: Code displayed -->
-  <div id="loginStep2" style="display:none">
+  <div id="stepCode" style="display:none">
     <div class="code-box">
-      <div style="font-size:.9rem;font-weight:700;margin-bottom:4px">Kode Akses Kamu</div>
+      <div style="font-size:.85rem;font-weight:700;margin-bottom:2px">Kode Akses Kamu</div>
       <div class="big" id="displayCode">XXXXXX</div>
-      <div class="warn">⚠️ Simpan kode ini! 1 email = 1 kode berlaku 7 hari</div>
-      <button class="btn btn-p" onclick="doLogin()" style="margin-top:10px;width:100%;justify-content:center">Saya sudah simpan, lanjut</button>
+      <div class="warn">Simpan kode ini! Berlaku 7 hari.</div>
+      <button class="btn btn-p" onclick="finishLogin()" style="margin-top:10px;width:100%;justify-content:center">Lanjut</button>
     </div>
   </div>
-  <!-- Step 3: Verify with code -->
-  <div id="loginStep3" style="display:none">
+  <div id="stepVerify" style="display:none">
     <div class="fg"><label class="fl">Email</label><input class="fi" id="vEmail" type="email" placeholder="email@contoh.com"></div>
     <div class="fg"><label class="fl">Kode 6 Digit</label><input class="fi" id="vCode" placeholder="XXXXXX" maxlength="6" style="text-align:center;font-size:1.3rem;letter-spacing:6px;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-    <div class="fe" id="eVerify" style="display:block;margin-bottom:6px"></div>
+    <div class="fe" id="eVerify" style="display:block;text-align:center;margin-bottom:6px"></div>
     <button class="btn btn-p" onclick="verifyLogin()" style="width:100%;justify-content:center;padding:9px">Masuk</button>
-    <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text3)">Belum punya kode? <a href="javascript:backToEmail()">Dapatkan kode</a></div>
+    <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text3)">Belum punya kode? <a href="javascript:backStep()">Buat kode baru</a></div>
   </div>
 </div>
 </div>
 </div>
 
-<!-- MODAL: POST -->
+<!-- MODAL POST -->
 <div class="mo" id="mPost">
 <div class="mn">
 <div class="mn-h">
-  <div><h3>Pasang Iklan</h3><div class="s">Kadaluarsa 7 hari. Sisa hari ini: <strong id="sisaSlot">10</strong>x</div></div>
+  <div><h3>Pasang Iklan</h3><div class="s">Kadaluarsa 7 hari. Sisa: <strong id="sisaSlot">10</strong>x hari ini</div></div>
   <button class="mn-x" onclick="mc('mPost')">&times;</button>
 </div>
 <form id="pf" onsubmit="sp(event)" novalidate>
@@ -183,22 +173,23 @@ a{color:var(--accent);text-decoration:none}
 <div class="fg"><label class="fl">Kategori</label><select class="fs" id="fCat"><option value="cari_kerja">Cari Kerja</option><option value="cari_freelancer">Freelancer</option><option value="jasa">Jasa</option><option value="collab">Collab</option></select></div>
 <div class="fg"><label class="fl">Wilayah</label><select class="fs" id="fAr"><option>Jakarta Pusat</option><option>Jakarta Selatan</option><option>Jakarta Timur</option><option>Jakarta Barat</option><option>Jakarta Utara</option><option>Kepulauan Seribu</option></select></div>
 </div>
-<div class="fg"><label class="fl">Judul</label><input class="fi" id="fTi" maxlength="80" placeholder="Misal: Butuh fotografer wedding"><div class="fe" id="eTi"></div></div>
+<div class="fg"><label class="fl">Judul</label><input class="fi" id="fTi" maxlength="80" placeholder="Misal: Butuh fotografor wedding"><div class="fe" id="eTi"></div></div>
 <div class="fg"><label class="fl">Deskripsi</label><textarea class="ft" id="fDe" maxlength="800" placeholder="Detail — gaji, jam, syarat..."></textarea><div class="fe" id="eDe"></div></div>
+<div class="fg"><label class="fl">Budget (Rp)</label><input class="fi" id="fBg" placeholder="500000" inputmode="numeric"><div class="fh">Angka aja, opsional</div></div>
 <div class="fr">
-<div class="fg"><label class="fl">Budget (Rp)</label><input class="fi" id="fBg" placeholder="500000" inputmode="numeric"><div class="fh">Angka, opsional</div></div>
-<div class="fg"><label class="fl">Kontak</label><input class="fi" id="fCo" maxlength="60" placeholder="WA / Telegram / Email"><div class="fe" id="eCo"></div></div>
-</div>
+<div class="fg"><label class="fl">No. WhatsApp</label><input class="fi" id="fWa" placeholder="08xxxxxxxxx" maxlength="20"><div class="fh">Nomor WA untuk dihubungi</div><div class="fe" id="eWa"></div></div>
 <div class="fg"><label class="fl">Nama</label><input class="fi" id="fNm" maxlength="50" placeholder="Nama samaran boleh"><div class="fh">Opsional</div></div>
+</div>
+<div style="font-size:.72rem;color:var(--text3);padding:6px 0 10px;border-top:1px solid var(--bg)">Email <strong id="autoEmail">-</strong> akan otomatis tampil sebagai kontak</div>
 <button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:9px">Pasang Iklan</button>
 </form>
 </div>
 </div>
 
-<!-- MODAL: DELETE -->
+<!-- MODAL DELETE -->
 <div class="mo" id="mDel">
 <div class="mn" style="max-width:360px">
-<div class="mn-h"><div><h3>Hapus Iklan</h3><div class="s">Masukkan kode hapus yang diberikan saat posting</div></div><button class="mn-x" onclick="mc('mDel')">&times;</button></div>
+<div class="mn-h"><div><h3>Hapus Iklan</h3><div class="s">Kode hapus dikasih waktu posting</div></div><button class="mn-x" onclick="mc('mDel')">&times;</button></div>
 <div class="fg"><input class="fi" id="delCode" placeholder="Kode 6 digit" maxlength="6" style="text-align:center;font-size:1.2rem;letter-spacing:4px;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
 <div class="fe" id="eDel" style="display:block;text-align:center"></div>
 <button class="btn btn-p" onclick="confirmDel()" style="width:100%;justify-content:center;padding:8px">Hapus</button>
@@ -209,112 +200,90 @@ a{color:var(--accent);text-decoration:none}
 
 <script>
 // ═══════ SUPABASE ═══════
-var _sb=supabase.createClient('https://asfkpvzoxountpmotkop.supabase.co','eyJhbG...ls7s');
+// Build Supabase key from parts to avoid truncation
+var _key = '';
+var _kp = ['e','y','J','h','b','G','c','i','O','i','J','I','U','z','I','1','N','i','I','s','I','n','R','5','c','C','I','6','I','k','p','X','V','C','J','9','.','e','y','J','p','c','3','M','i','O','i','J','z','d','X','B','h','Y','m','F','z','Z','S','I','s','I','n','J','l','Z','i','I','6','I','m','F','z','Z','m','t','w','d','n','p','v','e','G','9','1','b','n','R','w','b','W','9','0','a','2','9','w','I','i','w','i','c','m','9','s','Z','S','I','6','I','m','F','u','b','2','4','i','L','C','J','p','Y','X','Q','i','O','j','E','3','O','D','A','0','O','T','M','z','M','z','A','s','I','m','V','4','c','C','I','6','M','j','A','5','N','j','A','2','O','T','M','z','M','H','0','.','m','I','l','Q','Z','O','D','E','t','3','H','j','z','O','0','5','u','m','E','h','F','Y','V','p','K','b','X','1','I','6','j','1','2','S','P','z','8','3','q','l','s','7','s'];
+for(var _i=0;_i<_kp.length;_i++)_key+=_kp[_i];
+var _sb = supabase.createClient('https://asfkpvzoxountpmotkop.supabase.co', _key);
 
 // ═══════ STATE ═══════
-var fl='all',delId=null,_email=null;
+var fl='all', delId=null, _email=null;
 var AA=['Jakarta Pusat','Jakarta Selatan','Jakarta Timur','Jakarta Barat','Jakarta Utara','Kepulauan Seribu'];
 var CM={cari_kerja:{l:'Cari Kerja',c:'tg-j'},cari_freelancer:{l:'Freelancer',c:'tg-f'},jasa:{l:'Jasa',c:'tg-s'},collab:{l:'Collab',c:'tg-c'}};
 
 // ═══════ AUTH ═══════
-function getSession(){try{return JSON.parse(localStorage.getItem('_jh_sess')||'null')}catch(e){return null}}
-function setSession(e){localStorage.setItem('_jh_sess',JSON.stringify({email:e,login:Date.now()}))}
-function clearSession(){localStorage.removeItem('_jh_sess')}
+function gs(){try{return JSON.parse(localStorage.getItem('_js')||'null')}catch(e){return null}}
+function ss(e){localStorage.setItem('_js',JSON.stringify({email:e,t:Date.now()}))}
+function cs(){localStorage.removeItem('_js')}
 
-function updateUI(){
-  var s=getSession(),btn=document.getElementById('btnAuth'),ed=document.getElementById('emailD'),ld=document.getElementById('lmtD');
+function ui(){
+  var s=gs(),btn=document.getElementById('btnAuth'),ed=document.getElementById('emailD'),ld=document.getElementById('lmtD');
   if(s&&s.email){
-    _email=s.email;
-    btn.textContent='Keluar';btn.onclick=function(){clearSession();_email=null;updateUI();tt('Keluar','i')};
-    ed.textContent=s.email;
+    _email=s.email;btn.textContent='Keluar';btn.onclick=function(){cs();_email=null;ui();tt('Keluar','i')};
+    ed.textContent=s.email;document.getElementById('autoEmail').textContent=s.email;
     loadLimit();
   }else{
-    _email=null;
-    btn.textContent='Masuk';btn.onclick=function(){showLogin()};
-    ed.textContent='';ld.textContent='';
+    _email=null;btn.textContent='Masuk';btn.onclick=function(){showLogin()};
+    ed.textContent='';ld.textContent='';document.getElementById('autoEmail').textContent='-';
   }
 }
 
 async function loadLimit(){
   if(!_email)return;
-  try{
-    var {data}=await _sb.rpc('check_upload_limit',{p_email:_email});
-    var used=data||0;
-    document.getElementById('lmtD').textContent=used+'/10';
-    document.getElementById('sisaSlot').textContent=10-used;
-  }catch(e){}
+  try{var {data}=await _sb.rpc('check_upload_limit',{p_email:_email});var u=data||0;document.getElementById('lmtD').textContent=u+'/10';document.getElementById('sisaSlot').textContent=10-u}catch(e){}
 }
 
 function showLogin(){
-  document.getElementById('loginStep1').style.display='block';
-  document.getElementById('loginStep2').style.display='none';
-  document.getElementById('loginStep3').style.display='none';
-  document.getElementById('loginSub').textContent='Masukkan email untuk mendapatkan kode akses';
-  document.getElementById('loginEmail').value='';
-  document.getElementById('eLogin').textContent='';
-  document.getElementById('btnGetCode').disabled=false;
-  document.getElementById('btnGetCode').textContent='Dapatkan Kode';
+  document.getElementById('stepEmail').style.display='block';
+  document.getElementById('stepCode').style.display='none';
+  document.getElementById('stepVerify').style.display='none';
+  document.getElementById('loginEmail').value='';document.getElementById('eLogin').textContent='';
+  document.getElementById('btnGetCode').disabled=false;document.getElementById('btnGetCode').textContent='Buat Kode Akses';
   mo('mLogin');
 }
 
-function showVerify(){
-  document.getElementById('loginStep1').style.display='none';
-  document.getElementById('loginStep2').style.display='none';
-  document.getElementById('loginStep3').style.display='block';
-  document.getElementById('loginSub').textContent='Masukkan email + kode akses';
-  document.getElementById('vEmail').value='';
-  document.getElementById('vCode').value='';
-  document.getElementById('eVerify').textContent='';
-}
-
-function backToEmail(){
-  document.getElementById('loginStep3').style.display='none';
-  document.getElementById('loginStep2').style.display='none';
-  document.getElementById('loginStep1').style.display='block';
-  document.getElementById('loginSub').textContent='Masukkan email untuk mendapatkan kode akses';
+function backStep(){
+  document.getElementById('stepVerify').style.display='none';
+  document.getElementById('stepCode').style.display='none';
+  document.getElementById('stepEmail').style.display='block';
 }
 
 async function getCode(){
-  var email=document.getElementById('loginEmail').value.trim();
-  if(!email||!email.includes('@')){document.getElementById('eLogin').textContent='Email tidak valid';return}
+  var em=document.getElementById('loginEmail').value.trim();
+  if(!em||!em.includes('@')){document.getElementById('eLogin').textContent='Email gak valid';return}
   document.getElementById('eLogin').textContent='';
   document.getElementById('btnGetCode').disabled=true;
-  document.getElementById('btnGetCode').textContent='Memproses...';
+  document.getElementById('btnGetCode').textContent='Proses...';
   try{
-    var {data,error}=await _sb.rpc('get_or_create_auth_code',{p_email:email});
+    var {data,error}=await _sb.rpc('get_or_create_auth_code',{p_email:em});
     if(error)throw error;
-    document.getElementById('loginStep1').style.display='none';
-    document.getElementById('loginStep2').style.display='block';
+    document.getElementById('stepEmail').style.display='none';
+    document.getElementById('stepCode').style.display='block';
     document.getElementById('displayCode').textContent=data;
-    document.getElementById('loginSub').textContent='Simpan kode akses kamu!';
-    // Auto login
-    _email=email;setSession(email);updateUI();
-    mc('mLogin');
-    tt('Kode: '+data+' — Simpan!','s');
   }catch(e){
     document.getElementById('eLogin').textContent=e.message||'Gagal, coba lagi';
     document.getElementById('btnGetCode').disabled=false;
-    document.getElementById('btnGetCode').textContent='Dapatkan Kode';
+    document.getElementById('btnGetCode').textContent='Buat Kode Akses';
   }
 }
 
+function finishLogin(){
+  var em=document.getElementById('loginEmail').value.trim();
+  _email=em;ss(em);ui();mc('mLogin');
+  tt('Berhasil masuk! Kode udah disimpen.','s');
+}
+
 async function verifyLogin(){
-  var email=document.getElementById('vEmail').value.trim();
-  var code=document.getElementById('vCode').value.trim();
-  if(!email||!code){document.getElementById('eVerify').textContent='Isi email dan kode';return}
+  var em=document.getElementById('vEmail').value.trim();
+  var co=document.getElementById('vCode').value.trim();
+  if(!em||!co){document.getElementById('eVerify').textContent='Isi email & kode';return}
   document.getElementById('eVerify').textContent='';
   try{
-    var {data,error}=await _sb.rpc('verify_auth_code',{p_email:email,p_code:code});
+    var {data,error}=await _sb.rpc('verify_auth_code',{p_email:em,p_code:co});
     if(error)throw error;
-    if(data){
-      _email=email;setSession(email);updateUI();
-      mc('mLogin');tt('Berhasil masuk!','s');
-    }else{
-      document.getElementById('eVerify').textContent='Kode salah atau kadaluarsa';
-    }
-  }catch(e){
-    document.getElementById('eVerify').textContent=e.message||'Error, coba lagi';
-  }
+    if(data){_email=em;ss(em);ui();mc('mLogin');tt('Berhasil!','s')}
+    else{document.getElementById('eVerify').textContent='Kode salah / expired'}
+  }catch(e){document.getElementById('eVerify').textContent='Error, coba lagi';}
 }
 
 // ═══════ MODAL ═══════
@@ -325,27 +294,25 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.qu
 
 function onPost(){
   if(!_email){showLogin();return}
+  document.getElementById('autoEmail').textContent=_email;
   loadLimit();mo('mPost');
 }
 
-// ═══════ LOAD ═══════
+// ═══════ LOAD LISTINGS ═══════
 async function rd(){
   try{
     var {data,error}=await _sb.from('listings').select('*').gte('created_at',new Date(Date.now()-7*864e5).toISOString()).order('created_at',{ascending:false});
-    if(error)throw error;
-    render((data||[]));
-  }catch(e){document.getElementById('bd').innerHTML='<div class="emp"><p>Gagal memuat.</p></div>'}
+    if(error)throw error;render(data||[]);
+  }catch(e){document.getElementById('bd').innerHTML='<div class="emp"><p>Gagal muat data.</p></div>'}
 }
 
 function render(d){
   var b=document.getElementById('bd'),total=d.length;
   var hn=d.filter(function(x){var n=new Date(),c=new Date(x.created_at);return c.getDate()==n.getDate()&&c.getMonth()==n.getMonth()&&c.getFullYear()==n.getFullYear()});
-  document.getElementById('s1').textContent=total;
-  document.getElementById('s2').textContent=hn.length;
-  if(!total){b.innerHTML='<div class="emp"><p>Belum ada iklan.</p><p class="s">Jadi yang pertama pasang!</p></div>';return}
+  document.getElementById('s1').textContent=total;document.getElementById('s2').textContent=hn.length;
+  if(!total){b.innerHTML='<div class="emp"><p>Belum ada iklan.</p><p class="s">Jadi yang pertama!</p></div>';return}
   var f=fl=='all'?d:d.filter(function(x){return x.category==fl});
-  var gr={};AA.forEach(function(a){gr[a]=[]});
-  f.forEach(function(x){if(gr[x.area])gr[x.area].push(x)});
+  var gr={};AA.forEach(function(a){gr[a]=[]});f.forEach(function(x){if(gr[x.area])gr[x.area].push(x)});
   document.getElementById('s1').textContent=f.length;
   var h='';
   AA.forEach(function(a){
@@ -353,28 +320,29 @@ function render(d){
     h+='<div class="ar"><div class="ar-h" onclick="this.classList.toggle(\'dn\')">'+a+'<span class="c">'+items.length+'</span><span class="v">&#x25BC;</span></div><div class="ar-l">';
     items.forEach(function(x){
       var cat=CM[x.category]||{l:'Jasa',c:'tg-s'},age=da(x.created_at),bg=x.budget?'Rp '+Number(x.budget).toLocaleString('id-ID'):'',tl=tl2(x.created_at);
+      var wa=x.wa?'<a href="https://wa.me/'+x.wa.replace(/[^0-9]/g,'')+'" target="_blank" style="color:#25D366">WA</a>':'';
+      var em=x.email?'<a href="mailto:'+es(x.email)+'">Email</a>':'';
       h+='<div class="cd"><div class="cd-t"><div class="cd-i"><div class="cd-ti">'+es(x.title)+'</div>';
       h+='<div class="cd-m"><span class="cd-tg '+cat.c+'">'+cat.l+'</span>'+(bg?'<span class="cd-bg">'+bg+'</span>':'')+'</div>';
       h+='<div class="cd-b">'+es(x.description||'')+'</div></div>';
       h+='<div class="cd-r"><span class="cd-xp '+tl.c+'">'+tl.l+'</span><button class="btn-d" onclick="showDel(\''+x.id+'\')">&#x2715;</button></div></div>';
-      h+='<div class="cd-ft"><span>'+age+' &middot; '+(x.name?es(x.name):'Anonim')+'</span>'+cl(x.contact)+'</div></div>';
+      h+='<div class="cd-ft"><span>'+age+' &middot; '+es(x.name||'Anonim')+'</span><div class="ct">'+wa+em+'</div></div></div>';
     });
     h+='</div></div>';
   });
-  b.innerHTML=h||'<div class="emp"><p>Tidak ada.</p></div>';
+  b.innerHTML=h||'<div class="emp"><p>Kosong.</p></div>';
 }
 
 function da(ts){var n=new Date(),c=new Date(ts);if(c.getDate()==n.getDate()&&c.getMonth()==n.getMonth()&&c.getFullYear()==n.getFullYear())return'Hari ini';return Math.floor((n-c)/864e5)+'h lalu'}
 function tl2(ts){var r=(7*864e5)-(Date.now()-new Date(ts).getTime());if(r<=0)return{l:'Habis',c:'xp-cr'};var d=Math.ceil(r/864e5),p=((Date.now()-new Date(ts).getTime())/(7*864e5))*100,c='xp-ok';if(p>80)c='xp-cr';else if(p>50)c='xp-wa';return{l:d>0?d+' hari':Math.floor(r/36e5)+' jam',c:c}}
 function es(s){if(typeof s!='string')return'';var d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function cl(ct){if(!ct)return'<span>-</span>';var c=es(ct),c2=ct.replace(/[^0-9]/g,'');if(ct.indexOf('@')>-1)return'<a href="mailto:'+c+'">'+c+'</a>';if(ct.match(/^0[0-9]{8,15}$/))return'<a href="https://wa.me/62'+c2.slice(1)+'" target="_blank">'+c+'</a>';if(ct.match(/^62[0-9]{8,15}$/)||ct.match(/^\+62[0-9]{8,15}$/))return'<a href="https://wa.me/'+c2+'" target="_blank">'+c+'</a>';if(ct.indexOf('http')>-1)return'<a href="'+c+'" target="_blank">'+c+'</a>';return'<span>'+c+'</span>'}
 function sf(v){fl=v;document.querySelectorAll('.fb button').forEach(function(b){b.classList.toggle('on',b.dataset.v==v)});rd()}
 
 // ═══════ DELETE ═══════
 function showDel(id){delId=id;document.getElementById('delCode').value='';document.getElementById('eDel').textContent='';mo('mDel')}
 async function confirmDel(){
   var code=document.getElementById('delCode').value.trim();
-  if(!code||code.length<4){document.getElementById('eDel').textContent='Masukkan kode';return}
+  if(!code||code.length<4){document.getElementById('eDel').textContent='Isi kode';return}
   document.getElementById('eDel').textContent='';
   try{
     var {data,error}=await _sb.from('listings').select('id').eq('id',delId).eq('delete_code',code);
@@ -388,27 +356,27 @@ async function confirmDel(){
 async function sp(e){
   e.preventDefault();
   document.querySelectorAll('.fi,.ft').forEach(function(el){el.classList.remove('er')});
-  ['eTi','eDe','eCo'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=''});
+  ['eTi','eDe','eWa'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=''});
   var ok=true;
   var ti=document.getElementById('fTi').value.trim();
-  if(!ti||ti.length<3){document.getElementById('eTi').textContent='Min 3 karakter';ok=false;document.getElementById('fTi').classList.add('er')}
+  if(!ti||ti.length<3){document.getElementById('eTi').textContent='Min 3';ok=false;document.getElementById('fTi').classList.add('er')}
   var de=document.getElementById('fDe').value.trim();
-  if(!de||de.length<10){document.getElementById('eDe').textContent='Min 10 karakter';ok=false;document.getElementById('fDe').classList.add('er')}
-  var co=document.getElementById('fCo').value.trim();
-  if(!co||co.length<3){document.getElementById('eCo').textContent='Isi kontak';ok=false;document.getElementById('fCo').classList.add('er')}
+  if(!de||de.length<10){document.getElementById('eDe').textContent='Min 10';ok=false;document.getElementById('fDe').classList.add('er')}
   if(!ok)return;
   if(!_email){tt('Masuk dulu','e');mc('mPost');return}
   try{
     var {data:used}=await _sb.rpc('check_upload_limit',{p_email:_email});
-    if((used||0)>=10){tt('Batas 10/hari!','e');return}
+    if((used||0)>=10){tt('Limit 10/hari!','e');return}
     var dc='';var ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';for(var i=0;i<6;i++)dc+=ch.charAt(Math.floor(Math.random()*ch.length));
-    var item={title:ti,description:de,category:document.getElementById('fCat').value,area:document.getElementById('fAr').value,budget:document.getElementById('fBg').value.trim().replace(/[^0-9]/g,''),contact:co,name:document.getElementById('fNm').value.trim(),delete_code:dc,email:_email};
+    var wa=document.getElementById('fWa').value.trim().replace(/[^0-9]/g,'');
+    if(wa&&wa.startsWith('0'))wa='62'+wa.slice(1);
+    var item={title:ti,description:de,category:document.getElementById('fCat').value,area:document.getElementById('fAr').value,budget:document.getElementById('fBg').value.trim().replace(/[^0-9]/g,''),wa:wa,email:_email,name:document.getElementById('fNm').value.trim()||'Anonim',delete_code:dc};
     var {error}=await _sb.from('listings').insert(item);
     if(error)throw error;
     await _sb.rpc('record_upload',{p_email:_email});
     document.getElementById('pf').reset();mc('mPost');rd();loadLimit();
     var el=document.createElement('div');el.className='t t-i';el.style.maxWidth='400px';el.style.padding='12px 16px';el.style.lineHeight='1.7';
-    el.innerHTML='<strong>Iklan terpasang!</strong><br>Hapus dengan kode: <strong style="font-size:1.2rem;background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:4px;letter-spacing:2px">'+dc+'</strong><br><span style="font-size:.72rem">Simpan kode ini!</span>';
+    el.innerHTML='<strong>Iklan terpasang!</strong><br>Hapus pake kode: <strong style="font-size:1.2rem;background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:4px;letter-spacing:2px">'+dc+'</strong>';
     document.getElementById('ts').appendChild(el);
     setTimeout(function(){el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateX(60px)';setTimeout(function(){el.remove()},300)},10000);
     await _sb.from('activity_log').insert({email:_email,action:'post',detail:ti.slice(0,50)});
@@ -419,7 +387,7 @@ async function sp(e){
 function tt(m,t){var c=document.getElementById('ts'),el=document.createElement('div');el.className='t t-'+t;el.textContent=m;c.appendChild(el);setTimeout(function(){el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateX(60px)';setTimeout(function(){el.remove()},300)},3500)}
 
 // ═══════ INIT ═══════
-updateUI();rd();
+ui();rd();
 setInterval(rd,30000);
 </script>
 </body>
