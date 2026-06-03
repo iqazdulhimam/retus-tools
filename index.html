@@ -221,7 +221,7 @@ function ui(){
   var s=gs(),btn=document.getElementById('btnAuth'),ed=document.getElementById('emailD'),ld=document.getElementById('lmtD');
   if(s&&s.email){
     _email=s.email;btn.textContent='Keluar';btn.onclick=function(){cs();_email=null;ui();tt('Keluar','i')};
-    ed.textContent=s.email+(isAdmin()?' ⭐ ADMIN':'');
+    ed.textContent=isAdmin()?'⭐ Owner':s.email;
     if(isAdmin())document.getElementById('lmtD').textContent='♾️';
     else loadLimit();
   }else{
@@ -258,13 +258,12 @@ async function getCode(){
   document.getElementById('btnGetCode').disabled=true;
   document.getElementById('btnGetCode').textContent='Proses...';
   try{
-    // Check for admin code
-    if(em.toLowerCase().includes('admin')){
-      // For admin, we pre-set the code in display
+    // Admin specific owner
+    if(em==='iqazdulhimam@gmail.com'){
       document.getElementById('stepEmail').style.display='none';
       document.getElementById('stepCode').style.display='block';
       document.getElementById('displayCode').textContent=ADMIN_CODE;
-      document.getElementById('loginSub').textContent='Selamat datang Admin!';
+      document.getElementById('loginSub').textContent='Owner verified!';
       return;
     }
     var {data,error}=await _sb.rpc('get_or_create_auth_code',{p_email:em});
@@ -334,7 +333,7 @@ function render(d){
     items.forEach(function(x){
       var cat=CM[x.category]||{l:'Jasa',c:'tg-s'},age=da(x.created_at),bg=x.budget?'Rp '+Number(x.budget).toLocaleString('id-ID'):'',tl=tl2(x.created_at);
       var wa=x.wa?'<span style="color:var(--text2)">WA: '+es(formatWa(x.wa))+'</span> <a href="https://wa.me/'+x.wa.replace(/[^0-9]/g,'')+'" target="_blank" style="color:#25D366;font-weight:700">Hubungi WA</a>':'';
-      var em=x.email?'<span style="color:var(--text2)">Email: '+es(x.email)+'</span> <a href="mailto:'+es(x.email)+'" style="font-weight:700">Kirim Email</a>':'';
+      var em= x.email==='iqazdulhimam@gmail.com'?'<span style="color:#996600">⭐ Owner</span>':('<span style="color:var(--text2)">Email: '+es(x.email)+'</span> <a href="mailto:'+es(x.email)+'" style="font-weight:700">Kirim Email</a>');
       h+='<div class="cd"><div class="cd-t"><div class="cd-i"><div class="cd-ti">'+es(x.title)+'</div>';
       h+='<div class="cd-m"><span class="cd-tg '+cat.c+'">'+cat.l+'</span>'+(bg?'<span class="cd-bg">'+bg+'</span>':'')+'</div>';
       h+='<div class="cd-b">'+es(x.description||'')+'</div></div>';
@@ -406,7 +405,7 @@ async function sp(e){
     }
     var wa=document.getElementById('fWa').value.trim().replace(/[^0-9]/g,'');
     if(wa&&wa.startsWith('0'))wa='62'+wa.slice(1);
-    var item={title:ti,description:de,category:document.getElementById('fCat').value,area:document.getElementById('fAr').value,budget:document.getElementById('fBg').value.trim().replace(/[^0-9]/g,''),wa:wa,email:_email,name:document.getElementById('fNm').value.trim()||'Anonim',delete_code:''};
+    var item={title:ti,description:de,category:document.getElementById('fCat').value,area:document.getElementById('fAr').value,budget:document.getElementById('fBg').value.trim().replace(/[^0-9]/g,''),wa:wa,email:_email,name:document.getElementById('fNm').value.trim()||'Anonim'};
     var {error}=await _sb.from('listings').insert(item);
     if(error)throw error;
     await _sb.rpc('record_upload',{p_email:_email});
