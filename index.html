@@ -193,7 +193,7 @@ a:hover{text-decoration:underline}
 
 /* TOP BTN */
 .tb{
-  position:fixed;bottom:16px;left:16px;
+  position:fixed;bottom:56px;left:16px;
   width:32px;height:32px;border-radius:50%;
   background:var(--surface);border:1px solid var(--border);
   color:var(--text2);font-size:.85rem;
@@ -201,6 +201,10 @@ a:hover{text-decoration:underline}
   transition:all .15s;
 }
 .tb:hover{border-color:var(--accent);color:var(--accent)}
+
+/* FOOTER */
+.ft{text-align:center;padding:24px 16px 40px;color:var(--text3);font-size:.72rem;border-top:1px solid var(--bg);margin-top:8px}
+.ft strong{color:var(--text2)}
 
 @media(max-width:600px){
   .hero{padding:22px 0 12px}
@@ -259,7 +263,9 @@ a:hover{text-decoration:underline}
 
 <div id="bd"></div>
 
-</div>
+</div><!-- /wrap -->
+
+<div class="ft">Dibuat oleh <strong>Veritaz991</strong> &middot; JakHire &mdash; Pasar Kerja Jakarta</div>
 
 <!-- MODAL -->
 <div class="mo" id="mPost">
@@ -415,20 +421,39 @@ function sv(x){
     if(d[i].title.toLowerCase()==x.title.toLowerCase()&&
        d[i].desc.toLowerCase()==x.desc.toLowerCase()&&
        now-d[i].createdAt<864e5){
-      return false;
+      return {ok:false};
     }
   }
   // Check total limit
-  if(d.length>=50) return false;
+  if(d.length>=50) return {ok:false};
+  
+  // Generate unique delete code
+  var code='';
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  for(var i=0;i<6;i++)code+=chars.charAt(Math.floor(Math.random()*chars.length));
+  x._dk=code;
   
   d.unshift(x);
   localStorage.setItem(K,JSON.stringify(d));
-  return true;
+  return {ok:true,code:code};
 }
 
 function dl(id){
-  if(!id||id.length>30)return;
-  var d=gd().filter(function(p){return p.id!=id});
+  // Ask for delete code via prompt
+  var code=prompt('Masukkan kode hapus untuk iklan ini:');
+  if(!code||code.length<4)return;
+  
+  var d=gd();
+  var found=false;
+  for(var i=0;i<d.length;i++){
+    if(d[i].id==id&&d[i]._dk==code.toUpperCase()){
+      d.splice(i,1);
+      found=true;
+      break;
+    }
+  }
+  if(!found){tt('Kode hapus salah!','e');return}
+  
   localStorage.setItem(K,JSON.stringify(d));
   rd();
   tt('Iklan berhasil dihapus','i');
@@ -599,7 +624,8 @@ function sp(e){
     createdAt:Date.now()
   };
   
-  if(!sv(item)){
+  var result=sv(item);
+  if(!result.ok){
     tt('Iklan serupa sudah ada dalam 24 jam terakhir','e');
     return;
   }
@@ -610,7 +636,7 @@ function sp(e){
   document.getElementById('pf').reset();
   mc();
   rd();
-  tt('Iklan berhasil dipasang!','s');
+  tt('Kode hapus: '+result.code+' — Simpan kode ini!','s');
 }
 
 // ═══════════════════════════════════
