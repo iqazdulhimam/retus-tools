@@ -271,7 +271,7 @@ a:hover{text-decoration:underline}
 <div class="mo" id="mPost">
 <div class="mn">
 <div class="mn-h">
-  <div><h3>Pasang Iklan</h3><div class="s">Kadaluarsa otomatis 7 hari. Max 3 iklan/hari.</div></div>
+  <div><h3>Pasang Iklan</h3><div class="s">Kadaluarsa 7 hari. Max 50/hari. Setelah posting, simpan <strong>kode hapus</strong> yang muncul.</div></div>
   <button class="mn-x" onclick="mc()">&times;</button>
 </div>
 
@@ -375,7 +375,7 @@ function checkRate(){
     saveRate(rt);
   }
   // Check daily limit
-  if(rt.count>=3) return{ok:false,msg:'Anda sudah mencapai batas 3 iklan per hari. Coba lagi besok.'};
+  if(rt.count>=50) return{ok:false,msg:'Batas 50 iklan/hari tercapai. Coba lagi besok.'};
   // Check cooldown
   if(rt.posts.length>0){
     var last=rt.posts[rt.posts.length-1];
@@ -532,7 +532,17 @@ function rd(){
       h+='<div class="cd-m"><span class="cd-tg '+cat.c+'">'+cat.l+'</span>'+(bg?'<span class="cd-bg">'+bg+'</span>':'')+'</div>';
       h+='<div class="cd-b">'+es(d.desc)+'</div></div>';
       h+='<div class="cd-r"><span class="cd-xp '+tm.c+'">'+tm.l+'</span><button class="btn-d" onclick="dl(\''+d.id+'\')">&#x2715;</button></div></div>';
-      h+='<div class="cd-ft"><span>'+age+' &middot; '+(d.name?es(d.name):'Anonim')+'</span><a href="'+(d.contact.indexOf('@')>-1||d.contact.indexOf('http')>-1?'':'https://')+es(d.contact)+'" target="_blank" rel="noopener">'+es(d.contact)+'</a></div></div>';
+      h+='<div class="cd-ft"><span>'+age+' &middot; '+(d.name?es(d.name):'Anonim')+'</span>';
+      // Smart contact link: WA number → wa.me, email → mailto, URL → direct
+      var cl=es(d.contact);
+      var c2=d.contact.replace(/[^0-9]/g,'');
+      if(cl.indexOf('@')>-1){h+='<a href="mailto:'+cl+'" target="_blank">'+cl+'</a>'}
+      else if(cl.match(/^0[0-9]{8,15}$/)){h+='<a href="https://wa.me/62'+c2.slice(1)+'" target="_blank" rel="noopener">'+cl+'</a>'}
+      else if(cl.match(/^62[0-9]{8,15}$/)){h+='<a href="https://wa.me/'+c2+'" target="_blank" rel="noopener">'+cl+'</a>'}
+      else if(cl.match(/^\+62[0-9]{8,15}$/)){h+='<a href="https://wa.me/'+c2+'" target="_blank" rel="noopener">'+cl+'</a>'}
+      else if(cl.indexOf('http')>-1){h+='<a href="'+cl+'" target="_blank" rel="noopener">'+cl+'</a>'}
+      else{h+='<span>'+cl+'</span>'}
+      h+='</div></div>';
     }
     h+='</div></div>';
   }
@@ -636,7 +646,12 @@ function sp(e){
   document.getElementById('pf').reset();
   mc();
   rd();
-  tt('Kode hapus: '+result.code+' — Simpan kode ini!','s');
+  // Show delete code prominently
+  var el=document.createElement('div');
+  el.className='t t-i';el.style.maxWidth='400px';el.style.padding='12px 16px';el.style.lineHeight='1.6';
+  el.innerHTML='<strong>Iklan terpasang!</strong><br>Kode hapus: <strong style="font-size:1.1rem;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:4px">'+result.code+'</strong><br><span style="font-size:.75rem;opacity:.9">Simpan kode ini untuk hapus iklan nanti.</span>';
+  document.getElementById('ts').appendChild(el);
+  setTimeout(function(){el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateX(60px)';setTimeout(function(){el.remove()},300)},8000);
 }
 
 // ═══════════════════════════════════
