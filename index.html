@@ -4,532 +4,492 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JakHire — Cari Kerja & Hiring Jakarta</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src data:; connect-src 'self';">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏙️</text></svg>">
 <style>
+/* ═══ RESET & ROOT ═══ */
 :root {
-  --bg: #06060e;
-  --surface: #0d0d1a;
-  --card: #14142a;
-  --card-hover: #1a1a36;
-  --border: #25254a;
-  --border-glow: rgba(0,200,255,0.15);
+  --bg: #050510;
+  --surface: #0b0b1a;
+  --card: #111128;
+  --card-hover: #161638;
+  --border: #1e1e42;
+  --border-focus: rgba(0,200,255,0.25);
   --accent: #00c8ff;
+  --accent-dim: rgba(0,200,255,0.08);
   --accent2: #7c3aed;
-  --accent-gradient: linear-gradient(135deg, #00c8ff, #7c3aed);
-  --accent-gradient2: linear-gradient(135deg, #7c3aed, #1d4ed8);
+  --accent-grad: linear-gradient(135deg, #00c8ff, #7c3aed);
+  --accent-grad2: linear-gradient(135deg, #7c3aed, #1d4ed8);
   --text: #eeeef8;
-  --text2: #7a7a9e;
-  --text3: #4a4a6a;
+  --text2: #7878a0;
+  --text3: #404060;
   --success: #00e676;
+  --success-dim: rgba(0,230,118,0.08);
   --warning: #ffab00;
   --danger: #ff3355;
+  --danger-dim: rgba(255,51,85,0.08);
   --radius: 12px;
   --radius-sm: 8px;
-  --shadow: 0 4px 30px rgba(0,0,0,0.4);
+  --shadow: 0 8px 40px rgba(0,0,0,0.5);
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  line-height: 1.5;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
 }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--surface); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
 
-nav {
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  background: rgba(6,6,14,0.92);
-  backdrop-filter: blur(16px);
-  position: sticky; top: 0; z-index: 100;
-}
-nav .container {
-  max-width: 1000px; margin: 0 auto; padding: 0 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.logo {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 1.15rem; font-weight: 800;
-  text-decoration: none; color: var(--text);
-}
-.logo .icon {
-  width: 32px; height: 32px;
-  background: var(--accent-gradient);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-}
-.logo .accent { color: var(--accent); }
-.nav-links { display: flex; gap: 6px; align-items: center; }
-.nav-links button {
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-size: .82rem; font-weight: 600;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-  font-family: inherit;
-}
-.nav-links button:hover { color: var(--text); background: var(--card); }
-.nav-links button.active {
-  color: var(--accent);
-  border-color: rgba(0,200,255,0.2);
-  background: rgba(0,200,255,0.06);
-}
-.container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
-.page { display: none; }
-.page.active { display: block; }
+/* ═══ LAYOUT ═══ */
+.container{max-width:960px;margin:0 auto;padding:0 24px}
 
-/* ════════ JAKHIRE ════════ */
-
-.hero {
-  text-align: center;
-  padding: 36px 0 20px;
+/* ═══ NAV ═══ */
+nav{
+  padding:16px 0;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,5,16,0.92);
+  backdrop-filter:blur(20px) saturate(1.2);
+  position:sticky;top:0;z-index:100;
 }
-.hero h1 {
-  font-size: 2rem; font-weight: 900;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+nav .container{
+  display:flex;align-items:center;justify-content:space-between;
 }
-.hero p { color: var(--text2); font-size: .92rem; margin-top: 6px; }
-.hero .stats {
-  display: flex; gap: 24px; justify-content: center;
-  margin-top: 14px; font-size: .85rem; color: var(--text2);
+.logo{
+  display:flex;align-items:center;gap:12px;
+  font-size:1.1rem;font-weight:800;color:var(--text);
+  text-decoration:none;
 }
-.hero .stats span { color: var(--accent); font-weight: 700; }
-
-.actions {
-  display: flex; gap: 10px; justify-content: center;
-  margin: 20px 0;
-  flex-wrap: wrap;
+.logo-mark{
+  width:32px;height:32px;
+  background:var(--accent-grad);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
 }
-.btn {
-  padding: 10px 22px;
-  border-radius: var(--radius-sm);
-  font-size: .85rem; font-weight: 600;
-  border: none; cursor: pointer;
-  transition: all .25s;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: inherit;
+.logo-text .accent{color:var(--accent)}
+.logo-text .dim{color:var(--text2);font-weight:400}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links button{
+  padding:7px 18px;border-radius:8px;
+  font-size:.82rem;font-weight:600;
+  border:1px solid transparent;
+  background:transparent;color:var(--text2);
+  cursor:pointer;transition:all .2s;font-family:inherit;
 }
-.btn-primary {
-  background: var(--accent-gradient);
-  color: #fff;
+.nav-links button:hover{color:var(--text);background:var(--card)}
+.nav-links button.active{
+  color:var(--accent);
+  border-color:rgba(0,200,255,0.18);
+  background:var(--accent-dim);
 }
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(0,200,255,0.25);
-}
-.btn-secondary {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-secondary:hover {
-  background: var(--card-hover);
-  border-color: var(--accent);
+.nav-badge{
+  display:inline-block;
+  padding:2px 8px;border-radius:10px;
+  background:var(--accent-dim);color:var(--accent);
+  font-size:.65rem;font-weight:700;margin-left:4px;
+  vertical-align:middle;
 }
 
-.filters {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-}
-.filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: .78rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-  font-family: inherit;
-}
-.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-.filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+/* ═══ PAGES ═══ */
+.page{display:none;animation:fadeIn .25s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.area-section { margin-bottom: 28px; }
-.area-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  margin-bottom: 12px;
-  cursor: pointer;
-  transition: all .2s;
+/* ═══ JAKHIRE HERO ═══ */
+.hero{
+  text-align:center;
+  padding:44px 0 24px;
 }
-.area-header:hover { border-color: var(--accent); background: rgba(0,200,255,0.03); }
-.area-header .emoji { font-size: 1.3rem; }
-.area-header h3 { font-size: .95rem; font-weight: 700; }
-.area-header .count {
-  margin-left: auto;
-  font-size: .8rem;
-  color: var(--text2);
-  background: var(--card);
-  padding: 2px 10px;
-  border-radius: 20px;
+.hero h1{
+  font-size:2rem;font-weight:900;
+  background:var(--accent-grad);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.2;
 }
-.area-header .arrow {
-  color: var(--text3);
-  transition: transform .3s;
-  font-size: .8rem;
+.hero p{
+  color:var(--text2);
+  font-size:.92rem;
+  margin-top:8px;
+  max-width:520px;
+  margin-left:auto;margin-right:auto;
 }
-.area-header.collapsed .arrow { transform: rotate(-90deg); }
-.area-listings { display: flex; flex-direction: column; gap: 10px; }
-.area-header.collapsed + .area-listings { display: none; }
+.hero p strong{color:var(--text)}
+.hero-stats{
+  display:flex;gap:28px;justify-content:center;
+  margin-top:16px;font-size:.82rem;color:var(--text3);
+}
+.hero-stats span{color:var(--accent);font-weight:700;font-size:.95rem}
+.stat-divider{color:var(--border)}
 
-.listing {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 16px 18px;
-  transition: all .2s;
+/* ═══ BUTTONS ═══ */
+.btn-group{
+  display:flex;gap:8px;justify-content:center;
+  margin:22px 0;flex-wrap:wrap;
 }
-.listing:hover {
-  border-color: rgba(0,200,255,0.25);
-  background: var(--card-hover);
-  transform: translateX(3px);
+.btn{
+  padding:10px 24px;border-radius:var(--radius-sm);
+  font-size:.85rem;font-weight:600;
+  border:none;cursor:pointer;
+  transition:all .25s;
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:inherit;text-decoration:none;
 }
-.listing-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+.btn-primary{
+  background:var(--accent-grad);color:#fff;
 }
-.listing-title { font-size: .95rem; font-weight: 700; margin-bottom: 3px; }
-.listing-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: .78rem;
-  color: var(--text2);
-  margin-bottom: 8px;
-  flex-wrap: wrap;
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(0,200,255,0.25);
 }
-.meta-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: .72rem;
-  font-weight: 600;
+.btn-secondary{
+  background:var(--card);color:var(--text2);
+  border:1px solid var(--border);
 }
-.tag-job { background: rgba(0,230,118,0.1); color: var(--success); }
-.tag-hire { background: rgba(124,58,237,0.12); color: var(--accent2); }
-.tag-service { background: rgba(0,200,255,0.1); color: var(--accent); }
-.tag-collab { background: rgba(255,171,0,0.12); color: var(--warning); }
+.btn-secondary:hover{color:var(--text);border-color:var(--text3)}
+.btn-sm{padding:7px 16px;font-size:.8rem}
+.btn-danger{
+  background:var(--danger-dim);color:var(--danger);
+  border:1px solid rgba(255,51,85,0.15);
+}
+.btn-danger:hover{background:rgba(255,51,85,0.15)}
 
-.listing-desc {
-  font-size: .85rem;
-  color: var(--text2);
-  line-height: 1.6;
-  margin-bottom: 8px;
+/* ═══ FILTERS ═══ */
+.filter-bar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-bottom:22px;padding:14px 18px;
+  background:var(--surface);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
 }
-.listing-budget { font-size: .85rem; font-weight: 700; color: var(--success); }
-.listing-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: .75rem;
-  color: var(--text3);
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.04);
+.filter-btn{
+  padding:6px 16px;border-radius:20px;
+  font-size:.77rem;font-weight:600;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text2);
+  cursor:pointer;transition:all .2s;font-family:inherit;
 }
-.listing-footer .contact { color: var(--accent); text-decoration: none; }
-.listing-footer .contact:hover { text-decoration: underline; }
-.delete-listing {
-  background: none;
-  border: none;
-  color: var(--text3);
-  cursor: pointer;
-  font-size: .85rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  transition: all .2s;
-  font-family: inherit;
-}
-.delete-listing:hover { color: var(--danger); background: rgba(255,51,85,0.1); }
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
 
-.expiry-badge {
-  font-size: .7rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
+/* ═══ AREA SECTIONS ═══ */
+.area-section{margin-bottom:24px}
+.area-header{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all .2s;margin-bottom:10px;
+  user-select:none;
 }
-.expiry-badge.ok { background: rgba(0,230,118,0.1); color: var(--success); }
-.expiry-badge.warn { background: rgba(255,171,0,0.12); color: var(--warning); }
-.expiry-badge.critical { background: rgba(255,51,85,0.12); color: var(--danger); }
+.area-header:hover{border-color:rgba(0,200,255,0.2)}
+.area-header .emoji{font-size:1.15rem}
+.area-header h3{font-size:.9rem;font-weight:700}
+.area-header .count{
+  margin-left:auto;
+  font-size:.75rem;color:var(--text3);
+  background:var(--card);padding:2px 10px;border-radius:20px;
+}
+.area-header .arrow{
+  color:var(--text3);font-size:.7rem;
+  transition:transform .3s;
+}
+.area-header.collapsed .arrow{transform:rotate(-90deg)}
+.area-listings{display:flex;flex-direction:column;gap:8px}
+.area-header.collapsed+.area-listings{display:none}
 
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text3);
+/* ═══ LISTING CARD ═══ */
+.listing{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:16px 18px;
+  transition:all .2s;
 }
-.empty-state .big { font-size: 3rem; margin-bottom: 10px; }
-.empty-state p { font-size: .9rem; }
+.listing:hover{
+  border-color:rgba(0,200,255,0.2);
+  background:var(--card-hover);
+  transform:translateX(2px);
+}
+.listing-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:12px;
+}
+.listing-info{flex:1;min-width:0}
+.listing-title{
+  font-size:.93rem;font-weight:700;
+  line-height:1.4;margin-bottom:2px;
+}
+.listing-tags{
+  display:flex;align-items:center;gap:8px;
+  flex-wrap:wrap;margin-bottom:6px;
+}
+.tag{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 9px;border-radius:4px;
+  font-size:.7rem;font-weight:700;letter-spacing:.2px;
+}
+.tag-job{background:var(--success-dim);color:var(--success)}
+.tag-hire{background:rgba(124,58,237,0.1);color:var(--accent2)}
+.tag-service{background:var(--accent-dim);color:var(--accent)}
+.tag-collab{background:rgba(255,171,0,0.1);color:var(--warning)}
+.tag-budget{
+  font-weight:700;font-size:.82rem;
+  color:var(--success);
+}
+.listing-side{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.expiry{
+  font-size:.68rem;padding:2px 9px;border-radius:4px;font-weight:600;
+  white-space:nowrap;
+}
+.expiry-ok{background:var(--success-dim);color:var(--success)}
+.expiry-warn{background:rgba(255,171,0,0.1);color:var(--warning)}
+.expiry-critical{background:var(--danger-dim);color:var(--danger)}
+.btn-delete{
+  background:none;border:none;
+  color:var(--text3);cursor:pointer;
+  font-size:.8rem;padding:3px 6px;border-radius:4px;
+  transition:all .2s;opacity:0;
+}
+.listing:hover .btn-delete{opacity:1}
+.btn-delete:hover{color:var(--danger);background:var(--danger-dim)}
 
-/* ════════ MODAL ════════ */
+.listing-desc{
+  font-size:.84rem;color:var(--text2);
+  line-height:1.65;margin:6px 0 10px;
+}
+.listing-desc a{color:var(--accent);text-decoration:underline}
+.listing-footer{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  font-size:.73rem;color:var(--text3);
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.listing-footer .contact{
+  color:var(--accent);text-decoration:none;
+  font-weight:600;
+}
+.listing-footer .contact:hover{text-decoration:underline}
+.contact-icon{font-size:.8rem}
 
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
-  z-index: 999;
-  align-items: center; justify-content: center;
-  padding: 20px;
+/* ═══ EMPTY ═══ */
+.empty{
+  text-align:center;padding:56px 20px 40px;color:var(--text3);
 }
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 100%;
-  max-width: 520px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow);
-}
-.modal h2 { font-size: 1.2rem; margin-bottom: 4px; }
-.modal .sub { color: var(--text2); font-size: .85rem; margin-bottom: 20px; }
-.modal-close {
-  float: right;
-  background: none;
-  border: none;
-  color: var(--text2);
-  font-size: 1.3rem;
-  cursor: pointer;
-  padding: 4px;
-  line-height: 1;
-}
-.modal-close:hover { color: var(--text); }
+.empty-icon{font-size:3.2rem;margin-bottom:12px;opacity:.6}
+.empty p{font-size:.9rem}
+.empty .sub{font-size:.82rem;margin-top:4px;color:var(--text3)}
 
-.form-group { margin-bottom: 16px; }
-.form-group label {
-  display: block;
-  font-size: .82rem;
-  font-weight: 600;
-  color: var(--text2);
-  margin-bottom: 5px;
+/* ═══ MODAL ═══ */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);
+  z-index:999;align-items:center;justify-content:center;
+  padding:20px;
 }
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-size: .9rem;
-  outline: none;
-  transition: border-color .2s;
-  font-family: inherit;
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 30px;
+  width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow);
+  animation:modalIn .2s ease;
 }
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--border-glow);
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;margin-bottom:18px;
 }
-.form-group textarea { min-height: 80px; resize: vertical; }
-.form-group select option { background: var(--surface); }
-.form-row { display: flex; gap: 12px; }
-.form-row .form-group { flex: 1; }
+.modal-header h2{font-size:1.15rem;font-weight:800}
+.modal-header .sub{
+  color:var(--text2);font-size:.82rem;
+  margin-top:2px;line-height:1.5;
+}
+.modal-close{
+  background:none;border:none;color:var(--text3);
+  font-size:1.4rem;cursor:pointer;padding:2px 6px;
+  border-radius:4px;line-height:1;transition:color .2s;
+}
+.modal-close:hover{color:var(--text);background:var(--card)}
 
-/* ════════ TOOLS SECTION ════════ */
+/* ═══ FORM ═══ */
+.form-group{margin-bottom:18px}
+.form-label{
+  display:block;font-size:.78rem;font-weight:700;
+  color:var(--text2);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.form-input,.form-select,.form-textarea{
+  width:100%;
+  padding:10px 14px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text);font-size:.9rem;
+  outline:none;transition:all .2s;
+  font-family:inherit;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--border-focus);
+}
+.form-select option{background:var(--surface)}
+.form-textarea{min-height:80px;resize:vertical}
+.form-input.error,.form-textarea.error{
+  border-color:var(--danger);
+  box-shadow:0 0 0 3px rgba(255,51,85,0.15);
+}
+.form-error{
+  display:none;font-size:.75rem;color:var(--danger);
+  margin-top:4px;font-weight:500;
+}
+.form-input.error+.form-error,.form-textarea.error+.form-error{display:block}
+.input-hint{font-size:.72rem;color:var(--text3);margin-top:3px}
 
-.tools-hero {
-  text-align: center;
-  padding: 36px 0 20px;
+/* ═══ TOOLS ═══ */
+.tools-header{
+  text-align:center;padding:36px 0 20px;
 }
-.tools-hero h1 {
-  font-size: 1.8rem; font-weight: 800;
-}
-.tools-hero h1 span { color: var(--accent); }
-.tools-hero p { color: var(--text2); font-size: .9rem; margin-top: 6px; }
+.tools-header h1{font-size:1.7rem;font-weight:800}
+.tools-header h1 span{color:var(--accent)}
+.tools-header p{color:var(--text2);font-size:.88rem;margin-top:4px}
 
-.tabs {
-  display: flex; gap: 4px; justify-content: center;
-  flex-wrap: wrap; margin-bottom: 20px;
+.tabs{
+  display:flex;gap:4px;justify-content:center;
+  flex-wrap:wrap;margin-bottom:20px;
 }
-.tab {
-  padding: 8px 18px; border-radius: 8px; cursor: pointer;
-  font-size: .85rem; font-weight: 600;
-  color: var(--text2); background: transparent;
-  border: 1px solid transparent; transition: all .2s;
-  font-family: inherit;
+.tab{
+  padding:8px 18px;border-radius:8px;cursor:pointer;
+  font-size:.84rem;font-weight:600;font-family:inherit;
+  color:var(--text2);background:transparent;
+  border:1px solid transparent;transition:all .2s;
 }
-.tab:hover { color: var(--text); background: var(--card); }
-.tab.active {
-  color: #fff;
-  background: linear-gradient(135deg, var(--accent2), #1d4ed8);
-  border-color: transparent;
+.tab:hover{color:var(--text);background:var(--card)}
+.tab.active{
+  color:#fff;
+  background:var(--accent-grad2);
+  border-color:transparent;
 }
-.tool-panel { display: none; }
-.tool-panel.active { display: block; }
-
-.tool-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 14px;
+.tool-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;margin-bottom:14px;
+  transition:border-color .2s;
 }
-.tool-card h3 { font-size: 1rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-.tool-card .badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: .7rem;
-  font-weight: 700;
-  text-transform: uppercase;
+.tool-card:hover{border-color:rgba(124,58,237,0.2)}
+.tool-card h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.tool-card .badge{
+  padding:2px 9px;border-radius:4px;font-size:.68rem;font-weight:700;
 }
-.badge-easy { background: rgba(0,230,118,0.12); color: var(--success); }
-.badge-medium { background: rgba(124,58,237,0.12); color: var(--accent2); }
-.badge-hard { background: rgba(255,51,85,0.12); color: var(--danger); }
-
-.code-box { position: relative; margin-top: 10px; }
-.code-box pre {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px;
-  font-size: .78rem;
-  line-height: 1.5;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 300px;
-  overflow-y: auto;
-  color: var(--text);
-  font-family: 'Cascadia Code', 'Fira Code', monospace;
+.badge-green{background:var(--success-dim);color:var(--success)}
+.badge-purple{background:rgba(124,58,237,0.12);color:var(--accent2)}
+.badge-red{background:var(--danger-dim);color:var(--danger)}
+.code-box{position:relative;margin-top:10px}
+.code-box pre{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:8px;padding:14px;
+  font-size:.76rem;line-height:1.5;
+  overflow-x:auto;white-space:pre-wrap;word-break:break-word;
+  max-height:280px;overflow-y:auto;
+  color:var(--text);font-family:var(--font-mono);
 }
-.copy-btn {
-  position: absolute;
-  top: 8px; right: 8px;
-  padding: 6px 14px;
-  background: var(--accent2);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: .75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .2s;
-  z-index: 2;
-  font-family: inherit;
+.copy-btn{
+  position:absolute;top:8px;right:8px;
+  padding:6px 14px;background:var(--accent2);
+  color:#fff;border:none;border-radius:6px;
+  font-size:.73rem;font-weight:600;cursor:pointer;
+  transition:all .2s;z-index:2;font-family:inherit;
 }
-.copy-btn:hover { background: #6d28d9; }
-.copy-btn.copied { background: var(--success); }
-
-.howto {
-  font-size: .85rem; color: var(--text2);
-  margin: 8px 0; padding: 10px;
-  background: var(--surface); border-radius: 6px; line-height: 1.6;
-}
-.howto strong { color: var(--text); }
-.step { margin: 4px 0; padding-left: 20px; }
-.step::before { content: '→ '; color: var(--accent); }
-
-.disclaimer {
-  margin-top: 20px;
-  padding: 12px;
-  background: rgba(255,51,85,0.08);
-  border: 1px solid rgba(255,51,85,0.2);
-  border-radius: 8px;
-  font-size: .8rem;
-  color: var(--text2);
-  line-height: 1.5;
-}
-
-/* ════════ TOAST ════════ */
-
-.toast-container {
-  position: fixed; bottom: 20px; right: 20px;
-  z-index: 9999;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.toast {
-  padding: 12px 20px;
-  border-radius: var(--radius-sm);
-  font-size: .85rem; font-weight: 500;
-  box-shadow: var(--shadow);
-  animation: slideIn .3s ease;
-  max-width: 380px;
-}
-.toast-success { background: var(--success); color: #000; }
-.toast-error { background: var(--danger); color: #fff; }
-.toast-info { background: var(--accent); color: #000; }
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+.copy-btn:hover{background:#6d28d9}
+.copy-btn.copied{background:var(--success)}
+.step-list{font-size:.84rem;color:var(--text2);margin:8px 0 10px;padding:10px 14px;background:var(--surface);border-radius:6px;line-height:1.7}
+.step-list strong{color:var(--text)}
+.step-item{margin:2px 0;padding-left:18px}
+.step-item::before{content:'→ ';color:var(--accent)}
+.disclaimer{
+  margin-top:18px;padding:12px 16px;
+  background:rgba(255,51,85,0.05);
+  border:1px solid rgba(255,51,85,0.1);
+  border-radius:8px;
+  font-size:.78rem;color:var(--text2);line-height:1.5;
 }
 
-/* ════════ RESPONSIVE ════════ */
-
-@media (max-width: 640px) {
-  .hero h1 { font-size: 1.5rem; }
-  .form-row { flex-direction: column; gap: 0; }
-  .modal { padding: 20px; }
-  .listing-header { flex-direction: column; }
-  .nav-links { gap: 4px; }
-  .nav-links button { font-size: .75rem; padding: 4px 10px; }
-  .tools-hero h1 { font-size: 1.3rem; }
-  .tab { padding: 6px 12px; font-size: .78rem; }
-  .code-box pre { font-size: .72rem; max-height: 250px; }
+/* ═══ TOAST ═══ */
+.toast-container{
+  position:fixed;bottom:24px;right:24px;
+  z-index:9999;display:flex;flex-direction:column;gap:8px;
 }
-
-.back-top {
-  position: fixed; bottom: 20px; left: 20px;
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: none;
-  align-items: center; justify-content: center;
-  transition: all .3s;
-  z-index: 50;
+.toast{
+  padding:12px 20px;border-radius:var(--radius-sm);
+  font-size:.84rem;font-weight:600;
+  box-shadow:var(--shadow);
+  animation:toastIn .3s ease;
+  max-width:380px;
 }
-.back-top:hover { border-color: var(--accent); color: var(--accent); }
+.toast-success{background:var(--success);color:#000}
+.toast-error{background:var(--danger);color:#fff}
+.toast-info{background:var(--accent);color:#000}
+@keyframes toastIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+
+/* ═══ BACK TO TOP ═══ */
+.back-top{
+  position:fixed;bottom:24px;left:24px;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text2);font-size:1rem;
+  cursor:pointer;display:none;
+  align-items:center;justify-content:center;
+  transition:all .3s;z-index:50;
+}
+.back-top:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:640px){
+  .container{padding:0 16px}
+  .hero{padding:28px 0 16px}
+  .hero h1{font-size:1.4rem}
+  .hero-stats{flex-wrap:wrap;gap:12px;font-size:.78rem}
+  .filter-bar{padding:10px 12px}
+  .form-row{flex-direction:column;gap:0}
+  .modal{padding:20px 18px}
+  .listing-top{flex-direction:column;gap:6px}
+  .listing-side{width:100%;justify-content:flex-end}
+  .btn-delete{opacity:1}
+  .tools-header h1{font-size:1.3rem}
+  .tab{padding:6px 12px;font-size:.78rem}
+  .nav-links button{font-size:.75rem;padding:6px 12px}
+  .code-box pre{font-size:.72rem;max-height:220px}
+}
 </style>
 </head>
 <body>
 
+<!-- ═══ NAV ═══ -->
 <nav>
   <div class="container">
     <div class="logo">
-      <div class="icon">🏙️</div>
-      <span><span class="accent">Jak</span>Hire</span>
+      <div class="logo-mark">🏙️</div>
+      <div class="logo-text"><span class="accent">Jak</span>Hire <span class="dim">/ Jakarta</span></div>
     </div>
     <div class="nav-links">
-      <button class="active" onclick="switchPage('jakhire')">🏙️ Board</button>
-      <button onclick="switchPage('tools')">⚡ Tools</button>
+      <button class="active" onclick="goPage('board')">🏙️ Board <span class="nav-badge" id="navCount">0</span></button>
+      <button onclick="goPage('tools')">⚡ Tools</button>
     </div>
   </div>
 </nav>
@@ -537,33 +497,33 @@ nav .container {
 <div class="container">
 
 <!-- ════════════════════════════════════════ -->
-<!-- PAGE: JAKHIRE                            -->
+<!-- PAGE: BOARD                              -->
 <!-- ════════════════════════════════════════ -->
-
-<div class="page active" id="page-jakhire">
+<div class="page active" id="page-board">
 
 <div class="hero">
   <h1>🏙️ Jakarta Hiring Board</h1>
-  <p>Platform cari kerja, hire freelancer, atau tawarin jasa — khusus <strong>Jabodetabek</strong>. Postingan otomatis kehapus <strong>7 hari</strong>.</p>
-  <div class="stats">
-    <span id="totalListings">0</span> postingan aktif &bull;
-    <span id="areaCount">6</span> wilayah
+  <p>Cari kerja, hire freelancer, atau tawarin jasa — khusus <strong>Jabodetabek</strong>. Postingan otomatis expired <strong>7 hari</strong>.</p>
+  <div class="hero-stats">
+    <span id="statTotal">0</span> aktif
+    <span class="stat-divider">·</span>
+    <span id="statArea">6</span> wilayah
+    <span class="stat-divider">·</span>
+    <span id="statToday">0</span> hari ini
   </div>
 </div>
 
-<div class="actions">
-  <button class="btn btn-primary" onclick="openModal('post')">➕ Pasang Iklan</button>
-  <button class="btn btn-secondary" onclick="document.getElementById('jakhireFilters').scrollIntoView({behavior:'smooth'})">🔍 Filter</button>
+<div class="btn-group">
+  <button class="btn btn-primary" onclick="openModal()">➕ Pasang Iklan</button>
+  <button class="btn btn-secondary" onclick="scrollFilter()">🔍 Filter</button>
 </div>
 
-<div class="filters" id="jakhireFilters">
-  <div class="filter-group">
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Semua</button>
-    <button class="filter-btn" data-filter="cari_kerja" onclick="setFilter('cari_kerja')">💼 Cari Kerja</button>
-    <button class="filter-btn" data-filter="cari_freelancer" onclick="setFilter('cari_freelancer')">🔍 Cari Freelancer</button>
-    <button class="filter-btn" data-filter="jasa" onclick="setFilter('jasa')">🛠️ Tawarin Jasa</button>
-    <button class="filter-btn" data-filter="collab" onclick="setFilter('collab')">🤝 Collab</button>
-  </div>
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-f="all" onclick="setFilter('all')">Semua</button>
+  <button class="filter-btn" data-f="cari_kerja" onclick="setFilter('cari_kerja')">💼 Cari Kerja</button>
+  <button class="filter-btn" data-f="cari_freelancer" onclick="setFilter('cari_freelancer')">🔍 Freelancer</button>
+  <button class="filter-btn" data-f="jasa" onclick="setFilter('jasa')">🛠️ Tawarin Jasa</button>
+  <button class="filter-btn" data-f="collab" onclick="setFilter('collab')">🤝 Collab</button>
 </div>
 
 <div id="board"></div>
@@ -573,36 +533,27 @@ nav .container {
 <!-- ════════════════════════════════════════ -->
 <!-- PAGE: TOOLS                              -->
 <!-- ════════════════════════════════════════ -->
-
 <div class="page" id="page-tools">
 
-<div class="tools-hero">
-  <h1>⚡ <span>Flash Sale</span> & Ticket War</h1>
-  <p>Console script — tinggal copy paste ke DevTools (F12). Gak perlu install apa-apa.</p>
+<div class="tools-header">
+  <h1>⚡ <span>Flash Sale</span> &amp; Ticket War</h1>
+  <p>Console script — copy paste ke DevTools (F12). Tanpa install.</p>
 </div>
 
-<div class="tabs" id="toolTabs">
-  <button class="tab active" data-panel="shopee">🏪 Shopee Rp.1</button>
-  <button class="tab" data-panel="loket">🎫 Loket.com</button>
-  <button class="tab" data-panel="tiket">🎟️ Tiket.com</button>
-  <button class="tab" data-panel="generic">⚡ Quick Click</button>
+<div class="tabs">
+  <button class="tab active" data-p="shopee">🏪 Shopee Rp.1</button>
+  <button class="tab" data-p="loket">🎫 Loket.com</button>
+  <button class="tab" data-p="tiket">🎟️ Tiket.com</button>
+  <button class="tab" data-p="generic">⚡ Quick Click</button>
 </div>
 
-<div class="tool-panel active" id="panel-shopee">
-  <div class="tool-card">
-    <h3>🏪 Shopee Flash Sale Rp.1 <span class="badge badge-medium">AUTO CLICK</span></h3>
-    <p style="color:var(--text2);font-size:.85rem;">Otomatis deteksi harga Rp.1 + klik Beli + checkout. Tinggal bayar.</p>
-    <div class="howto">
-      <strong>Cara pake:</strong>
-      <div class="step">Buka halaman <strong>produk flash sale</strong> di Chrome</div>
-      <div class="step"><strong>F12</strong> → tab <strong>Console</strong></div>
-      <div class="step">Copy script, paste, <strong>Enter</strong></div>
-    </div>
-    <div class="code-box">
-      <button class="copy-btn" onclick="copyCode(this,'shopeeCode')">📋 Copy</button>
-      <pre id="shopeeCode">(async function(){
+<div class="tool-card" id="tshopee">
+<h3>🏪 Shopee Flash Sale Rp.1 <span class="badge badge-purple">AUTO</span></h3>
+<p style="color:var(--text2);font-size:.84rem;">Deteksi harga Rp.1 + auto klik Beli + checkout.</p>
+<div class="step-list"><strong>Cara:</strong><div class="step-item">Buka halaman produk flash sale di Chrome</div><div class="step-item"><strong>F12</strong> → tab Console</div><div class="step-item">Copy → paste → Enter</div></div>
+<div class="code-box"><button class="copy-btn" onclick="cp(this,'sc1')">📋 Copy</button><pre id="sc1">(async function(){
   let c=0,s=Date.now(),p=-1,r=0;
-  console.log('%c🏪 SHOPEE MONITOR AKTIF','color:#00e5ff;font-weight:bold');
+  console.log('%c🏪 SHOPEE MONITOR','color:#00e5ff;font-weight:bold');
   function gp(){
     const e=document.querySelector('[data-testid="product-price"],[class*="price"],span._3eX');
     if(e){const t=e.textContent.trim(),m=t.replace(/\./g,'').match(/(\d+)/);
@@ -619,176 +570,97 @@ nav .container {
     if(x&&x.p!==p){console.log(`[${new Date().toLocaleTimeString()}] ${x.t}${x.p<=1000?' 🔥':''}`);p=x.p}
     if(x&&x.p<=1000&&!r){r=1;nt();return}
     if(!r) setTimeout(lp,1000)}
-  lp();window.stop=()=>{r=1;console.log('⏹️ Stopped')}})();</pre>
-    </div>
-  </div>
-  <div style="font-size:.8rem;color:var(--text2);text-align:center;margin-top:4px;">
-    Ketik <code style="background:var(--surface);padding:2px 6px;border-radius:4px;">stop()</code> di console untuk berhenti
-  </div>
+  lp();window.s=()=>{r=1;console.log('⏹️ Stopped')}})();</pre></div>
+<p style="font-size:.76rem;color:var(--text3);margin-top:4px;">Ketik <code style="background:var(--surface);padding:1px 5px;border-radius:3px;">s()</code> di console untuk stop</p>
 </div>
 
-<div class="tool-panel" id="panel-loket">
-  <div class="tool-card">
-    <h3>🎫 Loket.com Auto-Buy <span class="badge badge-easy">MUDAH</span></h3>
-    <p style="color:var(--text2);font-size:.85rem;">Auto klik tombol "Pesan" pas jam buka. Loket pakai form biasa, paling gampang.</p>
-    <div class="howto">
-      <strong>Cara pake:</strong>
-      <div class="step">Buka halaman <strong>event</strong> di Loket.com</div>
-      <div class="step">Pilih kategori tiket (tapi JANGAN klik Pesan dulu)</div>
-      <div class="step"><strong>F12</strong> → Console → paste script → Enter</div>
-    </div>
-    <div class="code-box">
-      <button class="copy-btn" onclick="copyCode(this,'loketCode')">📋 Copy</button>
-      <pre id="loketCode">(function(){
+<div class="tool-card" id="tloket" style="display:none">
+<h3>🎫 Loket.com Auto-Buy <span class="badge badge-green">MUDAH</span></h3>
+<p style="color:var(--text2);font-size:.84rem;">Auto klik tombol "Pesan" pas jam buka.</p>
+<div class="step-list"><strong>Cara:</strong><div class="step-item">Buka halaman event Loket.com</div><div class="step-item">Pilih kategori tiket (JANGAN klik Pesan dulu)</div><div class="step-item"><strong>F12</strong> → Console → paste → Enter</div></div>
+<div class="code-box"><button class="copy-btn" onclick="cp(this,'sc2')">📋 Copy</button><pre id="sc2">(function(){
   let r=0;
-  console.log('%c🎫 LOKET MONITOR — Mantau tombol pesan...','color:#00e5ff;font-weight:bold');
+  console.log('%c🎫 LOKET MONITOR','color:#00e5ff;font-weight:bold');
   function ck(){
     if(r)return;
-    const btns=document.querySelectorAll('button,a,div[role="button"]');
-    for(const b of btns){
-      const t=b.textContent.toLowerCase();
+    const b=document.querySelectorAll('button,a,div[role="button"]');
+    for(const n of b){
+      const t=n.textContent.toLowerCase();
       if(t.includes('pesan')||t.includes('beli')||t.includes('checkout')||t.includes('order')){
-        if(!b.disabled&&b.offsetParent!==null){
-          console.log(`%c✅ TOMBOL DITEMUKAN: ${b.textContent.trim()}`,'color:#00e676;font-size:14px');
-          b.click();
-          r=1;
-          console.log('%c🎉 CHECKOUT BERHASIL!','color:#00e676;font-weight:bold;font-size:16px');
-          return;
-        }
-      }
-    }
-    setTimeout(ck,100);
-  }
-  ck();
-  console.log('🔄 Nunggu tombol aktif... (100ms interval)');
-})();</pre>
-    </div>
-  </div>
+        if(!n.disabled&&n.offsetParent!==null){
+          console.log(`%c✅ ${n.textContent.trim()}`,'color:#00e676;font-size:14px');
+          n.click();r=1;console.log('%c🎉 BERHASIL!','color:#00e676;font-weight:bold;font-size:16px');
+          return;}}}
+    setTimeout(ck,100);}
+  ck();console.log('🔄 Menunggu tombol...');})();</pre></div>
 </div>
 
-<div class="tool-panel" id="panel-tiket">
-  <div class="tool-card">
-    <h3>🎟️ Tiket.com Queue Skip <span class="badge badge-hard">SULIT</span></h3>
-    <p style="color:var(--text2);font-size:.85rem;">Tiket.com pake Cloudflare queue. Script ini auto detect + klik pas antrian lo tiba.</p>
-    <div class="howto">
-      <strong>Cara pake:</strong>
-      <div class="step">Buka halaman event di Tiket.com <strong>30 menit sebelum jam buka</strong></div>
-      <div class="step"><strong>F12</strong> → Console → paste → Enter</div>
-    </div>
-    <div class="code-box">
-      <button class="copy-btn" onclick="copyCode(this,'tiketCode')">📋 Copy</button>
-      <pre id="tiketCode">(function(){
+<div class="tool-card" id="ttiket" style="display:none">
+<h3>🎟️ Tiket.com Queue Skip <span class="badge badge-red">SULIT</span></h3>
+<p style="color:var(--text2);font-size:.84rem;">Cloudflare queue bypass — auto klik pas antrian lo tiba.</p>
+<div class="step-list"><strong>Cara:</strong><div class="step-item">Buka event Tiket.com 30 menit sebelum jam buka</div><div class="step-item"><strong>F12</strong> → Console → paste → Enter</div></div>
+<div class="code-box"><button class="copy-btn" onclick="cp(this,'sc3')">📋 Copy</button><pre id="sc3">(function(){
   let r=0,t=0,s=Date.now();
-  console.log('%c🎟️ TIKET.COM MONITOR — Siap!','color:#00e5ff;font-weight:bold');
+  console.log('%c🎟️ TIKET.COM MONITOR','color:#00e5ff;font-weight:bold');
   function ck(){
-    if(r)return; t++;
-    const btns=document.querySelectorAll('button[class*="buy"],button[class*="checkout"],button:not([disabled])');
-    for(const b of btns){
-      const txt=b.textContent.toLowerCase();
-      if((txt.includes('beli')||txt.includes('pesan')||txt.includes('lanjut')||txt.includes('checkout'))&&!b.disabled){
-        if(b.offsetParent!==null){
-          console.log(`%c✅ ${b.textContent.trim()} — DIKLIK!`,'color:#00e676;font-weight:bold;font-size:14px');
-          b.click(); r=1; break;
-        }
-      }
-    }
-    if(!r){
-      const all=document.querySelectorAll('button:not([disabled])');
-      for(const b of all){
-        if(b.offsetParent!==null&&b.textContent.trim()&&![' ','login','daftar','cari','filter'].some(x=>b.textContent.toLowerCase().includes(x))){
-          const rect=b.getBoundingClientRect();
-          if(rect.top>100&&rect.bottom<window.innerHeight-100){
-            console.log(`[${Math.floor((Date.now()-s)/1000)}s] 🔍 ${b.textContent.trim()}`);
-            break;
-          }
-        }
-      }
-    }
-    if(!r) setTimeout(ck,200);
-  }
-  ck();
-  window.st=()=>{r=1;console.log(`⏹️ Stopped (${t} checks)`)}; 
-})();</pre>
-    </div>
-  </div>
+    if(r)return;t++;
+    const b=document.querySelectorAll('button[class*="buy"],button[class*="checkout"],button:not([disabled])');
+    for(const n of b){
+      const x=n.textContent.toLowerCase();
+      if((x.includes('beli')||x.includes('pesan')||x.includes('lanjut')||x.includes('checkout'))&&!n.disabled){
+        if(n.offsetParent!==null){console.log(`%c✅ ${n.textContent.trim()}`,'color:#00e676;font-weight:bold');n.click();r=1;break;}}}
+    if(!r) setTimeout(ck,200);}
+  ck();window.s=()=>{r=1;console.log('⏹️ Stopped')};})();</pre></div>
 </div>
 
-<div class="tool-panel" id="panel-generic">
-  <div class="tool-card">
-    <h3>⚡ Quick Click Bot <span class="badge badge-easy">GENERIC</span></h3>
-    <p style="color:var(--text2);font-size:.85rem;">Buat sendiri — klik tombol cepat pas waktunya tiba. Bisa dipake di platform mana aja.</p>
-    <div class="howto">
-      <strong>Cara pake:</strong>
-      <div class="step">Buka halaman tujuan</div>
-      <div class="step"><strong>F12</strong> → Console</div>
-      <div class="step">Paste script → Enter</div>
-      <div class="step">Ganti <code>"TOMBOL"</code> dengan teks tombol yg mau diklik</div>
-    </div>
-    <div class="code-box">
-      <button class="copy-btn" onclick="copyCode(this,'genericCode')">📋 Copy</button>
-      <pre id="genericCode">// ⚡ GENERIC AUTO CLICK
-// Ganti "TOMBOL" dengan teks tombol tujuan
-
-(function(){
-  const TARGET = "TOMBOL"; // << GANTI INI
-  let r=0,t=0,s=Date.now();
-
-  console.log(`%c⚡ AUTO CLICK: "${TARGET}" — Aktif!`,'color:#00e5ff;font-weight:bold');
-
+<div class="tool-card" id="tgeneric" style="display:none">
+<h3>⚡ Quick Click <span class="badge badge-green">GENERIC</span></h3>
+<p style="color:var(--text2);font-size:.84rem;">Buat sendiri — klik tombol cepat. Ganti teks target.</p>
+<div class="step-list"><strong>Cara:</strong><div class="step-item">Buka halaman tujuan → F12 → Console</div><div class="step-item">Ganti <code>"TOMBOL"</code> dengan teks tombol tujuan</div></div>
+<div class="code-box"><button class="copy-btn" onclick="cp(this,'sc4')">📋 Copy</button><pre id="sc4">(function(){
+  const T="TOMBOL";let r=0,t=0,s=Date.now();
+  console.log(`%c⚡ AUTO: "${T}"`,'color:#00e5ff;font-weight:bold');
   function ck(){
-    if(r)return; t++;
-    const btns=document.querySelectorAll('button,a,[role="button"],input[type="submit"]');
-    for(const b of btns){
-      if(b.textContent.toLowerCase().includes(TARGET.toLowerCase())&&!b.disabled){
-        if(b.offsetParent!==null){
-          console.log(`%c✅ "${b.textContent.trim()}" DIKLIK!`,'color:#00e676;font-weight:bold;font-size:14px');
-          b.click(); r=1; return;
-        }
-      }
-    }
-    if(!r){
-      if(t%10===0) console.log(`[${((Date.now()-s)/1000).toFixed(1)}s] 🔍 Nunggu "${TARGET}"...`);
-      setTimeout(ck,100);
-    }
-  }
-  ck();
-  window.stop=()=>{r=1;console.log('⏹️ Stopped')};
-})();</pre>
-    </div>
-  </div>
+    if(r)return;t++;
+    const b=document.querySelectorAll('button,a,[role="button"],input[type="submit"]');
+    for(const n of b){if(n.textContent.toLowerCase().includes(T.toLowerCase())&&!n.disabled&&n.offsetParent!==null){console.log(`%c✅ "${n.textContent.trim()}"`,'color:#00e676;font-weight:bold');n.click();r=1;return;}}
+    if(!r) setTimeout(ck,100);}
+  ck();window.s=()=>{r=1;console.log('⏹️ Stopped')};})();</pre></div>
 </div>
 
-<div class="disclaimer">
-  ⚠️ <strong>Disclaimer:</strong> Script ini untuk mempermudah pembelian bukan untuk merusak sistem. Gunakan dengan bijak.
+<div class="disclaimer">⚠️ <strong>Disclaimer:</strong> Gunakan dengan bijak. Risiko akun di-ban tetap ada.</div>
 </div>
 
-</div>
-
-</div>
+</div><!-- /container -->
 
 <!-- ════════════════════════════════════════ -->
-<!-- MODAL: POST                              -->
+<!-- MODAL                                    -->
 <!-- ════════════════════════════════════════ -->
-
 <div class="modal-overlay" id="postModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('post')">&times;</button>
-    <h2>➕ Pasang Iklan Baru</h2>
-    <p class="sub">Postingan akan otomatis dihapus setelah 7 hari. Isi data dengan jujur.</p>
-    <form id="postForm" onsubmit="submitPost(event)">
+    <div class="modal-header">
+      <div>
+        <h2>➕ Pasang Iklan Baru</h2>
+        <div class="sub">Postingan otomatis dihapus setelah 7 hari. Data anda aman di browser.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+
+    <form id="pf" onsubmit="submitPost(event)" novalidate>
+
       <div class="form-row">
         <div class="form-group">
-          <label>Kategori</label>
-          <select id="category" required>
+          <label class="form-label">Kategori</label>
+          <select class="form-select" id="fCat">
             <option value="cari_kerja">💼 Cari Kerja</option>
-            <option value="cari_freelancer">🔍 Cari Freelancer / Karyawan</option>
+            <option value="cari_freelancer">🔍 Cari Freelancer</option>
             <option value="jasa">🛠️ Tawarin Jasa</option>
-            <option value="collab">🤝 Cari Partner / Collab</option>
+            <option value="collab">🤝 Cari Partner</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Wilayah Jakarta</label>
-          <select id="area" required>
+          <label class="form-label">Wilayah</label>
+          <select class="form-select" id="fArea">
             <option value="Jakarta Pusat">🏛️ Jakarta Pusat</option>
             <option value="Jakarta Selatan">🌳 Jakarta Selatan</option>
             <option value="Jakarta Timur">🌅 Jakarta Timur</option>
@@ -798,235 +670,401 @@ nav .container {
           </select>
         </div>
       </div>
+
       <div class="form-group">
-        <label>Judul Iklan</label>
-        <input type="text" id="title" placeholder="Ex: Butuh fotografer untuk event wedding" required maxlength="100">
+        <label class="form-label">Judul Iklan</label>
+        <input class="form-input" id="fTitle" placeholder="Ex: Butuh fotografer untuk wedding" maxlength="80" required>
+        <div class="form-error" id="errTitle"></div>
       </div>
+
       <div class="form-group">
-        <label>Deskripsi</label>
-        <textarea id="desc" placeholder="Jelaskan detailnya — gaji/budget, jam kerja, syarat, dll..." required maxlength="1000"></textarea>
+        <label class="form-label">Deskripsi</label>
+        <textarea class="form-textarea" id="fDesc" placeholder="Jelaskan detail — gaji, jam kerja, syarat, dll..." maxlength="800" required></textarea>
+        <div class="form-error" id="errDesc"></div>
       </div>
+
       <div class="form-row">
         <div class="form-group">
-          <label>Budget / Gaji (opsional)</label>
-          <input type="text" id="budget" placeholder="Ex: Rp 500.000 - 1.000.000">
+          <label class="form-label">Budget / Gaji</label>
+          <input class="form-input" id="fBudget" placeholder="Ex: 500000" inputmode="numeric">
+          <div class="input-hint">Angka saja, tanpa titik atau Rp</div>
+          <div class="form-error" id="errBudget"></div>
         </div>
         <div class="form-group">
-          <label>Kontak</label>
-          <input type="text" id="contact" placeholder="WA / Telegram / Email" required>
+          <label class="form-label">Kontak *</label>
+          <input class="form-input" id="fContact" placeholder="WA / Telegram / Email" required maxlength="60">
+          <div class="form-error" id="errContact"></div>
         </div>
       </div>
+
       <div class="form-group">
-        <label>Nama Anda (opsional)</label>
-        <input type="text" id="poster" placeholder="Boleh nama samaran" maxlength="50">
+        <label class="form-label">Nama Anda</label>
+        <input class="form-input" id="fName" placeholder="Boleh nama samaran" maxlength="50">
+        <div class="input-hint">Huruf saja (A-Z, a-z, spasi)</div>
+        <div class="form-error" id="errName"></div>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px;">🚀 Pasang Iklan</button>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;margin-top:6px;font-size:.9rem;">🚀 Pasang Iklan</button>
     </form>
   </div>
 </div>
 
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
-<div class="toast-container" id="toastContainer"></div>
+<button class="back-top" id="backTop">⬆</button>
+<div class="toast-container" id="toastBox"></div>
 
 <script>
-// ════════════════════════════════════════
-// PAGE SWITCHING
-// ════════════════════════════════════════
-function switchPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  document.querySelector(`.nav-links button[onclick*="'${name}'"]`).classList.add('active');
-  // Re-render JakHire data when switching back
-  if (name === 'jakhire') render();
+// ═════════════════════════════════════════════════════════
+// SANITIZE — core security
+// ═════════════════════════════════════════════════════════
+const RE_HTML = /<[^>]*>/g;
+const RE_SCRIPT = /javascript\s*:|on\w+\s*=/gi;
+const RE_LETTERS = /^[A-Za-z\s.,']+$/;
+const RE_NUMBERS = /^[0-9]+$/;
+const RE_CONTACT = /^[@\w.\-+():/\s]+$/;
+
+function sanitize(str){
+  if(typeof str!=='string') return '';
+  return str.replace(RE_HTML,'').replace(RE_SCRIPT,'').trim();
 }
 
-// ════════════════════════════════════════
-// JAKHIRE DATA
-// ════════════════════════════════════════
-const AREAS = ["Jakarta Pusat","Jakarta Selatan","Jakarta Timur","Jakarta Barat","Jakarta Utara","Kepulauan Seribu"];
-const AREA_EMOJI = {"Jakarta Pusat":"🏛️","Jakarta Selatan":"🌳","Jakarta Timur":"🌅","Jakarta Barat":"🌇","Jakarta Utara":"🌊","Kepulauan Seribu":"🏝️"};
-const CATEGORY_MAP = {cari_kerja:{label:"💼 Cari Kerja",cls:"tag-job"},cari_freelancer:{label:"🔍 Cari Freelancer",cls:"tag-hire"},jasa:{label:"🛠️ Tawarin Jasa",cls:"tag-service"},collab:{label:"🤝 Collab",cls:"tag-collab"}};
-const STORAGE_KEY='jakhire_listings';
-const EXPIRY_DAYS=7;
-let currentFilter='all';
+function esc(str){
+  if(typeof str!=='string') return '';
+  const d=document.createElement('div');
+  d.textContent=str;
+  return d.innerHTML;
+}
 
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function daysAgo(ts){return Math.floor((Date.now()-ts)/(1000*60*60*24))}
+function isLettersOnly(str){
+  return RE_LETTERS.test(str);
+}
+
+function isNumbersOnly(str){
+  return RE_NUMBERS.test(str);
+}
+
+function isValidContact(str){
+  // Allow: WA number, telegram username, email, URL
+  return RE_CONTACT.test(str) && str.length>=3;
+}
+
+// ═════════════════════════════════════════════════════════
+// DATA
+// ═════════════════════════════════════════════════════════
+const AREAS=["Jakarta Pusat","Jakarta Selatan","Jakarta Timur","Jakarta Barat","Jakarta Utara","Kepulauan Seribu"];
+const AREA_EMO={};
+AREAS.forEach(a=>{
+  const m={'Jakarta Pusat':'🏛️','Jakarta Selatan':'🌳','Jakarta Timur':'🌅','Jakarta Barat':'🌇','Jakarta Utara':'🌊','Kepulauan Seribu':'🏝️'};
+  AREA_EMO[a]=m[a];
+});
+const CAT_MAP={cari_kerja:{l:'💼 Cari Kerja',c:'tag-job'},cari_freelancer:{l:'🔍 Freelancer',c:'tag-hire'},jasa:{l:'🛠️ Tawarin Jasa',c:'tag-service'},collab:{l:'🤝 Collab',c:'tag-collab'}};
+const KEY='_jh';
+const EXP=7;
+let fl='all';
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
 function timeLeft(ts){
-  const total=EXPIRY_DAYS*24*60*60*1000;
-  const remaining=total-(Date.now()-ts);
-  if(remaining<=0)return{label:'Habis',cls:'critical',pct:100};
-  const daysLeft=Math.ceil(remaining/(1000*60*60*24));
-  const hoursLeft=Math.floor((remaining%(1000*60*60*24))/(1000*60*60));
-  const pct=((Date.now()-ts)/total)*100;
-  let cls='ok';if(pct>80)cls='critical';else if(pct>50)cls='warn';
-  return{label:daysLeft>0?daysLeft+'h':hoursLeft+'j',cls,pct}
+  const t=EXP*864e5;
+  const r=t-(Date.now()-ts);
+  if(r<=0) return{l:'Expired',c:'expiry-critical'};
+  const d=Math.ceil(r/864e5);
+  const h=Math.floor((r%864e5)/36e5);
+  const p=((Date.now()-ts)/t)*100;
+  let c='expiry-ok';
+  if(p>80)c='expiry-critical';else if(p>50)c='expiry-warn';
+  return{l:d>0?d+' hari':h+' jam',c:c};
 }
-function esc(str){const d=document.createElement('div');d.textContent=str;return d.innerHTML}
 
-function getListings(){
+function isToday(ts){
+  const d=new Date(ts),n=new Date();
+  return d.getDate()===n.getDate()&&d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
+}
+
+// ═════════════════════════════════════════════════════════
+// STORAGE — secure read/write with integrity validation
+// ═════════════════════════════════════════════════════════
+const VALID_KEYS=['id','category','area','title','desc','budget','contact','name','createdAt'];
+const VALID_CATS=['cari_kerja','cari_freelancer','jasa','collab'];
+const VALID_AREAS=AREAS;
+
+function getData(){
   try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    const data=raw?JSON.parse(raw):[];
-    const cutoff=Date.now()-(EXPIRY_DAYS*24*60*60*1000);
-    const valid=data.filter(l=>l.createdAt>cutoff);
-    if(valid.length!==data.length)localStorage.setItem(STORAGE_KEY,JSON.stringify(valid));
-    return valid;
-  }catch(e){return[]}
-}
-function saveListing(listing){const data=getListings();data.unshift(listing);localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
-function deleteListing(id){
-  let data=getListings();
-  data=data.filter(l=>l.id!==id);
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-  render();toast('Iklan dihapus ✅','info');
+    const r=localStorage.getItem(KEY);
+    if(!r) return [];
+    const d=JSON.parse(r);
+    if(!Array.isArray(d)) return [];
+    const cut=Date.now()-(EXP*864e5);
+    const v=[];
+    for(const item of d){
+      // Validate structure
+      if(!item||typeof item!=='object') continue;
+      if(!item.id||!item.title||!item.category||!item.area||!item.createdAt) continue;
+      if(!VALID_CATS.includes(item.category)) continue;
+      if(!VALID_AREAS.includes(item.area)) continue;
+      if(typeof item.title!=='string'||typeof item.desc!=='string') continue;
+      if(typeof item.createdAt!=='number'||item.createdAt<=0) continue;
+      if(item.createdAt<Date.now()-365*864e5) continue; // max 1 year sanity
+      if(item.id.length>30) continue; // sanity
+      if(item.createdAt>cut) v.push(item);
+    }
+    if(v.length!==d.length) localStorage.setItem(KEY,JSON.stringify(v));
+    return v;
+  }catch(e){return []}
 }
 
+function saveOne(item){
+  const d=getData();
+  // Rate limit: max 1 post per 30 seconds
+  const recent=d.filter(p=>p.name===item.name&&Date.now()-p.createdAt<30000);
+  if(recent.length>0) return false;
+  d.unshift(item);
+  localStorage.setItem(KEY,JSON.stringify(d));
+  return true;
+}
+
+function deleteOne(id){
+  if(!id||typeof id!=='string'||id.length>30) return;
+  const d=getData().filter(p=>p.id!==id);
+  localStorage.setItem(KEY,JSON.stringify(d));
+  render();
+  toast('Iklan dihapus','info');
+}
+
+// ═════════════════════════════════════════════════════════
+// RENDER
+// ═════════════════════════════════════════════════════════
 function render(){
-  const data=getListings();
-  const board=document.getElementById('board');
-  document.getElementById('totalListings').textContent=data.length;
-  if(!data.length){
-    board.innerHTML='<div class="empty-state"><div class="big">🏙️</div><p>Belum ada postingan nih.</p><p style="font-size:.82rem;margin-top:4px;">Klik <strong>Pasang Iklan</strong> buat mulai!</p></div>';
+  const data=getData();
+  const b=document.getElementById('board');
+  const total=data.length;
+  const today=data.filter(d=>isToday(d.createdAt)).length;
+
+  document.getElementById('navCount').textContent=total;
+  document.getElementById('statTotal').textContent=total;
+  document.getElementById('statToday').textContent=today;
+
+  if(!total){
+    b.innerHTML='<div class="empty"><div class="empty-icon">🏙️</div><p>Belum ada postingan.</p><p class="sub">Klik <strong>Pasang Iklan</strong> untuk mulai!</p></div>';
     document.getElementById('backTop').style.display='none';
     return;
   }
-  const filtered=currentFilter==='all'?data:data.filter(l=>l.category===currentFilter);
-  const grouped={};AREAS.forEach(a=>{grouped[a]=[]});
-  let totalFiltered=0;
-  filtered.forEach(l=>{if(grouped[l.area]){grouped[l.area].push(l);totalFiltered++}});
-  document.getElementById('totalListings').textContent=totalFiltered;
+
+  const f=fl==='all'?data:data.filter(d=>d.category===fl);
+
+  const grp={};AREAS.forEach(a=>{grp[a]=[]});
+  let fc=0;
+  f.forEach(d=>{if(grp[d.area]){grp[d.area].push(d);fc++}});
+
+  document.getElementById('statTotal').textContent=fc;
+
   let html='';
-  for(const area of AREAS){
-    const items=grouped[area];
-    if(!items.length)continue;
-    html+='<div class="area-section">';
-    html+='<div class="area-header" onclick="this.classList.toggle(\'collapsed\')">';
-    html+='<span class="emoji">'+AREA_EMOJI[area]+'</span>';
-    html+='<h3>'+area+'</h3>';
-    html+='<span class="count">'+items.length+'</span>';
-    html+='<span class="arrow">▼</span></div>';
-    html+='<div class="area-listings">';
-    items.sort((a,b)=>b.createdAt-a.createdAt);
-    for(const item of items){
-      const cat=CATEGORY_MAP[item.category]||{label:'Lainnya',cls:'tag-other'};
-      const tl=timeLeft(item.createdAt);
-      const age=daysAgo(item.createdAt);
-      const agelabel=age===0?'Hari ini':age+'h lalu';
-      html+='<div class="listing">';
-      html+='<div class="listing-header"><div style="flex:1">';
-      html+='<div class="listing-title">'+esc(item.title)+'</div>';
-      html+='<div class="listing-meta">';
-      html+='<span class="meta-tag '+cat.cls+'">'+cat.label+'</span>';
-      if(item.budget)html+='<span class="listing-budget">💰 '+esc(item.budget)+'</span>';
-      html+='</div></div>';
-      html+='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">';
-      html+='<span class="expiry-badge '+tl.cls+'">⏳ '+tl.label+'</span>';
-      html+='<button class="delete-listing" onclick="deleteListing(\''+item.id+'\')">✕</button>';
-      html+='</div></div>';
-      html+='<div class="listing-desc">'+esc(item.desc)+'</div>';
-      html+='<div class="listing-footer">';
-      html+='<span>'+agelabel+' • '+esc(item.poster||'Anonim')+'</span>';
-      html+='<a class="contact" href="'+(item.contact.startsWith('http')?'':'https://')+esc(item.contact)+'" target="_blank" rel="noopener">📩 '+esc(item.contact)+'</a>';
-      html+='</div></div>';
+  for(const a of AREAS){
+    const items=grp[a];
+    if(!items.length) continue;
+    items.sort((x,y)=>y.createdAt-x.createdAt);
+
+    html+=`<div class="area-section">`;
+    html+=`<div class="area-header" onclick="this.classList.toggle('collapsed')"><span class="emoji">${AREA_EMO[a]}</span><h3>${a}</h3><span class="count">${items.length}</span><span class="arrow">▼</span></div>`;
+    html+=`<div class="area-listings">`;
+
+    for(const d of items){
+      const cat=CAT_MAP[d.category]||{l:'Lainnya',c:'tag-service'};
+      const tl=timeLeft(d.createdAt);
+      const age=isToday(d.createdAt)?'Hari ini':Math.floor((Date.now()-d.createdAt)/864e5)+'h lalu';
+      const bg=d.budget?'💰 '+esc(d.budget):'';
+
+      html+=`<div class="listing">`;
+      html+=`<div class="listing-top">`;
+      html+=`<div class="listing-info">`;
+      html+=`<div class="listing-title">${esc(d.title)}</div>`;
+      html+=`<div class="listing-tags"><span class="tag ${cat.c}">${cat.l}</span>${bg?'<span class="tag-budget">'+bg+'</span>':''}</div>`;
+      html+=`<div class="listing-desc">${esc(d.desc)}</div>`;
+      html+=`</div>`;
+      html+=`<div class="listing-side"><span class="expiry ${tl.c}">⏳ ${tl.l}</span><button class="btn-delete" onclick="deleteOne('${d.id}')" title="Hapus">✕</button></div>`;
+      html+=`</div>`;
+      html+=`<div class="listing-footer"><span>${age} · ${esc(d.name||'Anonim')}</span><a class="contact" href="${d.contact.includes('@')||d.contact.startsWith('http')?'':'https://'}${esc(d.contact)}" target="_blank" rel="noopener"><span class="contact-icon">📩</span> ${esc(d.contact)}</a></div>`;
+      html+=`</div>`;
     }
-    html+='</div></div>';
+
+    html+=`</div></div>`;
   }
-  board.innerHTML=html||'<div class="empty-state"><div class="big">🔍</div><p>Tidak ada postingan untuk filter ini.</p></div>';
-  document.getElementById('backTop').style.display=data.length>10?'flex':'none';
+
+  b.innerHTML=html||'<div class="empty"><div class="empty-icon">🔍</div><p>Tidak ada hasil untuk filter ini.</p></div>';
+
+  const bt=document.getElementById('backTop');
+  bt.style.display=total>8?'flex':'none';
 }
 
-function setFilter(cat){
-  currentFilter=cat;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===cat));
+// ═════════════════════════════════════════════════════════
+// FILTER
+// ═════════════════════════════════════════════════════════
+function setFilter(v){
+  fl=v;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===v));
   render();
 }
 
-// ════════════════════════════════════════
+function scrollFilter(){
+  document.getElementById('filterBar').scrollIntoView({behavior:'smooth'});
+}
+
+// ═════════════════════════════════════════════════════════
+// PAGE
+// ═════════════════════════════════════════════════════════
+function goPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.querySelector(`.nav-links button[onclick*="'${n}'"]`).classList.add('active');
+  if(n==='board') render();
+  window.scrollTo({top:0});
+}
+
+// ═════════════════════════════════════════════════════════
 // MODAL
-// ════════════════════════════════════════
-function openModal(name){document.getElementById(name+'Modal').classList.add('open');document.body.style.overflow='hidden'}
-function closeModal(name){document.getElementById(name+'Modal').classList.remove('open');document.body.style.overflow=''}
+// ═════════════════════════════════════════════════════════
+function openModal(){
+  document.getElementById('postModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('postModal').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('pf').reset();
+  document.querySelectorAll('.form-input,.form-textarea').forEach(e=>e.classList.remove('error'));
+}
 
-document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');document.body.style.overflow=''}})
+document.getElementById('postModal').addEventListener('click',function(e){
+  if(e.target===this){closeModal()}
 });
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.open').forEach(m=>{m.classList.remove('open');document.body.style.overflow=''})}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeModal();
 });
 
-// ════════════════════════════════════════
-// SUBMIT
-// ════════════════════════════════════════
+// ═════════════════════════════════════════════════════════
+// SUBMIT — with validation & sanitization
+// ═════════════════════════════════════════════════════════
+function showErr(id,msg){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=msg;
+}
+
+function clearErr(id){
+  const el=document.getElementById(id);
+  if(el) el.textContent='';
+}
+
 function submitPost(e){
   e.preventDefault();
-  const listing={
+
+  // Reset errors
+  document.querySelectorAll('.form-input,.form-textarea').forEach(el=>el.classList.remove('error'));
+  ['errTitle','errDesc','errBudget','errContact','errName'].forEach(id=>clearErr(id));
+
+  let valid=true;
+
+  // Title
+  const title=sanitize(document.getElementById('fTitle').value);
+  if(!title||title.length<3){showErr('errTitle','Minimal 3 karakter');valid=false;document.getElementById('fTitle').classList.add('error')}
+
+  // Description
+  const desc=sanitize(document.getElementById('fDesc').value);
+  if(!desc||desc.length<10){showErr('errDesc','Minimal 10 karakter');valid=false;document.getElementById('fDesc').classList.add('error')}
+
+  // Budget — numbers only
+  const budgetRaw=document.getElementById('fBudget').value.trim();
+  let budget='';
+  if(budgetRaw){
+    if(!isNumbersOnly(budgetRaw)){showErr('errBudget','Hanya angka (0-9)');valid=false;document.getElementById('fBudget').classList.add('error')}
+    else{budget=budgetRaw}
+  }
+
+  // Contact — sanitized
+  const contact=sanitize(document.getElementById('fContact').value);
+  if(!contact||!isValidContact(contact)){showErr('errContact','Kontak tidak valid');valid=false;document.getElementById('fContact').classList.add('error')}
+
+  // Name — letters only
+  const name=sanitize(document.getElementById('fName').value);
+  if(name&&!isLettersOnly(name)){showErr('errName','Hanya huruf A-Z, spasi');valid=false;document.getElementById('fName').classList.add('error')}
+
+  if(!valid) return;
+
+  const item={
     id:uid(),
-    category:document.getElementById('category').value,
-    area:document.getElementById('area').value,
-    title:document.getElementById('title').value.trim(),
-    desc:document.getElementById('desc').value.trim(),
-    budget:document.getElementById('budget').value.trim(),
-    contact:document.getElementById('contact').value.trim(),
-    poster:document.getElementById('poster').value.trim()||'Anonim',
+    category:document.getElementById('fCat').value,
+    area:document.getElementById('fArea').value,
+    title:title,
+    desc:desc,
+    budget:budget,
+    contact:contact,
+    name:name||'Anonim',
     createdAt:Date.now()
   };
-  if(!listing.title||!listing.desc||!listing.contact){toast('Harap isi semua field wajib!','error');return}
-  saveListing(listing);
-  document.getElementById('postForm').reset();
-  closeModal('post');
+
+  const ok=saveOne(item);
+  if(!ok){toast('Tunggu 30 detik sebelum posting lagi','error');return}
+
+  document.getElementById('pf').reset();
+  closeModal();
   render();
   toast('Iklan berhasil dipasang! 🎉','success');
 }
 
-// ════════════════════════════════════════
-// TOOLS: TAB SWITCHING
-// ════════════════════════════════════════
-document.querySelectorAll('#toolTabs .tab').forEach(tab=>{
-  tab.addEventListener('click',function(){
-    document.querySelectorAll('#toolTabs .tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+// ═════════════════════════════════════════════════════════
+// TOOLS
+// ═════════════════════════════════════════════════════════
+document.querySelectorAll('.tabs .tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tool-card').forEach(x=>x.style.display='none');
     this.classList.add('active');
-    document.getElementById('panel-'+this.dataset.panel).classList.add('active');
+    document.getElementById('t'+this.dataset.p).style.display='block';
   });
 });
 
-// ════════════════════════════════════════
-// TOOLS: COPY
-// ════════════════════════════════════════
-function copyCode(btn,id){
+// Copy with feedback
+function cp(btn,id){
   const code=document.getElementById(id).textContent;
-  navigator.clipboard.writeText(code).then(()=>{
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(code).then(()=>{
+      btn.textContent='✅ Copied!';btn.classList.add('copied');
+      setTimeout(()=>{btn.textContent='📋 Copy';btn.classList.remove('copied')},2000);
+    });
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=code;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');ta.remove();
     btn.textContent='✅ Copied!';btn.classList.add('copied');
     setTimeout(()=>{btn.textContent='📋 Copy';btn.classList.remove('copied')},2000);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=code;document.body.appendChild(ta);
-    ta.select();document.execCommand('copy');ta.remove();
-    btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='📋 Copy',2000);
-  });
+  }
 }
 
-// ════════════════════════════════════════
+// ═════════════════════════════════════════════════════════
 // TOAST
-// ════════════════════════════════════════
-function toast(msg,type='info'){
-  const container=document.getElementById('toastContainer');
+// ═════════════════════════════════════════════════════════
+function toast(msg,t='info'){
+  const c=document.getElementById('toastBox');
   const el=document.createElement('div');
-  el.className='toast toast-'+type;
+  el.className='toast toast-'+t;
   el.textContent=msg;
-  container.appendChild(el);
+  c.appendChild(el);
   setTimeout(()=>{
-    el.style.opacity='0';el.style.transform='translateX(100%)';
     el.style.transition='all .3s';
+    el.style.opacity='0';el.style.transform='translateX(100%)';
     setTimeout(()=>el.remove(),300);
   },3000);
 }
 
-// ════════════════════════════════════════
+// ═════════════════════════════════════════════════════════
+// BACK TO TOP
+// ═════════════════════════════════════════════════════════
+document.getElementById('backTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// ═════════════════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════
+// ═════════════════════════════════════════════════════════
 render();
 setInterval(render,60000);
 </script>
