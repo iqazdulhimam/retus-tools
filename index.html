@@ -3,480 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JakHire — Pasar Kerja Jakarta</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>JK</text></svg>">
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<style>:root{--bg:#f4f5f8;--surface:#fff;--border:#e1e4e8;--accent:#0366d6;--accent-hover:#0256b9;--text:#1b1f23;--text2:#586069;--text3:#959da5;--success:#28a745;--danger:#d73a49;--radius:8px;--radius-sm:6px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
-*,*::after,*::before{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-a{color:var(--accent);text-decoration:none}
-.wrap{max-width:800px;margin:0 auto;padding:0 16px}
-.hd{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.hd .wrap{display:flex;align-items:center;justify-content:space-between;height:50px}
-.hd h1{font-size:.95rem;font-weight:800}
-.hd h1 span{color:var(--accent)}
-.hd-r{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--text2)}
-.hd-r .lmt{font-size:.68rem;color:var(--text3);background:var(--bg);padding:1px 7px;border-radius:8px}
-.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;font-family:inherit;border:1px solid transparent;cursor:pointer;transition:all .12s}
-.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:var(--accent-hover)}
-.btn-s{background:var(--surface);color:var(--text2);border-color:var(--border)}.btn-s:hover{color:var(--text);border-color:var(--text3)}
-.btn-d{background:none;border:none;color:var(--text3);cursor:pointer;font-size:.8rem;padding:2px 5px;border-radius:4px;opacity:0;transition:all .12s}
-.cd:hover .btn-d{opacity:1}.btn-d:hover{color:var(--danger);background:rgba(215,58,73,0.08)}
-.hero{text-align:center;padding:28px 0 14px}
-.hero h2{font-size:1.25rem;font-weight:800}
-.hero p{color:var(--text2);font-size:.82rem;margin-top:2px;max-width:480px;margin-left:auto;margin-right:auto}
-.st{display:flex;gap:10px;justify-content:center;margin-top:6px;font-size:.74rem;color:var(--text3)}
-.st b{color:var(--text);font-weight:700}
-.act{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap}
-.fb{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
-.fb button{padding:4px 11px;border-radius:12px;font-size:.72rem;font-weight:600;border:1px solid transparent;background:none;color:var(--text2);cursor:pointer;font-family:inherit}
-.fb button:hover{color:var(--text);border-color:var(--border)}
-.fb button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.ar{margin-bottom:14px}
-.ar-h{display:flex;align-items:center;gap:6px;padding:6px 10px;margin-bottom:5px;border-radius:var(--radius-sm);cursor:pointer;user-select:none;font-size:.8rem;font-weight:700;transition:background .12s}
-.ar-h:hover{background:var(--surface)}
-.ar-h .c{margin-left:auto;font-size:.68rem;color:var(--text3);background:var(--bg);padding:0 7px;border-radius:8px}
-.ar-h .v{color:var(--text3);font-size:.5rem;transition:transform .2s;margin-left:3px}
-.ar-h.dn .v{transform:rotate(-90deg)}
-.ar-l{display:flex;flex-direction:column;gap:5px}
-.ar-h.dn+.ar-l{display:none}
-.cd{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px}
-.cd:hover{border-color:rgba(3,102,214,0.18)}
-.cd-t{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.cd-i{flex:1;min-width:0}
-.cd-ti{font-size:.86rem;font-weight:700;margin-bottom:1px}
-.cd-m{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:2px}
-.cd-tg{padding:1px 6px;border-radius:3px;font-size:.64rem;font-weight:700}
-.tg-j{background:rgba(40,167,69,0.1);color:var(--success)}
-.tg-f{background:rgba(3,102,214,0.08);color:var(--accent)}
-.tg-s{background:rgba(3,102,214,0.08);color:var(--accent)}
-.tg-c{background:rgba(219,171,9,0.1);color:#735c0f}
-.cd-bg{font-size:.76rem;font-weight:700;color:var(--success)}
-.cd-r{display:flex;gap:4px;flex-shrink:0}
-.cd-xp{padding:1px 6px;border-radius:3px;font-size:.62rem;font-weight:600;white-space:nowrap}
-.xp-ok{background:rgba(40,167,69,0.08);color:var(--success)}
-.xp-wa{background:rgba(219,171,9,0.1);color:#735c0f}
-.xp-cr{background:rgba(215,58,73,0.08);color:var(--danger)}
-.cd-b{font-size:.78rem;color:var(--text2);line-height:1.6;margin:2px 0 6px;text-align:left!important;display:block;width:100%}
-.cd-ft{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text3);padding-top:4px;border-top:1px solid var(--bg);flex-wrap:wrap;gap:4px}
-.cd-ft .ct{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.cd-ft a{font-size:12px;font-weight:600}
-.emp{text-align:center;padding:40px 20px}
-.emp p{font-size:.84rem;color:var(--text3)}
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:999;align-items:center;justify-content:center;padding:20px}
-.mo.on{display:flex}
-.mn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,0.12)}
-.mn-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-.mn-h h3{font-size:.95rem;font-weight:800}
-.mn-h .s{font-size:.74rem;color:var(--text2);margin-top:1px;line-height:1.4}
-.mn-x{background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer;padding:0 4px;line-height:1}
-.mn-x:hover{color:var(--text)}
-.fg{margin-bottom:12px}
-.fl{display:block;font-size:.7rem;font-weight:700;color:var(--text2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
-.fr{display:flex;gap:10px}
-.fr .fg{flex:1}
-.fi,.fs,.ft{width:100%;padding:7px 11px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:.82rem;outline:none;transition:all .12s;font-family:inherit}
-.fi:focus,.fs:focus,.ft:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(3,102,214,0.12)}
-.ft{min-height:60px;resize:vertical}
-.fi.er,.ft.er{border-color:var(--danger);box-shadow:0 0 0 2px rgba(215,58,73,0.1)}
-.fe{display:none;font-size:.68rem;color:var(--danger);margin-top:2px;font-weight:500}
-.fi.er+.fe,.ft.er+.fe{display:block}
-.fh{font-size:.65rem;color:var(--text3);margin-top:2px}
-.ts{position:fixed;bottom:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:5px}
-.t{padding:9px 14px;border-radius:var(--radius-sm);font-size:.76rem;font-weight:600;box-shadow:0 3px 12px rgba(0,0,0,0.1);animation:ti .2s ease;max-width:340px;color:#fff}
-.t-s{background:var(--success)}.t-e{background:var(--danger)}.t-i{background:var(--accent)}
-@keyframes ti{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
-.code-box{text-align:center;padding:16px}
-.code-box .big{font-size:2rem;font-weight:900;letter-spacing:6px;font-family:monospace;background:var(--bg);padding:12px;border-radius:8px;display:inline-block;margin:8px 0}
-.code-box .warn{font-size:.74rem;color:var(--danger);font-weight:600}
-.ft{text-align:center;padding:20px 16px 36px;color:var(--text3);font-size:.7rem;border-top:1px solid var(--bg)}
-.ft strong{color:var(--text2)}
-@media(max-width:640px){
-.hero{padding:18px 0 8px}.hero h2{font-size:1rem}
-.fr{flex-direction:column;gap:0}.mn{padding:16px 14px}
-.cd-t{flex-direction:column}.cd-r{width:100%;justify-content:flex-end;margin-top:4px}
-.btn-d{opacity:1}
-.wrap{padding:0 12px}
-.hd .wrap{height:42px}
-.hd h1{font-size:.82rem}
-.hd-r{gap:4px;font-size:.65rem}
-.hd-r .lmt{display:none}
-.act{gap:4px}.btn{padding:5px 10px;font-size:.74rem}
-.fb{padding:6px 10px;gap:3px}
-.fb button{padding:3px 8px;font-size:.68rem}
-.ar-h{padding:4px 8px;font-size:.76rem}
-.cd{padding:8px 10px}
-.cd-ti{font-size:.82rem}
-.cd-b{font-size:.76rem}
-.code-box .big{font-size:1.6rem;padding:10px}
-.ar{margin-bottom:10px}.ar-l{gap:4px}
-.hero p{font-size:.78rem}
-.st{flex-wrap:wrap;gap:6px}
-}
-@media(max-width:420px){
-.wrap{padding:0 8px}
-.hero h2{font-size:.88rem}.hero p{font-size:.72rem}
-.btn{padding:4px 8px;font-size:.68rem}
-.fb button{padding:2px 6px;font-size:.62rem}
-.cd{padding:6px 8px}
-.cd-ti{font-size:.78rem}.cd-b{font-size:.72rem}
-.cd-ft{font-size:10px;flex-direction:column;align-items:flex-start;gap:2px}
-.cd-ft .ct{width:100%}
-.mn{padding:12px}
-.mn-h h3{font-size:.82rem}
-.fi,.fs,.ft{font-size:.76rem;padding:5px 7px}
-.fl{font-size:.62rem}
-}
+<title>Web3Kerja — Job Board Web3 Indonesia</title>
+<meta name="description" content="Lowongan kerja Web3 Indonesia: developer, designer, community, marketing. Remote & on-site.">
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--accent:#7c5cff;--accent2:#00d4aa;--text:#e6edf3;--text2:#8b949e;--radius:10px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px}
+header{border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(13,17,23,.95);backdrop-filter:blur(8px);z-index:50}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.logo{font-weight:800;font-size:1.05rem}.logo span{color:var(--accent)}
+.btn{display:inline-block;padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:700;border:1px solid transparent;cursor:pointer;font-family:inherit;text-decoration:none}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{filter:brightness(1.1)}
+.hero{text-align:center;padding:52px 0 30px}
+.hero h2{font-size:2rem;font-weight:800;margin-bottom:10px}
+.hero h2 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--text2);max-width:560px;margin:0 auto 22px}
+.search{max-width:520px;margin:0 auto;display:flex;gap:8px}
+.search input{flex:1;padding:11px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:.9rem;font-family:inherit}
+.search input:focus{outline:none;border-color:var(--accent)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0}
+.chip{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:.78rem;cursor:pointer;font-family:inherit}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.notice{background:rgba(124,92,255,.1);border:1px solid rgba(124,92,255,.35);border-radius:8px;padding:10px 16px;font-size:.78rem;color:var(--text2);text-align:center;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;padding-bottom:40px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:transform .12s,border-color .12s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:4px}
+.card .co{font-size:.78rem;color:var(--text2);margin-bottom:10px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-size:.68rem;padding:2px 10px;border-radius:12px;background:rgba(124,92,255,.12);color:#b7a6ff}
+.tag.remote{background:rgba(0,212,170,.12);color:#5ee8c8}
+.badge-contoh{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.06em;background:#3a2b00;color:#ffbe33;border-radius:4px;padding:2px 8px;margin-bottom:8px}
+.card .meta{font-size:.74rem;color:var(--text2);display:flex;gap:12px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:620px;width:100%;padding:28px;position:relative}
+.modal h2{font-size:1.25rem;margin-bottom:4px}
+.modal .co{color:var(--text2);font-size:.85rem;margin-bottom:14px}
+.modal h4{font-size:.82rem;color:var(--accent2);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.05em}
+.modal ul{margin-left:18px;font-size:.88rem;color:var(--text2)}
+.modal p{font-size:.88rem;color:var(--text2)}
+.x{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text2);font-size:1.3rem;cursor:pointer}
+footer{border-top:1px solid var(--border);padding:26px 0;text-align:center;color:var(--text2);font-size:.78rem}
+footer a{color:var(--accent);text-decoration:none}
+.empty{text-align:center;color:var(--text2);padding:40px 0;grid-column:1/-1}
 </style>
 </head>
 <body>
-
-<div class="hd"><div class="wrap">
-  <h1><span>Jak</span>Hire</h1>
-  <div class="hd-r" id="hdRight">
-    <span class="lmt" id="lmtD"></span>
-    <span id="emailD"></span>
-    <button class="btn btn-sm btn-s" id="btnAuth" onclick="showLogin()">Masuk</button>
-  </div>
-</div></div>
+<header><div class="wrap">
+<div class="logo">Web3<span>Kerja</span></div>
+<a class="btn btn-p" href="#" onclick="alert('Fitur pasang lowongan segera hadir.');return false">+ Pasang Lowongan</a>
+</div></header>
 
 <div class="wrap">
 <div class="hero">
-  <h2>Pasar Kerja Jakarta</h2>
-  <p>Cari kerja, hire freelancer, atau tawarin jasa — khusus Jabodetabek. Posting otomatis kadaluarsa 7 hari.</p>
-  <div class="st"><b id="s1">0</b> aktif <span style="color:var(--border)">|</span> <b id="s2">0</b> hari ini</div>
-</div>
-<div class="act">
-  <button class="btn btn-p" onclick="onPost()">+ Pasang Iklan</button>
-  <button class="btn btn-s" onclick="document.getElementById('fb').scrollIntoView({behavior:'smooth'})">Filter</button>
-</div>
-<div class="fb" id="fb">
-  <button class="on" data-v="all" onclick="sf('all')">Semua</button>
-  <button data-v="cari_kerja" onclick="sf('cari_kerja')">Cari Kerja</button>
-  <button data-v="cari_freelancer" onclick="sf('cari_freelancer')">Freelancer</button>
-  <button data-v="jasa" onclick="sf('jasa')">Jasa</button>
-  <button data-v="collab" onclick="sf('collab')">Collab</button>
-</div>
-<div id="bd"></div>
+<h2>Kerja di <span>Web3</span>, dari Indonesia.</h2>
+<p>Lowongan blockchain, crypto & desentralisasi — developer, designer, community, marketing. Remote maupun on-site.</p>
+<div class="search"><input id="q" type="text" placeholder="Cari posisi, skill, atau perusahaan…" oninput="render()"></div>
 </div>
 
-<div class="ft">Dibuat oleh <strong>Veritaz991</strong> &middot; JakHire — Pasar Kerja Jakarta</div>
-
-<!-- MODAL LOGIN -->
-<div class="mo" id="mLogin">
-<div class="mn">
-<div class="mn-h">
-  <div><h3>Masuk</h3><div class="s">Masukin email buat dapet kode akses 6 digit</div></div>
-  <button class="mn-x" onclick="mc('mLogin')">&times;</button>
-</div>
-<div id="loginBody">
-  <div id="stepEmail">
-    <div class="fg"><label class="fl">Email</label>
-      <input class="fi" id="loginEmail" type="email" placeholder="email@contoh.com" style="text-align:center;font-size:1rem">
-    </div>
-    <div class="fe" id="eLogin" style="display:block;text-align:center;margin-bottom:6px"></div>
-    <button class="btn btn-p" onclick="getCode()" style="width:100%;justify-content:center;padding:9px" id="btnGetCode">Buat Kode Akses</button>
-  </div>
-  <div id="stepCode" style="display:none">
-    <div class="code-box">
-      <div style="font-size:.85rem;font-weight:700;margin-bottom:2px">Kode Akses Kamu</div>
-      <div class="big" id="displayCode">XXXXXX</div>
-      <div class="warn">Simpan kode ini! Berlaku 7 hari.</div>
-      <button class="btn btn-p" onclick="finishLogin()" style="margin-top:10px;width:100%;justify-content:center">Lanjut</button>
-    </div>
-  </div>
-  <div id="stepVerify" style="display:none">
-    <div class="fg"><label class="fl">Email</label><input class="fi" id="vEmail" type="email" placeholder="email@contoh.com"></div>
-    <div class="fg"><label class="fl">Kode 6 Digit</label><input class="fi" id="vCode" placeholder="XXXXXX" maxlength="6" style="text-align:center;font-size:1.3rem;letter-spacing:6px;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-    <div class="fe" id="eVerify" style="display:block;text-align:center;margin-bottom:6px"></div>
-    <button class="btn btn-p" onclick="verifyLogin()" style="width:100%;justify-content:center;padding:9px">Masuk</button>
-    <div style="text-align:center;margin-top:10px;font-size:.72rem;color:var(--text3)">Belum punya kode? <a href="javascript:backStep()">Buat kode baru</a></div>
-  </div>
-</div>
-</div>
+<div class="filters" id="filters"></div>
+<div class="notice">ℹ️ Data di bawah ini <b>contoh</b> — lowongan asli segera hadir. Tertarik pasang lowongan? Fitur posting segera dibuka.</div>
+<div class="grid" id="grid"></div>
 </div>
 
-<!-- MODAL POST -->
-<div class="mo" id="mPost">
-<div class="mn">
-<div class="mn-h">
-  <div><h3>Pasang Iklan</h3><div class="s">Kadaluarsa 7 hari. Sisa: <strong id="sisaSlot">10</strong>x hari ini</div></div>
-  <button class="mn-x" onclick="mc('mPost')">&times;</button>
-</div>
-<form id="pf" onsubmit="sp(event)" novalidate>
-<div class="fr">
-<div class="fg"><label class="fl">Kategori</label><select class="fs" id="fCat"><option value="cari_kerja">Cari Kerja</option><option value="cari_freelancer">Freelancer</option><option value="jasa">Jasa</option><option value="collab">Collab</option></select></div>
-<div class="fg"><label class="fl">Wilayah</label><select class="fs" id="fAr"><option>Jakarta Pusat</option><option>Jakarta Selatan</option><option>Jakarta Timur</option><option>Jakarta Barat</option><option>Jakarta Utara</option><option>Kepulauan Seribu</option></select></div>
-</div>
-<div class="fg"><label class="fl">Judul</label><input class="fi" id="fTi" maxlength="80" placeholder="Misal: Butuh fotografor wedding"><div class="fe" id="eTi"></div></div>
-<div class="fg"><label class="fl">Deskripsi</label><textarea class="ft" id="fDe" maxlength="800" placeholder="Detail — gaji, jam, syarat..."></textarea><div class="fe" id="eDe"></div></div>
-<div class="fg"><label class="fl">Budget (Rp)</label><input class="fi" id="fBg" placeholder="500000" inputmode="numeric"><div class="fh">Angka aja, opsional</div></div>
-<div class="fr">
-<div class="fg"><label class="fl">No. WhatsApp</label><input class="fi" id="fWa" placeholder="08xxxxxxxxx" maxlength="20"><div class="fh">Nomor WA untuk dihubungi</div><div class="fe" id="eWa"></div></div>
-<div class="fg"><label class="fl">Nama</label><input class="fi" id="fNm" maxlength="50" placeholder="Nama samaran boleh"><div class="fh">Opsional</div></div>
-</div>
-<div style="font-size:.72rem;color:var(--text3);padding:6px 0 10px;border-top:1px solid var(--bg)">Email <strong id="autoEmail">-</strong> akan otomatis tampil sebagai kontak</div>
-<button type="submit" class="btn btn-p" style="width:100%;justify-content:center;padding:9px">Pasang Iklan</button>
-</form>
-</div>
-</div>
+<div class="modal-bg" id="mbg" onclick="if(event.target===this)closeM()"><div class="modal" id="modal"></div></div>
 
-<!-- MODAL DELETE -->
-<div class="mo" id="mDel">
-<div class="mn" style="max-width:360px">
-<div class="mn-h"><div><h3>Hapus Iklan</h3><div class="s">Masukkan <strong>email & kode login</strong> kamu untuk verifikasi</div></div><button class="mn-x" onclick="mc('mDel')">&times;</button></div>
-<div class="fg"><label class="fl">Email</label><input class="fi" id="delEmail" type="email" placeholder="email kamu"></div>
-<div class="fg"><label class="fl">Kode Login 6 Digit</label><input class="fi" id="delCode" placeholder="XXXXXX" maxlength="6" style="text-align:center;font-size:1.2rem;letter-spacing:4px;font-weight:700;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
-<div class="fe" id="eDel" style="display:block;text-align:center"></div>
-<button class="btn btn-p" onclick="confirmDel()" style="width:100%;justify-content:center;padding:8px">Hapus</button>
-</div>
-</div>
-
-<div class="ts" id="ts"></div>
+<footer><div class="wrap">
+Web3Kerja — job board Web3 Indonesia · Data contoh untuk tampilan awal<br>
+<a href="https://github.com/hatbrake/web3kerja">GitHub</a>
+</div></footer>
 
 <script>
-// ═══════ SUPABASE ═══════
-// Build Supabase key from parts to avoid truncation
-var _key = '';
-var _kp = ['e','y','J','h','b','G','c','i','O','i','J','I','U','z','I','1','N','i','I','s','I','n','R','5','c','C','I','6','I','k','p','X','V','C','J','9','.','e','y','J','p','c','3','M','i','O','i','J','z','d','X','B','h','Y','m','F','z','Z','S','I','s','I','n','J','l','Z','i','I','6','I','m','F','z','Z','m','t','w','d','n','p','v','e','G','9','1','b','n','R','w','b','W','9','0','a','2','9','w','I','i','w','i','c','m','9','s','Z','S','I','6','I','m','F','u','b','2','4','i','L','C','J','p','Y','X','Q','i','O','j','E','3','O','D','A','0','O','T','M','z','M','z','A','s','I','m','V','4','c','C','I','6','M','j','A','5','N','j','A','2','O','T','M','z','M','H','0','.','m','I','l','Q','Z','O','D','E','t','3','H','j','z','O','0','5','u','m','E','h','F','Y','V','p','K','b','X','1','I','6','j','1','2','S','P','z','8','3','q','l','s','7','s'];
-for(var _i=0;_i<_kp.length;_i++)_key+=_kp[_i];
-var _sb = supabase.createClient('https://asfkpvzoxountpmotkop.supabase.co', _key);
-
-// ═══════ STATE ═══════
-var fl='all', delId=null, _email=null;
-var AA=['Jakarta Pusat','Jakarta Selatan','Jakarta Timur','Jakarta Barat','Jakarta Utara','Kepulauan Seribu'];
-var CM={cari_kerja:{l:'Cari Kerja',c:'tg-j'},cari_freelancer:{l:'Freelancer',c:'tg-f'},jasa:{l:'Jasa',c:'tg-s'},collab:{l:'Collab',c:'tg-c'}};
-
-// ═══════ AUTH ═══════
-function gs(){try{return JSON.parse(localStorage.getItem('_js')||'null')}catch(e){return null}}
-function ss(e,c){localStorage.setItem('_js',JSON.stringify({email:e,code:c,t:Date.now()}))}
-function cs(){localStorage.removeItem('_js')}
-
-function ui(){
-  var s=gs(),btn=document.getElementById('btnAuth'),ed=document.getElementById('emailD'),ld=document.getElementById('lmtD');
-  if(s&&s.email){
-    _email=s.email;btn.textContent='Keluar';btn.onclick=function(){cs();_email=null;ui();tt('Keluar','i')};
-    ed.textContent=isAdmin()?'⭐ Owner':s.email;
-    if(isAdmin())document.getElementById('lmtD').textContent='♾️';
-    else loadLimit();
-  }else{
-    _email=null;btn.textContent='Masuk';btn.onclick=function(){showLogin()};
-    ed.textContent='';ld.textContent='';document.getElementById('autoEmail').textContent='-';
-  }
+const JOBS=[
+{id:1,title:"Smart Contract Developer (Solidity)",co:"Contoh Labs",loc:"Remote",type:"Full-time",cat:"Developer",tags:["Solidity","EVM","DeFi"],sal:"$3k–$6k / bulan",desc:"Bangun dan audit smart contract untuk protokol DeFi. Pengalaman deploy ke mainnet jadi nilai plus.",reqs:["2+ tahun Solidity","Paham pola keamanan (reentrancy, access control)","Pengalaman Hardhat/Foundry"],sample:1},
+{id:2,title:"Frontend Developer (React + wagmi)",co:"Nusa Chain",loc:"Remote",type:"Full-time",cat:"Developer",tags:["React","TypeScript","wagmi"],sal:"$2k–$4k / bulan",desc:"Bangun interface dApp yang cepat dan responsif. Kolaborasi dengan tim smart contract.",reqs:["React + TypeScript","Pengalaman wagmi/viem atau ethers.js","Paham UX wallet (connect, sign)"],sample:1},
+{id:3,title:"Community Manager Indonesia",co:"Garuda Protocol",loc:"Remote",type:"Full-time",cat:"Community",tags:["Discord","Telegram","Bahasa Indonesia"],sal:"$1k–$2k / bulan",desc:"Kelola komunitas Indonesia: Discord, Telegram, dan event online. Jadi jembatan antara tim inti dan komunitas.",reqs:["Aktif di komunitas crypto","Komunikasi Bahasa Indonesia yang baik","Pengalaman moderasi Discord/Telegram"],sample:1},
+{id:4,title:"UI/UX Designer Web3",co:"Contoh Labs",loc:"Hybrid · Jakarta",type:"Full-time",cat:"Design",tags:["Figma","Design System"],sal:"Rp 12–20 jt / bulan",desc:"Desain pengalaman onboarding wallet-first yang ramah untuk pengguna baru crypto.",reqs:["Portofolio UI/UX","Paham pola UX web3 (wallet connect, transaksi)","Figma advanced"],sample:1},
+{id:5,title:"Technical Writer",co:"Nusa Chain",loc:"Remote",type:"Kontrak",cat:"Developer",tags:["Docs","English"],sal:"$1.5k–$3k / bulan",desc:"Tulis dokumentasi developer: tutorial, referensi API, dan panduan integrasi.",reqs:["Bahasa Inggris teknis yang kuat","Bisa baca kode Solidity/JS","Pengalaman docs-as-code"],sample:1},
+{id:6,title:"Developer Advocate",co:"Garuda Protocol",loc:"Remote",type:"Full-time",cat:"Community",tags:["DevRel","Workshop"],sal:"$2.5k–$5k / bulan",desc:"Edukasi developer: workshop, konten teknis, dan program grants untuk builder.",reqs:["Public speaking","Bisa live coding","Jaringan di komunitas developer"],sample:1},
+{id:7,title:"Social Media Specialist (Crypto)",co:"Contoh Labs",loc:"Remote",type:"Paruh waktu",cat:"Marketing",tags:["X/Twitter","Content"],sal:"$800–$1.5k / bulan",desc:"Kelola akun X dan konten harian. Paham narasi dan tren crypto.",reqs:["Aktif di Crypto Twitter","Bisa bikin thread edukatif","Basic design (Canva/Figma)"],sample:1},
+{id:8,title:"QA Engineer dApp",co:"Nusa Chain",loc:"Remote",type:"Full-time",cat:"Developer",tags:["Testing","Cypress"],sal:"$2k–$3.5k / bulan",desc:"Testing end-to-end dApp: smart contract interaction, edge case wallet, dan regresi.",reqs:["Pengalaman test automation","Paham transaksi blockchain","Teliti dan sistematis"],sample:1}
+];
+const CATS=["Semua","Developer","Design","Marketing","Community"];
+let fCat="Semua";
+const filtersEl=document.getElementById('filters');
+CATS.forEach(c=>{const b=document.createElement('button');b.className='chip'+(c==="Semua"?" on":"");b.textContent=c;b.onclick=()=>{fCat=c;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');render()};filtersEl.appendChild(b)});
+function render(){
+const q=document.getElementById('q').value.toLowerCase();
+const list=JOBS.filter(j=>(fCat==="Semua"||j.cat===fCat)&&(j.title+" "+j.co+" "+j.tags.join(" ")).toLowerCase().includes(q));
+const g=document.getElementById('grid');
+g.innerHTML=list.length?list.map(j=>`<div class="card" onclick="openM(${j.id})">
+${j.sample?'<span class="badge-contoh">CONTOH</span>':''}
+<h3>${j.title}</h3><div class="co">${j.co}</div>
+<div class="tags">${j.tags.map(t=>`<span class="tag">${t}</span>`).join("")}<span class="tag remote">${j.loc}</span></div>
+<div class="meta"><span>🕒 ${j.type}</span><span>💰 ${j.sal}</span></div></div>`).join("")
+:'<div class="empty">Tidak ada lowongan yang cocok. Coba kata kunci lain.</div>';
 }
-
-async function loadLimit(){
-  if(!_email)return;
-  try{var {data}=await _sb.rpc('check_upload_limit',{p_email:_email});var u=data||0;document.getElementById('lmtD').textContent=u+'/10';document.getElementById('sisaSlot').textContent=10-u}catch(e){}
-}
-
-function showLogin(){
-  document.getElementById('stepEmail').style.display='block';
-  document.getElementById('stepCode').style.display='none';
-  document.getElementById('stepVerify').style.display='none';
-  document.getElementById('loginEmail').value='';document.getElementById('eLogin').textContent='';
-  document.getElementById('btnGetCode').disabled=false;document.getElementById('btnGetCode').textContent='Buat Kode Akses';
-  mo('mLogin');
-}
-
-function backStep(){
-  document.getElementById('stepVerify').style.display='none';
-  document.getElementById('stepCode').style.display='none';
-  document.getElementById('stepEmail').style.display='block';
-}
-
-async function getCode(){
-  var em=document.getElementById('loginEmail').value.trim().toLowerCase();
-  if(!em||!em.includes('@')){document.getElementById('eLogin').textContent='Email tidak valid';return}
-  
-  // ═══════ EMAIL VALIDATION ═══════
-  // 1. Basic format
-  var parts=em.split('@');
-  if(parts.length!==2||parts[0].length<2||parts[1].length<4){document.getElementById('eLogin').textContent='Format email tidak valid';return}
-  
-  // 2. Block test/fake domains
-  var domain=parts[1].toLowerCase();
-  var fake=['mailinator.com','guerrillamail.com','tempmail.com','temp-mail.org','throwaway.email','yopmail.com','sharklasers.com','trashmail.com','10minutemail.com','burnermail.io','mailnator.com','mailexpire.com','spamgourmet.com','discardmail.com','getnada.com','emailfake.com','mohmal.com','fakeinbox.com','tempinbox.com',' disposable','tempmail.net','maileater.com','mailcatch.com','maildrop.cc'];
-  var blocked=false;
-  for(var i=0;i<fake.length;i++){if(domain.indexOf(fake[i].replace(' ',''))>-1||domain===fake[i]){blocked=true;break}}
-  if(blocked){document.getElementById('eLogin').textContent='Email sekali pakai tidak diizinkan';return}
-  
-  // 3. Block common testing patterns
-  if(parts[0]==='test'||parts[0]==='testing'||parts[0]==='asd'||parts[0]==='123'||parts[0]==='abc'||parts[0]==='admin'){document.getElementById('eLogin').textContent='Email tidak valid';return}
-  
-  // ═══════════════════════════════════
-  
-  // Admin check
-  if(em==='iqazdulhimam@gmail.com'){
-    document.getElementById('stepEmail').style.display='none';
-    document.getElementById('stepCode').style.display='block';
-    document.getElementById('displayCode').textContent=ADMIN_CODE;
-    document.getElementById('loginSub').textContent='Owner verified!';
-    return;
-  }
-  try{
-    var {data,error}=await _sb.rpc('get_or_create_auth_code',{p_email:em});
-    if(error)throw error;
-    document.getElementById('stepEmail').style.display='none';
-    document.getElementById('stepCode').style.display='block';
-    document.getElementById('displayCode').textContent=data;
-  }catch(e){
-    document.getElementById('eLogin').textContent=e.message||'Gagal, coba lagi';
-    document.getElementById('btnGetCode').disabled=false;
-    document.getElementById('btnGetCode').textContent='Buat Kode Akses';
-  }
-}
-
-function finishLogin(){
-  var em=document.getElementById('loginEmail').value.trim();
-  var dc=document.getElementById('displayCode').textContent.trim();
-  _email=em;ss(em,dc);ui();mc('mLogin');
-  tt('Berhasil masuk! Kode udah disimpen.','s');
-}
-
-async function verifyLogin(){
-  var em=document.getElementById('vEmail').value.trim();
-  var co=document.getElementById('vCode').value.trim();
-  if(!em||!co){document.getElementById('eVerify').textContent='Isi email & kode';return}
-  document.getElementById('eVerify').textContent='';
-  try{
-    var {data,error}=await _sb.rpc('verify_auth_code',{p_email:em,p_code:co});
-    if(error)throw error;
-    if(data){_email=em;ss(em,co);ui();mc('mLogin');tt('Berhasil!','s')}
-    else{document.getElementById('eVerify').textContent='Kode salah / expired'}
-  }catch(e){document.getElementById('eVerify').textContent='Error, coba lagi';}
-}
-
-// ═══════ MODAL ═══════
-function mo(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden'}
-function mc(id){document.getElementById(id).classList.remove('on');document.body.style.overflow=''}
-document.querySelectorAll('.mo').forEach(function(m){m.addEventListener('click',function(e){if(e.target===this)mc(this.id)})});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelectorAll('.mo.on').forEach(function(m){mc(m.id)})}});
-
-function onPost(){
-  if(!_email){showLogin();return}
-  document.getElementById('autoEmail').textContent=_email;
-  loadLimit();mo('mPost');
-}
-
-// ═══════ LOAD LISTINGS ═══════
-async function rd(){
-  try{
-    var {data,error}=await _sb.from('listings').select('*').gte('created_at',new Date(Date.now()-7*864e5).toISOString()).order('created_at',{ascending:false});
-    if(error)throw error;render(data||[]);
-  }catch(e){document.getElementById('bd').innerHTML='<div class="emp"><p>Gagal muat data.</p></div>'}
-}
-
-function render(d){
-  var b=document.getElementById('bd'),total=d.length;
-  var hn=d.filter(function(x){var n=new Date(),c=new Date(x.created_at);return c.getDate()==n.getDate()&&c.getMonth()==n.getMonth()&&c.getFullYear()==n.getFullYear()});
-  document.getElementById('s1').textContent=total;document.getElementById('s2').textContent=hn.length;
-  if(!total){b.innerHTML='<div class="emp"><p>Belum ada iklan.</p><p class="s">Jadi yang pertama!</p></div>';return}
-  var f=fl=='all'?d:d.filter(function(x){return x.category==fl});
-  var gr={};AA.forEach(function(a){gr[a]=[]});f.forEach(function(x){if(gr[x.area])gr[x.area].push(x)});
-  document.getElementById('s1').textContent=f.length;
-  var h='';
-  AA.forEach(function(a){
-    var items=gr[a];if(!items.length)return;
-    h+='<div class="ar"><div class="ar-h" onclick="this.classList.toggle(\'dn\')">'+a+'<span class="c">'+items.length+'</span><span class="v">&#x25BC;</span></div><div class="ar-l">';
-    items.forEach(function(x){
-      var cat=CM[x.category]||{l:'Jasa',c:'tg-s'},age=da(x.created_at),bg=x.budget?'Rp '+Number(x.budget).toLocaleString('id-ID'):'',tl=tl2(x.created_at);
-      var wa=x.wa?'<span style="color:var(--text2)">WA: '+es(formatWa(x.wa))+'</span> <a href="https://wa.me/'+x.wa.replace(/[^0-9]/g,'')+'" target="_blank" style="color:#25D366;font-weight:700">Hubungi WA</a>':'';
-      var em= x.email==='iqazdulhimam@gmail.com'?'<span style="color:#996600">⭐ Owner</span>':('<span style="color:var(--text2)">Email: '+es(x.email)+'</span> <a href="mailto:'+es(x.email)+'" style="font-weight:700">Kirim Email</a>');
-      h+='<div class="cd"><div class="cd-t"><div class="cd-i"><div class="cd-ti">'+es(x.title)+'</div>';
-      h+='<div class="cd-m"><span class="cd-tg '+cat.c+'">'+cat.l+'</span>'+(bg?'<span class="cd-bg">'+bg+'</span>':'')+'</div>';
-      h+='<div class="cd-b">'+es(x.description||'')+'</div></div>';
-      h+='<div class="cd-r"><span class="cd-xp '+tl.c+'">'+tl.l+'</span><button class="btn-d" onclick="showDel(\''+x.id+'\')">&#x2715;</button></div></div>';
-      h+='<div class="cd-ft"><span>'+age+' &middot; '+es(x.name||'Anonim')+'</span><div class="ct">'+wa+em+'</div></div></div>';
-    });
-    h+='</div></div>';
-  });
-  b.innerHTML=h||'<div class="emp"><p>Kosong.</p></div>';
-}
-
-function da(ts){var n=new Date(),c=new Date(ts);if(c.getDate()==n.getDate()&&c.getMonth()==n.getMonth()&&c.getFullYear()==n.getFullYear())return'Hari ini';return Math.floor((n-c)/864e5)+'h lalu'}
-function tl2(ts){var r=(7*864e5)-(Date.now()-new Date(ts).getTime());if(r<=0)return{l:'Habis',c:'xp-cr'};var d=Math.ceil(r/864e5),p=((Date.now()-new Date(ts).getTime())/(7*864e5))*100,c='xp-ok';if(p>80)c='xp-cr';else if(p>50)c='xp-wa';return{l:d>0?d+' hari':Math.floor(r/36e5)+' jam',c:c}}
-function es(s){if(typeof s!='string')return'';var d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function formatWa(n){
-  if(!n)return'';
-  var c=n.replace(/[^0-9]/g,'');
-  if(c.length<10)return n;
-  if(c.startsWith('62'))c='0'+c.slice(2);
-  return c.slice(0,4)+'-'+c.slice(4,7)+'-'+c.slice(7,11)+(c.length>11?'-'+c.slice(11):'');
-}
-var ADMIN_CODE='ADMIN99';
-function isAdmin(){var s=gs();return s&&s.code===ADMIN_CODE}
-function sf(v){fl=v;document.querySelectorAll('.fb button').forEach(function(b){b.classList.toggle('on',b.dataset.v==v)});rd()}
-
-// ═══════ DELETE ═══════
-function showDel(id){
-  delId=id;
-  // Admin langsung hapus tanpa modal
-  if(isAdmin()){
-    if(confirm('Hapus iklan ini?')){
-      _sb.from('listings').delete().eq('id',id).then(function(){
-        tt('Terhapus','s');rd();
-      }).catch(function(){tt('Gagal','e')});
-    }
-    return;
-  }
-  document.getElementById('delEmail').value='';document.getElementById('delCode').value='';document.getElementById('eDel').textContent='';mo('mDel')
-}
-async function confirmDel(){
-  var email=document.getElementById('delEmail').value.trim();
-  var code=document.getElementById('delCode').value.trim();
-  if(!email||!code||code.length<4){document.getElementById('eDel').textContent='Isi email & kode';return}
-  document.getElementById('eDel').textContent='';
-  try{
-    // Verify login code
-    var {data:valid}=await _sb.rpc('verify_auth_code',{p_email:email,p_code:code});
-    if(!valid){document.getElementById('eDel').textContent='Email atau kode salah!';return}
-    // Check if this user owns the listing
-    var {data:list}=await _sb.from('listings').select('email').eq('id',delId).maybeSingle();
-    if(!list){document.getElementById('eDel').textContent='Iklan tidak ditemukan';return}
-    if(list.email!==email){document.getElementById('eDel').textContent='Kamu tidak punya akses ke iklan ini';return}
-    // Delete
-    await _sb.from('listings').delete().eq('id',delId);
-    mc('mDel');tt('Terhapus','s');rd();
-  }catch(e){document.getElementById('eDel').textContent='Gagal, coba lagi'}
-}
-
-// ═══════ SUBMIT ═══════
-async function sp(e){
-  e.preventDefault();
-  document.querySelectorAll('.fi,.ft').forEach(function(el){el.classList.remove('er')});
-  ['eTi','eDe','eWa'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=''});
-  var ok=true;
-  var ti=document.getElementById('fTi').value.trim();
-  if(!ti||ti.length<3){document.getElementById('eTi').textContent='Min 3';ok=false;document.getElementById('fTi').classList.add('er')}
-  var de=document.getElementById('fDe').value.trim();
-  if(!de||de.length<10){document.getElementById('eDe').textContent='Min 10';ok=false;document.getElementById('fDe').classList.add('er')}
-  if(!ok)return;
-  if(!_email){tt('Masuk dulu','e');mc('mPost');return}
-  try{
-    // Admin bypass limit
-    if(!isAdmin()){
-      var {data:used}=await _sb.rpc('check_upload_limit',{p_email:_email});
-      if((used||0)>=10){tt('Limit 10/hari!','e');return}
-    }
-    var wa=document.getElementById('fWa').value.trim().replace(/[^0-9]/g,'');
-    if(wa&&wa.startsWith('0'))wa='62'+wa.slice(1);
-    var item={title:ti,description:de,category:document.getElementById('fCat').value,area:document.getElementById('fAr').value,budget:document.getElementById('fBg').value.trim().replace(/[^0-9]/g,''),wa:wa,email:_email,name:document.getElementById('fNm').value.trim()||'Anonim'};
-    var {error}=await _sb.from('listings').insert(item);
-    if(error)throw error;
-    await _sb.rpc('record_upload',{p_email:_email});
-    document.getElementById('pf').reset();mc('mPost');rd();loadLimit();
-    tt('Iklan terpasang!','s');
-    await _sb.from('activity_log').insert({email:_email,action:'post',detail:ti.slice(0,50)});
-  }catch(e){tt('Gagal: '+(e.message||'error'),'e')}
-}
-
-// ═══════ TOAST ═══════
-function tt(m,t){var c=document.getElementById('ts'),el=document.createElement('div');el.className='t t-'+t;el.textContent=m;c.appendChild(el);setTimeout(function(){el.style.transition='all .3s';el.style.opacity='0';el.style.transform='translateX(60px)';setTimeout(function(){el.remove()},300)},3500)}
-
-// ═══════ INIT ═══════
-ui();rd();
-setInterval(rd,30000);
+function openM(id){const j=JOBS.find(x=>x.id===id);
+document.getElementById('modal').innerHTML=`<button class="x" onclick="closeM()">✕</button>
+${j.sample?'<span class="badge-contoh">CONTOH</span>':''}
+<h2>${j.title}</h2><div class="co">${j.co} · ${j.loc} · ${j.type}</div>
+<div class="tags">${j.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+<h4>Deskripsi</h4><p>${j.desc}</p>
+<h4>Kualifikasi</h4><ul>${j.reqs.map(r=>`<li>${r}</li>`).join("")}</ul>
+<h4>Gaji</h4><p>${j.sal}</p>
+<br><a class="btn btn-p" href="#" onclick="alert('Lowongan contoh — tombol apply aktif untuk lowongan asli.');return false">Lamar Sekarang</a>`;
+document.getElementById('mbg').classList.add('open');}
+function closeM(){document.getElementById('mbg').classList.remove('open')}
+render();
 </script>
 </body>
 </html>
