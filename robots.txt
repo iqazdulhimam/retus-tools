@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://retus.biz.id/sitemap.xml
